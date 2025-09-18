@@ -1,17 +1,13 @@
-name: delhi golf fedration
-
+name: delhi_golf_federation
 version: 1.0.0+1
 
 environment:
   sdk: ^3.9.2
 
-
 dependencies:
   flutter:
     sdk: flutter
-     flutter_bloc: ^8.1.3
-
- 
+  flutter_bloc: ^8.1.3
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
@@ -19,9 +15,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
 
-
-flutter: 
-asset: images/logo.png
+flutter:
   uses-material-design: true
-
- 
+  assets:
+    - assets/images/
