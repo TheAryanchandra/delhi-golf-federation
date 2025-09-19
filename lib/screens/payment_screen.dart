@@ -1,11 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:delhi_golf_federation/screens/homepage.dart';
-import 'package:delhi_golf_federation/screens/leaderboard_screen.dart';
-import 'package:delhi_golf_federation/screens/event_screen.dart';
-import 'package:delhi_golf_federation/screens/bookteetime.dart';
-import 'package:delhi_golf_federation/screens/about.dart';
-import 'package:delhi_golf_federation/components/topnavigationbar.dart';
-import 'package:delhi_golf_federation/components/customdrawer.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
@@ -16,73 +9,14 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   bool termsAccepted = false;
-  int _currentIndex = 3; // Set to Book Tee Time tab (index 3) since this is part of booking flow
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  void updateIndex(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
-  void _onBottomNavTap(int index) {
-    if (index != _currentIndex) {
-      switch (index) {
-        case 0:
-          Navigator.pushReplacementNamed(context, '/home');
-          break;
-        case 1:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const LeaderboardScreen()),
-          );
-          break;
-        case 2:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const EventsScreen()),
-          );
-          break;
-        case 3:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const BookTeeTimeScreen()),
-          );
-          break;
-        case 4:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AboutScreen()),
-          );
-          break;
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: const Color(0xFFEFF2F1),
-      drawer: CustomDrawer(
-        onItemTap: (index) {
-          updateIndex(index);
-        },
-      ),
-      appBar: TopNavigationBar(
-        onMenuTap: () {
-          _scaffoldKey.currentState?.openDrawer();
-        },
-        onSettingsTap: () {
-          // Handle settings tap
-        },
-        onNotificationTap: () {
-          // Handle notification tap
-        },
-      ),
-      body: Column(
+    return Container(
+      color: const Color(0xFFEFF2F1),
+      child: Column(
         children: [
           // ✅ Top Header
           ClipRRect(
@@ -144,44 +78,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
           ),
         ],
-      ),
-      bottomNavigationBar: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: _onBottomNavTap,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: const Color(0xFF12563C),
-          elevation: 8,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white70,
-          showUnselectedLabels: true,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Home",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.emoji_events),
-              label: "Leaderboard",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.event),
-              label: "Events",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.golf_course),
-              label: "Book Tee Time",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.info),
-              label: "About",
-            ),
-          ],
-        ),
       ),
     );
   }

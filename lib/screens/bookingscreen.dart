@@ -1,4 +1,7 @@
+import 'package:delhi_golf_federation/components/custombutton.dart';
+import 'package:delhi_golf_federation/services/navigation_service.dart';
 import 'package:flutter/material.dart';
+import '../components/color_constants.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -8,8 +11,8 @@ class BookingScreen extends StatefulWidget {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
-  int selectedDateIndex = 3; // Example: Mon 01 is selected
-  int selectedTee = 1; // Tee 1 selected
+  int selectedDateIndex = 3; // Default selected date
+  int selectedTee = 1; // Default Tee
 
   final List<Map<String, dynamic>> dates = [
     {"day": "Fri", "date": "29"},
@@ -23,36 +26,91 @@ class _BookingScreenState extends State<BookingScreen> {
 
   final List<Map<String, dynamic>> slots = [
     {"time": "5:50 AM", "status": "Booked"},
-    {"time": "5:50 AM", "status": "Booked"},
-    {"time": "5:50 AM", "status": "Available"},
-    {"time": "5:50 AM", "status": "Booked"},
-    {"time": "5:50 AM", "status": "Booked"},
-    {"time": "5:50 AM", "status": "Booked"},
-    {"time": "5:50 AM", "status": "Booked"},
+    {"time": "6:10 AM", "status": "Available"},
+    {"time": "6:30 AM", "status": "Booked"},
+    {"time": "6:50 AM", "status": "Available"},
+    {"time": "7:10 AM", "status": "Booked"},
+    {"time": "7:30 AM", "status": "Available"},
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFEFF2F1),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildDateSelector(),
-            const SizedBox(height: 12),
-            _buildTeeSelector(),
-            const SizedBox(height: 8),
-            const Text(
-              "Sheet Open Till 17 Hours Before Tee Off",
-              style: TextStyle(color: Colors.grey, fontSize: 13),
-              textAlign: TextAlign.center,
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return Container(
+      color: const Color(0xFFEFF2F1),
+      child: Column(
+        children: [
+          // ✅ Header with background image + overlay + title + subtitle
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
             ),
-            const SizedBox(height: 8),
-            Expanded(child: _buildSlotList()),
-          ],
-        ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/welcome.png",
+                  height: screenHeight * 0.18,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+                Container(
+                  height: screenHeight * 0.18,
+                  width: double.infinity,
+                  color: Colors.black.withOpacity(0.4),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text(
+                      "Book Tee Time",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    SizedBox(height: 6),
+                    Text(
+                      "Qutab Golf Course - DDA",
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          // ✅ Rest of the booking UI
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildDateSelector(),
+                  const SizedBox(height: 12),
+                  _buildTeeSelector(),
+                  const SizedBox(height: 8),
+                  const Text(
+                    "Sheet Open Till 17 Hours Before Tee Off",
+                    style: TextStyle(color: Colors.grey, fontSize: 13),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Expanded(child: _buildSlotList()),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -66,7 +124,7 @@ class _BookingScreenState extends State<BookingScreen> {
         ),
         const SizedBox(height: 8),
         SizedBox(
-          height: 60,
+          height: 65,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: dates.length,
@@ -77,12 +135,16 @@ class _BookingScreenState extends State<BookingScreen> {
                 onTap: () => setState(() => selectedDateIndex = index),
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 6),
-                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 6, horizontal: 14),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? (date['highlight'] ?? Colors.green)
-                        : Colors.transparent,
+                        ? (date['highlight'] ?? ColorConstants.buttonColor)
+                        : Colors.white,
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: date['highlight'] ?? ColorConstants.buttonColor,
+                    ),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -90,7 +152,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       Text(
                         date['day'],
                         style: TextStyle(
-                          color: date['highlight'] ?? Colors.black,
+                          color: isSelected ? Colors.white : Colors.black87,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -118,7 +180,7 @@ class _BookingScreenState extends State<BookingScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _buildTeeButton("Tee 1", 1),
-        const SizedBox(width: 8),
+        const SizedBox(width: 10),
         _buildTeeButton("Tee 10", 10),
       ],
     );
@@ -129,16 +191,16 @@ class _BookingScreenState extends State<BookingScreen> {
     return GestureDetector(
       onTap: () => setState(() => selectedTee = tee),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.green : Colors.white,
-          border: Border.all(color: Colors.green),
+          color: isSelected ? ColorConstants.buttonColor : Colors.white,
+          border: Border.all(color: ColorConstants.buttonColor),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : Colors.green,
+            color: isSelected ? Colors.white : ColorConstants.buttonColor,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -149,13 +211,13 @@ class _BookingScreenState extends State<BookingScreen> {
   Widget _buildSlotList() {
     return ListView.separated(
       itemCount: slots.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      separatorBuilder: (_, __) => const SizedBox(height: 10),
       itemBuilder: (context, index) {
         final slot = slots[index];
         final bool isAvailable = slot['status'] == "Available";
 
         return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
@@ -182,19 +244,15 @@ class _BookingScreenState extends State<BookingScreen> {
                 ],
               ),
               isAvailable
-                  ? ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF12563C),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 6, horizontal: 18),
-                      ),
+                  ? CustomButton(
+                      text: "Book",
                       onPressed: () {
-                        // Navigate to slot details screen
+                        NavigationService.instance.navigateToSlotDetails();
                       },
-                      child: const Text("Book"),
+                      textColor: Colors.white,
+                      borderRadius: 12,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 20),
                     )
                   : const Text(
                       "Booked",

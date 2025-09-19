@@ -6,9 +6,9 @@ import '../screens/login_screen.dart';
 import '../screens/about.dart';
 import '../screens/slot_details.dart'; // Add this import
 import '../screens/payment_screen.dart'; // Add this import
+import '../screens/bookingscreen.dart'; // Add this import
 // import '../screens/splash_screen.dart';
 // import '../screens/register_screen.dart';
-// import '../screens/booking_screen.dart';
 // import '../screens/profile_screen.dart';
 
 import 'routes_name.dart';
@@ -22,8 +22,6 @@ final Map<String, WidgetBuilder> appRoutes = {
 
   /// Other Screens
   '/about': (context) => const AboutScreen(),
-  '/slot-details': (context) => const SlotDetailsPage(), // Add this route
-  '/payment': (context) => const PaymentScreen(), // Add this route
   /// Add when ready
   // RoutesName.splashScreen: (context) => const SplashScreen(),
   // RoutesName.registerScreen: (context) => const RegisterScreen(),

@@ -3,8 +3,12 @@ import 'package:delhi_golf_federation/screens/leaderboard_screen.dart';
 import 'package:delhi_golf_federation/screens/event_screen.dart';
 import 'package:delhi_golf_federation/screens/bookteetime.dart';
 import 'package:delhi_golf_federation/screens/about.dart';
+import 'package:delhi_golf_federation/screens/bookingscreen.dart';
+import 'package:delhi_golf_federation/screens/slot_details.dart';
+import 'package:delhi_golf_federation/screens/payment_screen.dart';
 import 'package:delhi_golf_federation/components/topnavigationbar.dart';
 import 'package:delhi_golf_federation/components/customdrawer.dart';
+import 'package:delhi_golf_federation/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomNav extends StatefulWidget {
@@ -16,21 +20,55 @@ class CustomBottomNav extends StatefulWidget {
 
 class _CustomBottomNavState extends State<CustomBottomNav> {
   int _currentIndex = 0;
+  String _bookingFlow = 'main'; // 'main', 'booking', 'slot-details', 'payment'
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void updateIndex(int index) {
     setState(() {
       _currentIndex = index;
+      _bookingFlow = 'main'; // Reset booking flow when changing tabs
     });
   }
 
-  final List<Widget> _screens = const [
-    HomePage(), // ✅ Homepage
-    LeaderboardScreen(),
-    EventsScreen(),
-    BookTeeTimeScreen(),
-    AboutScreen(),
-  ];
+  void navigateToBookingFlow(String flow) {
+    setState(() {
+      _bookingFlow = flow;
+      _currentIndex = 3; // Keep Book Tee Time tab selected
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Register the navigation service
+    NavigationService.instance.setBookingFlowNavigator(navigateToBookingFlow);
+  }
+
+  Widget _getCurrentScreen() {
+    if (_currentIndex == 3) {
+      // Book Tee Time tab
+      switch (_bookingFlow) {
+        case 'booking':
+          return BookingScreen();
+        case 'slot-details':
+          return SlotDetailsPage();
+        case 'payment':
+          return PaymentScreen();
+        default:
+          return BookTeeTimeScreen();
+      }
+    } else {
+      // Other tabs
+      final List<Widget> _screens = const [
+        HomePage(),
+        LeaderboardScreen(),
+        EventsScreen(),
+        BookTeeTimeScreen(),
+        AboutScreen(),
+      ];
+      return _screens[_currentIndex];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +90,7 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
           // Handle notification tap
         },
       ),
-      body: _screens[_currentIndex],
+      body: _getCurrentScreen(),
 
       bottomNavigationBar: ClipRRect(
         borderRadius: const BorderRadius.only(

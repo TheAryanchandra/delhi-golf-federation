@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:delhi_golf_federation/services/navigation_service.dart';
 
 /// Reusable Custom Button
 class CustomButton extends StatelessWidget {
@@ -230,7 +231,7 @@ class BookTeeTimeScreen extends StatelessWidget {
           CustomButton(
             text: "BOOK NOW",
             onPressed: () {
-              Navigator.pushNamed(context, '/slot-details');
+              NavigationService.instance.navigateToBooking();
             },
             borderRadius: 25,
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
