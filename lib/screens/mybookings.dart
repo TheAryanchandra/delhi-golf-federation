@@ -12,79 +12,115 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF0F2E1D), // dark background (from screenshot)
+      backgroundColor: Colors.white, // ✅ White background for whole screen
       body: SafeArea(
         child: Column(
           children: [
-            // Header
-            Container(
-              margin: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+            // Header with ClipRRect
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
               ),
-              child: Column(
+              child: Stack(
+                alignment: Alignment.center,
                 children: [
-                  // My Booking Title
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/images/booking_bg.png"), // Replace with background image
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(16),
-                      ),
-                    ),
-                    child: const Text(
-                      "My Booking",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-
-                  // Tabs (Upcoming / Past)
-                  Container(
-                    margin: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF5F5F5),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Row(
-                      children: [
-                        _buildTabButton("UPCOMING", 0),
-                        _buildTabButton("PAST", 1),
-                      ],
-                    ),
-                  ),
-
-                  // Empty Booking Content
-                  const SizedBox(height: 20),
                   Image.asset(
-                    "assets/images/calendar.png", // Replace with your calendar image asset
-                    height: 150,
+                    "assets/images/welcome.png",
+                    height: screenHeight * 0.18,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
                   ),
-                  const SizedBox(height: 16),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      "Looks Like You Haven't Booked Any Upcoming Tee Times.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black87,
+                  Container(
+                    height: screenHeight * 0.18,
+                    width: double.infinity,
+                    color: Colors.black.withOpacity(0.4),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        "My Bookings",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      SizedBox(height: 6),
+                      Text(
+                        "Qutab Golf Course - DDA",
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Content container (card look)
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white, // ✅ Card also stays white
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    // Tabs (Upcoming / Past)
+                    Container(
+                      margin: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF5F5F5),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Row(
+                        children: [
+                          _buildTabButton("UPCOMING", 0),
+                          _buildTabButton("PAST", 1),
+                        ],
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 30),
-                ],
+
+                    // Empty Booking Content
+                    const SizedBox(height: 20),
+                    Image.asset(
+                      "assets/images/calender.png", // Correct image path
+                      height: 150,
+                    ),
+                    const SizedBox(height: 16),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        "Looks Like You Haven't Booked Any Upcoming Tee Times.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                  ],
+                ),
               ),
             ),
           ],

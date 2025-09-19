@@ -176,128 +176,174 @@ class UpcomingEventsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        /// Title Row (Upcoming Events + Team)
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Row(
-            children: const [
-              Expanded(
-                child: Text(
-                  "Upcoming Events",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF0B592A),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  right: 40,
-                ), // 👈 adjust value as needed
-                child: Text(
-                  "Team",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF0B592A),
-                  ),
-                ),
-              ),
-            ],
+        /// Upcoming Events Title
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            "Upcoming Events",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF0B592A),
+            ),
           ),
         ),
         const SizedBox(height: 10),
 
-        /// Main Content Row
+        /// Event Card (Dummy Example)
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// Left Event Card
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text("22 - 24 Dec 2025"),
-                      const SizedBox(height: 4),
-                      const Text(
-                        "Golf Festival\n@ Quba Golf course",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        width: double.infinity,
-                        child: CustomButton(
-                          text: "View more",
-                          onPressed: () {
-                            // TODO: add navigation or action
-                          },
-                          borderRadius: 8, // ✅ matches your old button style
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 10,
-                          ),
-                        ),
-                      ),
-                    ],
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text("22 - 24 Dec 2025"),
+                const SizedBox(height: 4),
+                const Text(
+                  "Golf Festival\n@ Quba Golf course",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: CustomButton(
+                    text: "View more",
+                    onPressed: () {
+                      // TODO: handle navigation
+                    },
+                    borderRadius: 8,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
+              ],
+            ),
+          ),
+        ),
 
-              /// Right Team Box
-              SizedBox(
-                width: 90,
-                height: 140,
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        CircleAvatar(
-                          radius: 22,
-                          backgroundColor: Colors.grey,
-                          child: Icon(
-                            Icons.person,
-                            size: 28,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(height: 6),
-                        Flexible(
-                          child: Text(
-                            "Romit Bose",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 12),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+        const SizedBox(height: 20),
+
+        /// Team Title
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            "Team",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF0B592A),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+
+        /// Team Carousel
+        SizedBox(
+          height: 160,
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            scrollDirection: Axis.horizontal,
+            itemCount: dummyTeam.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            itemBuilder: (context, index) {
+              final member = dummyTeam[index];
+              return Container(
+                width: 100,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(12),
                 ),
-              ),
-            ],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 28,
+                      backgroundColor: Colors.grey,
+                      backgroundImage: member["image"] != null
+                          ? AssetImage(member["image"]!)
+                          : null,
+                      child: member["image"] == null
+                          ? const Icon(
+                              Icons.person,
+                              size: 30,
+                              color: Colors.white,
+                            )
+                          : null,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      member["name"]!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 12),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Dummy Team Data
+final List<Map<String, String>> dummyTeam = [
+  {"name": "Romit Bose"},
+  {"name": "Ananya Singh"},
+  {"name": "Vikram Sharma"},
+  {"name": "Sonal Mehra"},
+  {"name": "Arjun Khanna"},
+];
+
+/// Custom Button (your style)
+class CustomButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+  final double borderRadius;
+  final EdgeInsets padding;
+  final Color textColor; // Add this line
+
+  const CustomButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.borderRadius = 12,
+    this.padding = const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+    this.textColor = Colors.white, // Add this line with default value
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF12563C),
+        padding: padding,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          // Update to use textColor parameter
+          color: textColor,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 }
@@ -350,7 +396,12 @@ class BottomBanner extends StatelessWidget {
               onPressed: () {
                 // your logic
               },
-              textColor: const Color.fromARGB(255, 249, 251, 250), // ✅ green text
+              textColor: const Color.fromARGB(
+                255,
+                249,
+                251,
+                250,
+              ), // ✅ green text
               borderRadius: 30, // ✅ rounded edges
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),

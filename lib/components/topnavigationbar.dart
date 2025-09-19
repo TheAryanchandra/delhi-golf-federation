@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:delhi_golf_federation/screens/myprofile.dart';
 
 class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onMenuTap;
@@ -26,7 +27,14 @@ class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           icon: const Icon(Icons.settings, color: Colors.black, size: 24),
-          onPressed: onSettingsTap ?? () {},
+          onPressed: onSettingsTap ?? () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MyProfile(),
+              ),
+            );
+          },
         ),
         IconButton(
           icon: const Icon(Icons.notifications_none, color: Colors.black, size: 26),

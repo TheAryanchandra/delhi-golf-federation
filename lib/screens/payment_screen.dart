@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:delhi_golf_federation/services/navigation_service.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
@@ -93,7 +94,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Payment Summery",
+                "Payment Summary",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               ),
               Text(
@@ -302,7 +303,20 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget _buildPayNowButton() {
     return CustomButton(
       text: "PAY NOW",
-      onPressed: termsAccepted ? () {} : () {},
+      onPressed: termsAccepted 
+        ? () {
+            // Navigate to homepage when payment is successful
+            NavigationService.instance.navigateToHomepage();
+          } 
+        : () {
+            // Show message if terms not accepted
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Please accept the terms and conditions'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          },
       backgroundColor: const Color(0xFF12563C),
       borderRadius: 12,
       padding: const EdgeInsets.symmetric(vertical: 14),

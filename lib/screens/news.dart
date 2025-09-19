@@ -15,37 +15,69 @@ class _NewsScreenState extends State<NewsScreen> {
       "time": "19 Hours",
       "title": "Ryder Cup boys’ club?: Golf Channel Podcast"
     },
-    {
-      "time": "23 Hours",
-      "title": "Golf is Hard | Wind Edition | 2025"
-    },
-    {
-      "time": "12 Hours",
-      "title": "He gained how many yards in one offseason? #golf"
-    },
+    {"time": "23 Hours", "title": "Golf is Hard | Wind Edition | 2025"},
+    {"time": "12 Hours", "title": "He gained how many yards in one offseason? #golf"},
   ];
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: const Color(0xFFEFF2F1),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 10),
-            const Text(
-              "News",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
+      body: Column(
+        children: [
+          // ✅ Header with ClipRRect
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
             ),
-            const SizedBox(height: 12),
-            _buildTabs(),
-            const SizedBox(height: 16),
-            Expanded(child: _buildNewsList()),
-          ],
-        ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/welcome.png",
+                  height: screenHeight * 0.18,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+                Container(
+                  height: screenHeight * 0.18,
+                  width: double.infinity,
+                  color: Colors.black.withOpacity(0.4),
+                ),
+                const Text(
+                  "News",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // Tabs
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _buildTabs(),
+          ),
+
+          const SizedBox(height: 16),
+
+          // News list
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: _buildNewsList(),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -135,27 +167,59 @@ class _NewsScreenState extends State<NewsScreen> {
                   ],
                 ),
               ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF12563C),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                ),
+
+              // ✅ Custom button
+              _CustomButton(
+                text: "View more",
                 onPressed: () {
-                  // Navigate to News Details
+                  // Navigate to details
                 },
-                child: const Text(
-                  "View more",
-                  style: TextStyle(fontSize: 12),
-                ),
               ),
             ],
           ),
         );
       },
+    );
+  }
+}
+
+/// ✅ Reusable Custom Button
+class _CustomButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+  final double borderRadius;
+  final Color backgroundColor;
+  final Color textColor;
+  final EdgeInsets padding;
+
+  const _CustomButton({
+    required this.text,
+    required this.onPressed,
+    this.borderRadius = 12,
+    this.backgroundColor = const Color(0xFF12563C),
+    this.textColor = Colors.white,
+    this.padding = const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: backgroundColor,
+        padding: padding,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: textColor,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 }
