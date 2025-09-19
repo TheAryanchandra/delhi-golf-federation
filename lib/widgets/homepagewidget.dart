@@ -1,0 +1,362 @@
+import 'package:delhi_golf_federation/components/custombutton.dart';
+import 'package:flutter/material.dart';
+
+/// Sponsors Section
+class SponsorsSection extends StatelessWidget {
+  const SponsorsSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Center(
+          child: Text(
+            "Our Sponsors",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF0B592A),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const [
+              SponsorCard(
+                imgPath: "assets/images/Gold partner.png",
+                title: "Gold Partner",
+              ),
+              SponsorCard(
+                imgPath: "assets/images/Silver partner.png",
+                title: "Silver Partner",
+              ),
+              SponsorCard(
+                imgPath: "assets/images/bronze partner.png",
+                title: "Bronze Partner",
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SponsorCard extends StatelessWidget {
+  final String imgPath;
+  final String title;
+
+  const SponsorCard({super.key, required this.imgPath, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(imgPath, height: 80, fit: BoxFit.cover),
+          ),
+          // const SizedBox(height: 6),
+          Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+        ],
+      ),
+    );
+  }
+}
+
+/// Golf Club Facilities Section
+class GolfClubFacilities extends StatelessWidget {
+  const GolfClubFacilities({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Center(
+          child: Text(
+            "Golf Club Facilities",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF0B592A),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        /// Row with horizontal scrolling
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: const [
+                FacilityCard(
+                  imgPath: "assets/images/golfstick.png",
+                  title: "Practice Ranges",
+                ),
+                SizedBox(width: 8), // reduced gap
+                FacilityCard(
+                  imgPath: "assets/images/golfperson.png",
+                  title: "Youth Training\nPrograms",
+                ),
+                SizedBox(width: 8),
+                FacilityCard(
+                  imgPath: "assets/images/event venues.png",
+                  title: "Event Venues",
+                ),
+                SizedBox(width: 8),
+                FacilityCard(
+                  imgPath: "assets/images/community programs.png",
+                  title: "Community\nPrograms",
+                ),
+                SizedBox(width: 8),
+                FacilityCard(
+                  imgPath: "assets/images/club amenities.png",
+                  title: "Club Amenities",
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class FacilityCard extends StatelessWidget {
+  final String imgPath;
+  final String title;
+
+  const FacilityCard({super.key, required this.imgPath, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 90, // keeps all cards equal in width
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 60,
+            width: 60,
+            decoration: BoxDecoration(
+              color: const Color(0xFFD6B686),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Image.asset(imgPath, scale: 2),
+          ),
+          const SizedBox(height: 6),
+          SizedBox(
+            height: 32, // fixed height for text (keeps cards aligned)
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 12),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Upcoming Events & Team Section
+
+class UpcomingEventsSection extends StatelessWidget {
+  const UpcomingEventsSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        /// Title Row (Upcoming Events + Team)
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            children: const [
+              Expanded(
+                child: Text(
+                  "Upcoming Events",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF0B592A),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  right: 40,
+                ), // 👈 adjust value as needed
+                child: Text(
+                  "Team",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF0B592A),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+
+        /// Main Content Row
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// Left Event Card
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text("22 - 24 Dec 2025"),
+                      const SizedBox(height: 4),
+                      const Text(
+                        "Golf Festival\n@ Quba Golf course",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        width: double.infinity,
+                        child: CustomButton(
+                          text: "View more",
+                          onPressed: () {
+                            // TODO: add navigation or action
+                          },
+                          borderRadius: 8, // ✅ matches your old button style
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 10,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+
+              /// Right Team Box
+              SizedBox(
+                width: 90,
+                height: 140,
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        CircleAvatar(
+                          radius: 22,
+                          backgroundColor: Colors.grey,
+                          child: Icon(
+                            Icons.person,
+                            size: 28,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(height: 6),
+                        Flexible(
+                          child: Text(
+                            "Romit Bose",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 12),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Bottom Banner
+class BottomBanner extends StatelessWidget {
+  const BottomBanner({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(12),
+      height: 140,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        image: const DecorationImage(
+          image: AssetImage("assets/images/banner golf.png"),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Stack(
+        children: [
+          /// Text Overlay (Eagle Mountain Golf Club)
+          Positioned(
+            left: 16,
+            top: 20,
+            child: Text(
+              "Eagle Mountain\nGolf Club",
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                shadows: [
+                  Shadow(
+                    color: Colors.black54,
+                    blurRadius: 4,
+                    offset: Offset(1, 1),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          /// Book Tee Time Button (Bottom Right)
+          Positioned(
+            right: 12,
+            bottom: 12,
+            child: CustomButton(
+              text: "Book Tee Time",
+              onPressed: () {
+                // your logic
+              },
+              textColor: const Color.fromARGB(255, 249, 251, 250), // ✅ green text
+              borderRadius: 30, // ✅ rounded edges
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

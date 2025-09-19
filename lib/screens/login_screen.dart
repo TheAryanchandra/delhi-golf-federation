@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../components/bottomnavigation.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -10,10 +11,7 @@ class LoginScreen extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           /// Background Image
-          Image.asset(
-            "assets/images/background.png",
-            fit: BoxFit.cover,
-          ),
+          Image.asset("assets/images/background.png", fit: BoxFit.cover),
 
           /// Overlay
           Container(color: Colors.black.withOpacity(0.3)),
@@ -111,13 +109,20 @@ class LoginScreen extends StatelessWidget {
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFF0B592A),
-                                  padding: const EdgeInsets.symmetric(vertical: 14),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30),
                                   ),
                                 ),
                                 onPressed: () {
-                                  // TODO: Implement login logic
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const CustomBottomNav(),
+                                    ),
+                                  );
                                 },
                                 child: const Text(
                                   "Submit",
@@ -137,7 +142,9 @@ class LoginScreen extends StatelessWidget {
                                 onPressed: () {
                                   // TODO: Navigate to signup
                                 },
-                                child: const Text("Don’t have account? Sign up"),
+                                child: const Text(
+                                  "Don’t have account? Sign up",
+                                ),
                               ),
                             ),
                           ],
@@ -153,7 +160,9 @@ class LoginScreen extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 55,
                             backgroundColor: Colors.white,
-                            backgroundImage: const AssetImage("assets/images/logo.png"),
+                            backgroundImage: const AssetImage(
+                              "assets/images/logo.png",
+                            ),
                           ),
                         ),
                       ),

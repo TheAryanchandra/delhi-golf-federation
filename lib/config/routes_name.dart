@@ -1,11 +1,17 @@
 class RoutesName {
   // Splash Screen
-  static const String splashScreen = 'splash_screen';
+  static const String splashScreen = '/splash';
 
   // Auth Screens
   static const String loginScreen = '/login';
-  static const String registerScreen = 'register_screen';
+  static const String registerScreen = '/register';
 
   // Home Screen
-  static const String homeScreen = 'home_screen';
+  static const String homeScreen = '/home';
+
+  // Booking Screen
+  static const String bookingScreen = '/booking';
+
+  // Profile Screen
+  static const String profileScreen = '/profile';
 }

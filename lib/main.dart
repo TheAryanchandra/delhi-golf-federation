@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'config/routes.dart'; // 👈 correct import
+import 'config/routes.dart'; // 👈 your central route file
 import 'config/routes_name.dart';
 
 void main() {
@@ -15,8 +14,8 @@ class GolfApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Delhi Golf Federation",
-      initialRoute: RoutesName.loginScreen,
-      routes: appRoutes, // 👈 all routes available
+      initialRoute: RoutesName.loginScreen, // 👈 start with Login
+      routes: appRoutes, // 👈 routes are defined in routes.dart
     );
   }
 }

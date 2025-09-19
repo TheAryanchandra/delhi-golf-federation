@@ -1,0 +1,42 @@
+import 'package:flutter/material.dart';
+
+class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
+  final VoidCallback? onMenuTap;
+  final VoidCallback? onSettingsTap;
+  final VoidCallback? onNotificationTap;
+
+  const TopNavigationBar({
+    super.key,
+    this.onMenuTap,
+    this.onSettingsTap,
+    this.onNotificationTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      titleSpacing: 0,
+      leading: IconButton(
+        icon: const Icon(Icons.menu, color: Colors.black, size: 28),
+        onPressed: onMenuTap ?? () {},
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.settings, color: Colors.black, size: 24),
+          onPressed: onSettingsTap ?? () {},
+        ),
+        IconButton(
+          icon: const Icon(Icons.notifications_none, color: Colors.black, size: 26),
+          onPressed: onNotificationTap ?? () {},
+        ),
+        const SizedBox(width: 4),
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(56);
+}
