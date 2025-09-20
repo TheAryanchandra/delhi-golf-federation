@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import '../components/bottomnavigation.dart';
-import './registerscreen.dart'; // Add this import
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,18 +16,18 @@ class LoginScreen extends StatelessWidget {
           /// Overlay
           Container(color: Colors.black.withOpacity(0.3)),
 
-          /// Main content
+          /// Main Content
           SingleChildScrollView(
             child: Center(
               child: Column(
                 children: [
-                  const SizedBox(height: 150),
+                  const SizedBox(height: 120),
 
                   /// Card with Logo Overlap
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      /// Login Card
+                      /// Register Card
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 24),
                         padding: const EdgeInsets.all(20),
@@ -50,7 +49,7 @@ class LoginScreen extends StatelessWidget {
 
                             const Center(
                               child: Text(
-                                "LOGIN",
+                                "REGISTER",
                                 style: TextStyle(
                                   fontSize: 26,
                                   fontWeight: FontWeight.bold,
@@ -59,9 +58,9 @@ class LoginScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 25),
 
-                            /// Mail Id field
+                            /// Name field
                             const Text(
-                              "Mail Id",
+                              "Full Name",
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -70,7 +69,25 @@ class LoginScreen extends StatelessWidget {
                             const SizedBox(height: 8),
                             TextField(
                               decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.person_outline),
+                                prefixIcon: const Icon(Icons.person),
+                                border: const OutlineInputBorder(),
+                                hintText: "Enter your full name",
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+
+                            /// Email field
+                            const Text(
+                              "Email",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextField(
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.email_outlined),
                                 border: const OutlineInputBorder(),
                                 hintText: "Enter your email",
                               ),
@@ -94,16 +111,26 @@ class LoginScreen extends StatelessWidget {
                                 hintText: "Enter your password",
                               ),
                             ),
+                            const SizedBox(height: 20),
 
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                onPressed: () {},
-                                child: const Text("Forgot Password?"),
+                            /// Confirm Password field
+                            const Text(
+                              "Confirm Password",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 8),
+                            TextField(
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.lock_reset),
+                                border: const OutlineInputBorder(),
+                                hintText: "Re-enter your password",
+                              ),
+                            ),
+                            const SizedBox(height: 20),
 
                             SizedBox(
                               width: double.infinity,
@@ -127,7 +154,7 @@ class LoginScreen extends StatelessWidget {
                                   );
                                 },
                                 child: const Text(
-                                  "Submit",
+                                  "Register",
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,
@@ -138,20 +165,14 @@ class LoginScreen extends StatelessWidget {
 
                             const SizedBox(height: 15),
 
-                            /// Bottom Sign Up INSIDE CARD
+                            /// Already have an account
                             Center(
                               child: TextButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const RegisterScreen(),
-                                    ),
-                                  );
+                                  Navigator.pop(context); // Back to Login
                                 },
                                 child: const Text(
-                                  "Don't have account? Sign up",
+                                  "Already have an account? Login",
                                 ),
                               ),
                             ),
