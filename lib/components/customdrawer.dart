@@ -7,10 +7,9 @@ import 'package:delhi_golf_federation/screens/myprofile.dart';
 import 'package:delhi_golf_federation/components/bottomnavigation.dart';
 import 'package:delhi_golf_federation/components/topnavigationbar.dart';
 
-
 class CustomDrawer extends StatelessWidget {
   final Function(int)? onItemTap;
-  
+
   const CustomDrawer({super.key, this.onItemTap});
 
   @override
@@ -18,16 +17,16 @@ class CustomDrawer extends StatelessWidget {
     return Align(
       alignment: Alignment.topLeft,
       child: FractionallySizedBox(
-        widthFactor: 0.75, // ✅ Drawer width
-        heightFactor: 0.92, // ✅ Drawer height
-        child: Material( // ✅ Gives tap effects without Drawer background
+        widthFactor: 0.75,
+        heightFactor: 0.92,
+        child: Material(
           color: Colors.transparent,
           child: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color(0xFF30946E), // Top green
-                  Color(0xFF12563C), // Bottom green
+                  Color(0xFF30946E),
+                  Color(0xFF12563C),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -41,11 +40,11 @@ class CustomDrawer extends StatelessWidget {
               children: [
                 /// Logo Header
                 SizedBox(
-                  height: 130, // Increased height to accommodate top padding
+                  height: 130,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 40), // ✅ Added space above logo
+                      const SizedBox(height: 40),
                       Image.asset(
                         "assets/images/logo.png",
                         height: 90,
@@ -79,8 +78,7 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildDrawerItem(
-      BuildContext context, IconData icon, String title, String route) {
+  Widget _buildDrawerItem(BuildContext context, IconData icon, String title, String route) {
     return ListTile(
       leading: Icon(icon, color: Colors.white, size: 22),
       title: Text(
@@ -97,82 +95,68 @@ class CustomDrawer extends StatelessWidget {
   void _navigateToTab(BuildContext context, String route) {
     switch (route) {
       case "/about":
-        if (onItemTap != null) {
-          onItemTap!(4);
-        }
+        if (onItemTap != null) onItemTap!(4);
         break;
+
       case "/bookTee":
-        if (onItemTap != null) {
-          onItemTap!(3);
-        }
+        if (onItemTap != null) onItemTap!(3);
         break;
-      case "/booking":
-        // Navigate to MyBookings with bottom and top navigation
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => _ScreenWithNavigation(
-              child: const MyBookingsScreen(),
-              title: "My Bookings",
-            ),
-          ),
-        );
-        break;
+
       case "/leaderboard":
-        if (onItemTap != null) {
-          onItemTap!(1);
-        }
+        if (onItemTap != null) onItemTap!(1);
         break;
-      case "/photos":
-        // Navigate to Gallery with bottom and top navigation
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => _ScreenWithNavigation(
-              child: const GalleryScreen(),
-              title: "Gallery",
-            ),
-          ),
-        );
-        break;
-      case "/videos":
-        // Navigate to Video with bottom and top navigation
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => _ScreenWithNavigation(
-              child: const VideoScreen(),
-              title: "Videos",
-            ),
-          ),
-        );
-        break;
+
       case "/events":
-        if (onItemTap != null) {
-          onItemTap!(2);
-        }
+        if (onItemTap != null) onItemTap!(2);
         break;
+
+      case "/booking":
+        _pushSimpleScreen(context, const MyBookingsScreen(), "My Bookings");
+        break;
+
+      case "/photos":
+        _pushSimpleScreen(context, const GalleryScreen(), "Gallery");
+        break;
+
+      case "/videos":
+        _pushSimpleScreen(context, const VideoScreen(), "Videos");
+        break;
+
       case "/news":
-        // Navigate to News with bottom and top navigation
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => _ScreenWithNavigation(
-              child: const NewsScreen(),
-              title: "News",
-            ),
-          ),
-        );
+        _pushSimpleScreen(context, const NewsScreen(), "News");
         break;
+
       default:
-        if (onItemTap != null) {
-          onItemTap!(0); // Default to home
-        }
+        if (onItemTap != null) onItemTap!(0);
     }
+  }
+
+  /// ✅ Reusable method to open drawer-only pages with TopNavigationBar
+  void _pushSimpleScreen(BuildContext context, Widget child, String title) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: TopNavigationBar(
+            onMenuTap: () => Navigator.pop(context),
+            onSettingsTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MyProfile(),
+                ),
+              );
+            },
+            onNotificationTap: () {},
+          ),
+          body: child,
+        ),
+      ),
+    );
   }
 }
 
-// Helper widget to wrap screens with navigation
+// ✅ Main Navigation Wrapper (unchanged)
 class _ScreenWithNavigation extends StatefulWidget {
   final Widget child;
   final String title;
@@ -194,45 +178,12 @@ class _ScreenWithNavigationState extends State<_ScreenWithNavigation> {
     setState(() {
       _currentIndex = index;
     });
-    
-    // Navigate to the corresponding screen based on bottom nav selection
-    switch (index) {
-      case 0:
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const CustomBottomNav()),
-          (route) => false,
-        );
-        break;
-      case 1:
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const CustomBottomNav()),
-          (route) => false,
-        );
-        break;
-      case 2:
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const CustomBottomNav()),
-          (route) => false,
-        );
-        break;
-      case 3:
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const CustomBottomNav()),
-          (route) => false,
-        );
-        break;
-      case 4:
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const CustomBottomNav()),
-          (route) => false,
-        );
-        break;
-    }
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const CustomBottomNav()),
+      (route) => false,
+    );
   }
 
   @override
@@ -259,9 +210,7 @@ class _ScreenWithNavigationState extends State<_ScreenWithNavigation> {
             ),
           );
         },
-        onNotificationTap: () {
-          // Handle notification tap
-        },
+        onNotificationTap: () {},
       ),
       body: widget.child,
       bottomNavigationBar: ClipRRect(

@@ -76,6 +76,7 @@ class RegisterScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
 
+                            
                             /// Email field
                             const Text(
                               "Email",
@@ -84,6 +85,28 @@ class RegisterScreen extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
+                            const SizedBox(height: 8),
+                            TextField(
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.email_outlined),
+                                border: const OutlineInputBorder(),
+                                hintText: "Enter your email",
+                                suffixIcon: TextButton(
+                                  onPressed: () {
+                                    // TODO: Add email verification logic here (API call / OTP etc.)
+                                    print("Verifying email...");
+                                  },
+                                  child: const Text(
+                                    "Verify",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+
                             const SizedBox(height: 8),
                             TextField(
                               decoration: InputDecoration(

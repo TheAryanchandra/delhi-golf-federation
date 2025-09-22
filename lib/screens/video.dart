@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:delhi_golf_federation/components/topnavigationbar.dart';
 
 class VideoScreen extends StatelessWidget {
   const VideoScreen({super.key});
@@ -10,24 +11,25 @@ class VideoScreen extends StatelessWidget {
     final List<Map<String, String>> videos = [
       {
         "thumbnail": "assets/images/classic golf country.png",
-        "title": "Tiger Woods Golf"
+        "title": "Tiger Woods Golf",
       },
       {
         "thumbnail": "assets/images/Silver partner.png",
-        "title": "Great Putting Drill"
+        "title": "Great Putting Drill",
       },
       {
         "thumbnail": "assets/images/classic golf country.png",
-        "title": "Tiger Woods Golf"
+        "title": "Tiger Woods Golf",
       },
       {
         "thumbnail": "assets/images/Silver partner.png",
-        "title": "Great Putting Drill"
+        "title": "Great Putting Drill",
       },
     ];
 
     return Scaffold(
       backgroundColor: const Color(0xFFEFF2F1),
+      // appBar: const TopNavigationBar(showBackButton: true),
       body: Column(
         children: [
           // Header
@@ -67,10 +69,7 @@ class VideoScreen extends StatelessWidget {
 
           const Text(
             "Video",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
 
           const SizedBox(height: 12),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:delhi_golf_federation/components/topnavigationbar.dart';
 
 class MyBookingsScreen extends StatefulWidget {
   const MyBookingsScreen({super.key});
@@ -15,11 +16,12 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white, // ✅ White background for whole screen
+      backgroundColor: Colors.white,
+      // appBar: const TopNavigationBar(showBackButton: true),
       body: SafeArea(
         child: Column(
           children: [
-            // Header with ClipRRect
+            /// ✅ Banner (part of body, not an AppBar)
             ClipRRect(
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(20),
@@ -68,12 +70,12 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
 
             const SizedBox(height: 16),
 
-            // Content container (card look)
+            /// ✅ Main Content
             Expanded(
               child: Container(
                 margin: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white, // ✅ Card also stays white
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
@@ -102,20 +104,14 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
 
                     // Empty Booking Content
                     const SizedBox(height: 20),
-                    Image.asset(
-                      "assets/images/calender.png", // Correct image path
-                      height: 150,
-                    ),
+                    Image.asset("assets/images/calender.png", height: 150),
                     const SizedBox(height: 16),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
                         "Looks Like You Haven't Booked Any Upcoming Tee Times.",
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black87,
-                        ),
+                        style: TextStyle(fontSize: 14, color: Colors.black87),
                       ),
                     ),
                     const SizedBox(height: 30),

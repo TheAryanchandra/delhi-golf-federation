@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:delhi_golf_federation/components/topnavigationbar.dart';
 
 class GalleryScreen extends StatelessWidget {
   const GalleryScreen({super.key});
@@ -17,6 +18,7 @@ class GalleryScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFEFF2F1),
+      // appBar: const TopNavigationBar(showBackButton: true),
       body: Column(
         children: [
           // Header
@@ -56,10 +58,7 @@ class GalleryScreen extends StatelessWidget {
 
           const Text(
             "Gallery",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
 
           const SizedBox(height: 12),
@@ -78,10 +77,7 @@ class GalleryScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      galleryImages[index],
-                      fit: BoxFit.cover,
-                    ),
+                    child: Image.asset(galleryImages[index], fit: BoxFit.cover),
                   );
                 },
               ),

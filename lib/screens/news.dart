@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:delhi_golf_federation/components/topnavigationbar.dart';
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -13,10 +14,13 @@ class _NewsScreenState extends State<NewsScreen> {
   final List<Map<String, String>> newsItems = [
     {
       "time": "19 Hours",
-      "title": "Ryder Cup boys’ club?: Golf Channel Podcast"
+      "title": "Ryder Cup boys’ club?: Golf Channel Podcast",
     },
     {"time": "23 Hours", "title": "Golf is Hard | Wind Edition | 2025"},
-    {"time": "12 Hours", "title": "He gained how many yards in one offseason? #golf"},
+    {
+      "time": "12 Hours",
+      "title": "He gained how many yards in one offseason? #golf",
+    },
   ];
 
   @override
@@ -25,6 +29,7 @@ class _NewsScreenState extends State<NewsScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFEFF2F1),
+      // appBar: const TopNavigationBar(showBackButton: true),
       body: Column(
         children: [
           // ✅ Header with ClipRRect
@@ -139,7 +144,7 @@ class _NewsScreenState extends State<NewsScreen> {
                 color: Colors.black12,
                 blurRadius: 4,
                 offset: const Offset(0, 2),
-              )
+              ),
             ],
           ),
           child: Row(
@@ -151,10 +156,7 @@ class _NewsScreenState extends State<NewsScreen> {
                   children: [
                     Text(
                       "${item['time']} Ago",
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                     const SizedBox(height: 4),
                     Text(
