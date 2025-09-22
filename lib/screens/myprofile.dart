@@ -56,7 +56,11 @@ class MyProfile extends StatelessWidget {
                       const CircleAvatar(
                         radius: 35,
                         backgroundColor: Colors.grey,
-                        child: Icon(Icons.person, size: 40, color: Colors.white),
+                        child: Icon(
+                          Icons.person,
+                          size: 40,
+                          color: Colors.white,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -64,7 +68,7 @@ class MyProfile extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              "Ravinder Zutshi",
+                              "Aryan Chandra",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
@@ -92,7 +96,7 @@ class MyProfile extends StatelessWidget {
                       IconButton(
                         icon: const Icon(Icons.edit, color: Colors.grey),
                         onPressed: () {},
-                      )
+                      ),
                     ],
                   ),
 
@@ -109,7 +113,7 @@ class MyProfile extends StatelessWidget {
                           color: Colors.black12,
                           blurRadius: 4,
                           offset: const Offset(0, 2),
-                        )
+                        ),
                       ],
                     ),
                     child: Row(
@@ -124,13 +128,13 @@ class MyProfile extends StatelessWidget {
                               ),
                               children: [
                                 TextSpan(
-                                  text: "18Birdies Handicap",
+                                  text: "18 Birdies Handicap",
                                   style: TextStyle(
                                     color: Colors.grey,
                                     fontSize: 12,
                                     fontWeight: FontWeight.normal,
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -161,11 +165,8 @@ class MyProfile extends StatelessWidget {
                       ),
                       Text(
                         "More Stats",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                        ),
-                      )
+                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -197,7 +198,7 @@ class MyProfile extends StatelessWidget {
                           color: Colors.black12,
                           blurRadius: 4,
                           offset: const Offset(0, 2),
-                        )
+                        ),
                       ],
                     ),
                     child: Column(
@@ -212,20 +213,20 @@ class MyProfile extends StatelessWidget {
                         ),
                         SizedBox(height: 10),
                         Text(
-                          "Lawyer sit amet risus ac duin auctor posuere fanish amet "
-                          "the acinia lecra fermen. Lawyer sit amet risus ac duin auctor "
-                          "posuere fanish amet the acinia lecra fermen.",
+                          "Delhi Golf Federation (DGF) is committed to promoting and supporting golf across Delhi. "
+                          "We organize tournaments, provide training programs, and facilitate golf events for players "
+                          "of all levels, fostering a community of passionate golfers.",
                           style: TextStyle(color: Colors.black87, fontSize: 13),
                         ),
                         SizedBox(height: 12),
-                        Text("Phone No.  :  +91 0987654321"),
+                        Text("Phone No.  :  +91 9876543215"),
                         Text("Email Id   :  info@delhigolffederation.com"),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -269,22 +270,18 @@ class MyProfile extends StatelessWidget {
             color: Colors.black12,
             blurRadius: 4,
             offset: const Offset(0, 2),
-          )
+          ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style: const TextStyle(color: Colors.grey, fontSize: 12)),
+          Text(title, style: const TextStyle(color: Colors.grey, fontSize: 12)),
           const SizedBox(height: 6),
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          )
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );

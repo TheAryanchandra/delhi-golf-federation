@@ -1,49 +1,6 @@
+import 'package:delhi_golf_federation/components/custombutton.dart';
 import 'package:flutter/material.dart';
 
-/// Reusable Button Widget
-class CustomButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
-  final Color backgroundColor;
-  final Color textColor;
-  final EdgeInsetsGeometry padding;
-  final double borderRadius;
-
-  const CustomButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-    this.backgroundColor = const Color(0xFF0B592A),
-    this.textColor = Colors.white,
-    this.padding = const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-    this.borderRadius = 20,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: backgroundColor,
-        padding: padding,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
-        ),
-      ),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Text(
-          text,
-          style: TextStyle(
-            color: textColor,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({super.key});
@@ -72,22 +29,17 @@ class _EventsScreenState extends State<EventsScreen> {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                // Background Image
                 Image.asset(
                   "assets/images/welcome.png",
-                  height: screenHeight * 0.125, // reduced by 1/2 of 1/4
+                  height: screenHeight * 0.15,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
-
-                // Dark overlay
                 Container(
-                  height: screenHeight * 0.125,
+                  height: screenHeight * 0.15,
                   width: double.infinity,
-                  color: Colors.black.withOpacity(0.4),
+                  color: Colors.black.withOpacity(0.35),
                 ),
-
-                // Title Text
                 const Text(
                   "Events",
                   style: TextStyle(
@@ -101,11 +53,11 @@ class _EventsScreenState extends State<EventsScreen> {
             ),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
 
           /// Tabs
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
                 Expanded(
@@ -116,10 +68,11 @@ class _EventsScreenState extends State<EventsScreen> {
                         showUpcoming ? const Color(0xFF0B592A) : Colors.white,
                     textColor:
                         showUpcoming ? Colors.white : const Color(0xFF0B592A),
-                    borderRadius: 8,
+                    borderRadius: 12,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 12),
                 Expanded(
                   child: CustomButton(
                     text: "Past Events",
@@ -128,14 +81,15 @@ class _EventsScreenState extends State<EventsScreen> {
                         !showUpcoming ? const Color(0xFF0B592A) : Colors.white,
                     textColor:
                         !showUpcoming ? Colors.white : const Color(0xFF0B592A),
-                    borderRadius: 8,
+                    borderRadius: 12,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
 
           /// Content
           Expanded(
@@ -151,7 +105,7 @@ class _EventsScreenState extends State<EventsScreen> {
                     ),
                   )
                 : ListView(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     children: [
                       _buildEventCard(
                         "12 - 14",
@@ -179,20 +133,20 @@ class _EventsScreenState extends State<EventsScreen> {
     );
   }
 
-  /// Event Card
+  /// Event Card Widget
   Widget _buildEventCard(
       String date, String monthYear, String title, String location) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 6,
             offset: const Offset(2, 2),
           ),
         ],
@@ -216,6 +170,7 @@ class _EventsScreenState extends State<EventsScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                const SizedBox(height: 4),
                 Text(
                   monthYear,
                   style: const TextStyle(fontSize: 12),
@@ -223,6 +178,7 @@ class _EventsScreenState extends State<EventsScreen> {
               ],
             ),
           ),
+
           const SizedBox(width: 12),
 
           /// Info Column
@@ -238,11 +194,14 @@ class _EventsScreenState extends State<EventsScreen> {
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 Row(
                   children: [
-                    const Icon(Icons.location_on,
-                        size: 14, color: Color(0xFF0B592A)),
+                    const Icon(
+                      Icons.location_on,
+                      size: 14,
+                      color: Color(0xFF0B592A),
+                    ),
                     const SizedBox(width: 4),
                     Flexible(
                       child: Text(
@@ -257,15 +216,14 @@ class _EventsScreenState extends State<EventsScreen> {
             ),
           ),
 
-          /// View More Button (Flexible to prevent overflow)
-          Flexible(
-            child: CustomButton(
-              text: "View More",
-              onPressed: () {},
-              borderRadius: 20,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            ),
+          const SizedBox(width: 12),
+
+          /// View More Button
+          CustomButton(
+            text: "View More",
+            onPressed: () {},
+            borderRadius: 20,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           ),
         ],
       ),

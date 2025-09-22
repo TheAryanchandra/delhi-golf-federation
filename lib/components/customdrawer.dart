@@ -24,16 +24,11 @@ class CustomDrawer extends StatelessWidget {
           child: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Color(0xFF30946E),
-                  Color(0xFF12563C),
-                ],
+                colors: [Color(0xFF30946E), Color(0xFF12563C)],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
-              borderRadius: BorderRadius.only(
-                bottomRight: Radius.circular(20),
-              ),
+              borderRadius: BorderRadius.only(bottomRight: Radius.circular(20)),
             ),
             child: ListView(
               padding: EdgeInsets.zero,
@@ -62,12 +57,32 @@ class CustomDrawer extends StatelessWidget {
                 ),
 
                 /// Menu Items
-                _buildDrawerItem(context, Icons.info_outline, "About", "/about"),
-                _buildDrawerItem(context, Icons.sports_golf, "Book Tee Time", "/bookTee"),
+                _buildDrawerItem(
+                  context,
+                  Icons.info_outline,
+                  "About",
+                  "/about",
+                ),
+                _buildDrawerItem(
+                  context,
+                  Icons.sports_golf,
+                  "Book Tee Time",
+                  "/bookTee",
+                ),
                 _buildDrawerItem(context, Icons.book, "Booking", "/booking"),
-                _buildDrawerItem(context, Icons.emoji_events, "Leader board", "/leaderboard"),
+                _buildDrawerItem(
+                  context,
+                  Icons.emoji_events,
+                  "Leader board",
+                  "/leaderboard",
+                ),
                 _buildDrawerItem(context, Icons.photo, "Photos", "/photos"),
-                _buildDrawerItem(context, Icons.video_library, "Videos", "/videos"),
+                _buildDrawerItem(
+                  context,
+                  Icons.video_library,
+                  "Videos",
+                  "/videos",
+                ),
                 _buildDrawerItem(context, Icons.event, "Events", "/events"),
                 _buildDrawerItem(context, Icons.article, "News", "/news"),
               ],
@@ -78,7 +93,12 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildDrawerItem(BuildContext context, IconData icon, String title, String route) {
+  Widget _buildDrawerItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String route,
+  ) {
     return ListTile(
       leading: Icon(icon, color: Colors.white, size: 22),
       title: Text(
@@ -131,26 +151,12 @@ class CustomDrawer extends StatelessWidget {
     }
   }
 
-  /// ✅ Reusable method to open drawer-only pages with TopNavigationBar
+  /// ✅ Reusable method to open drawer-only pages with TopNavigationBar and Bottom Navigation
   void _pushSimpleScreen(BuildContext context, Widget child, String title) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Scaffold(
-          appBar: TopNavigationBar(
-            onMenuTap: () => Navigator.pop(context),
-            onSettingsTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const MyProfile(),
-                ),
-              );
-            },
-            onNotificationTap: () {},
-          ),
-          body: child,
-        ),
+        builder: (context) => _ScreenWithNavigation(child: child, title: title),
       ),
     );
   }
@@ -161,10 +167,7 @@ class _ScreenWithNavigation extends StatefulWidget {
   final Widget child;
   final String title;
 
-  const _ScreenWithNavigation({
-    required this.child,
-    required this.title,
-  });
+  const _ScreenWithNavigation({required this.child, required this.title});
 
   @override
   State<_ScreenWithNavigation> createState() => _ScreenWithNavigationState();
@@ -228,26 +231,17 @@ class _ScreenWithNavigationState extends State<_ScreenWithNavigation> {
           unselectedItemColor: Colors.white70,
           showUnselectedLabels: true,
           items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Home",
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(
               icon: Icon(Icons.emoji_events),
               label: "Leaderboard",
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.event),
-              label: "Events",
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
             BottomNavigationBarItem(
               icon: Icon(Icons.golf_course),
               label: "Book Tee Time",
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.info),
-              label: "About",
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.info), label: "About"),
           ],
         ),
       ),

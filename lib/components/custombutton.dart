@@ -5,6 +5,7 @@ class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
   final Color? textColor;
+  final Color? backgroundColor; // ✅ added
   final double borderRadius;
   final EdgeInsetsGeometry padding;
 
@@ -13,16 +14,17 @@ class CustomButton extends StatelessWidget {
     required this.text,
     required this.onPressed,
     this.textColor = Colors.white,
+    this.backgroundColor, // optional, defaults to ColorConstants.buttonColor
     this.borderRadius = 12.0,
     this.padding = const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
   });
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton( // ✅ fixed here
+    return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: ColorConstants.buttonColor,
+        backgroundColor: backgroundColor ?? ColorConstants.buttonColor, // ✅ dynamic
         padding: padding,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius),

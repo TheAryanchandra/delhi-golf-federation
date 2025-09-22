@@ -76,7 +76,6 @@ class RegisterScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
 
-                            
                             /// Email field
                             const Text(
                               "Email",
@@ -168,12 +167,13 @@ class RegisterScreen extends StatelessWidget {
                                   ),
                                 ),
                                 onPressed: () {
-                                  Navigator.pushReplacement(
+                                  Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
                                           const CustomBottomNav(),
                                     ),
+                                    (route) => false,
                                   );
                                 },
                                 child: const Text(

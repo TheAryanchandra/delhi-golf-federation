@@ -1,5 +1,7 @@
+import 'package:delhi_golf_federation/components/custombutton.dart';
 import 'package:flutter/material.dart';
 import 'package:delhi_golf_federation/components/topnavigationbar.dart';
+
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -16,7 +18,10 @@ class _NewsScreenState extends State<NewsScreen> {
       "time": "19 Hours",
       "title": "Ryder Cup boys’ club?: Golf Channel Podcast",
     },
-    {"time": "23 Hours", "title": "Golf is Hard | Wind Edition | 2025"},
+    {
+      "time": "23 Hours",
+      "title": "Golf is Hard | Wind Edition | 2025",
+    },
     {
       "time": "12 Hours",
       "title": "He gained how many yards in one offseason? #golf",
@@ -29,10 +34,9 @@ class _NewsScreenState extends State<NewsScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFEFF2F1),
-      // appBar: const TopNavigationBar(showBackButton: true),
       body: Column(
         children: [
-          // ✅ Header with ClipRRect
+          // Header with ClipRRect
           ClipRRect(
             borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(20),
@@ -129,99 +133,100 @@ class _NewsScreenState extends State<NewsScreen> {
   }
 
   Widget _buildNewsList() {
-    return ListView.separated(
-      itemCount: newsItems.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 8),
-      itemBuilder: (context, index) {
-        final item = newsItems[index];
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "${item['time']} Ago",
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      item['title']!,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+    if (selectedTab == 0) {
+      // Latest News → Coming Soon placeholders
+      return ListView.separated(
+        itemCount: 3,
+        separatorBuilder: (_, __) => const SizedBox(height: 8),
+        itemBuilder: (context, index) {
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
                 ),
-              ),
-
-              // ✅ Custom button
-              _CustomButton(
-                text: "View more",
-                onPressed: () {
-                  // Navigate to details
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-/// ✅ Reusable Custom Button
-class _CustomButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
-  final double borderRadius;
-  final Color backgroundColor;
-  final Color textColor;
-  final EdgeInsets padding;
-
-  const _CustomButton({
-    required this.text,
-    required this.onPressed,
-    this.borderRadius = 12,
-    this.backgroundColor = const Color(0xFF12563C),
-    this.textColor = Colors.white,
-    this.padding = const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: backgroundColor,
-        padding: padding,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
-        ),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: textColor,
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Coming Soon...",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                ),
+                CustomButton(
+                  text: "View more",
+                  onPressed: () {},
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  borderRadius: 12,
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    } else {
+      // Past News → show actual news items
+      return ListView.separated(
+        itemCount: newsItems.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 8),
+        itemBuilder: (context, index) {
+          final item = newsItems[index];
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${item['time']} Ago",
+                        style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        item['title']!,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                CustomButton(
+                  text: "View more",
+                  onPressed: () {},
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  borderRadius: 12,
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
   }
 }
