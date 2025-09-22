@@ -106,15 +106,15 @@ class RegisterScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
 
-                            const SizedBox(height: 8),
-                            TextField(
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.email_outlined),
-                                border: const OutlineInputBorder(),
-                                hintText: "Enter your email",
-                              ),
-                            ),
-                            const SizedBox(height: 20),
+                            
+                            // TextField(
+                            //   decoration: InputDecoration(
+                            //     prefixIcon: const Icon(Icons.email_outlined),
+                            //     border: const OutlineInputBorder(),
+                            //     hintText: "Enter your email",
+                            //   ),
+                            // ),
+                          
 
                             /// Password field
                             const Text(
