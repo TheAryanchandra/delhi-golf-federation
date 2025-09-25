@@ -56,35 +56,23 @@ class RegisterScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 25),
 
-                            /// Name field
-                            const Text(
-                              "Full Name",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
+                            /// Full Name
+                            _buildLabel("Full Name"),
+                            _buildTextField(
+                              hint: "Enter your full name",
+                              icon: Icons.person,
                             ),
-                            const SizedBox(height: 8),
-                            TextField(
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.person),
-                                border: const OutlineInputBorder(),
-                                hintText: "Enter your full name",
-                              ),
-                            ),
-                            const SizedBox(height: 20),
 
-                            /// Email field
-                            const Text(
-                              "Email",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
+                            /// Home Club
+                            _buildLabel("Home Club"),
+                            _buildTextField(
+                              hint: "Enter your home club",
+                              icon: Icons.sports_golf,
                             ),
-                            const SizedBox(height: 8),
+
+                            /// Email
+                            _buildLabel("Email"),
                             TextField(
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.email_outlined),
@@ -92,7 +80,7 @@ class RegisterScreen extends StatelessWidget {
                                 hintText: "Enter your email",
                                 suffixIcon: TextButton(
                                   onPressed: () {
-                                    // TODO: Add email verification logic here (API call / OTP etc.)
+                                    // TODO: Add email verification logic
                                     print("Verifying email...");
                                   },
                                   child: const Text(
@@ -104,56 +92,64 @@ class RegisterScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
+
+                            /// Phone Number
+                            _buildLabel("Phone Number"),
+                            _buildTextField(
+                              hint: "Enter your phone number",
+                              icon: Icons.phone,
+                              keyboard: TextInputType.phone,
+                            ),
+
+                            /// Age
+                            _buildLabel("Age"),
+                            _buildTextField(
+                              hint: "Enter your age",
+                              icon: Icons.calendar_today,
+                              keyboard: TextInputType.number,
+                            ),
+
+                            /// DOB
+                            _buildLabel("Date of Birth"),
+                            _buildTextField(
+                              hint: "DD/MM/YYYY",
+                              icon: Icons.date_range,
+                            ),
+
+                            /// USGA Handicap Index
+                            _buildLabel("USGA Handicap (Index)"),
+                            _buildTextField(
+                              hint: "Enter your handicap index",
+                              icon: Icons.score,
+                              keyboard: TextInputType.number,
+                            ),
+
+                            /// GHIN Number
+                            _buildLabel("GHIN No"),
+                            _buildTextField(
+                              hint: "Enter your GHIN number",
+                              icon: Icons.confirmation_number,
+                            ),
+
+                            /// Password
+                            _buildLabel("Password"),
+                            _buildTextField(
+                              hint: "Enter your password",
+                              icon: Icons.lock_outline,
+                              obscure: true,
+                            ),
+
+                            /// Confirm Password
+                            _buildLabel("Confirm Password"),
+                            _buildTextField(
+                              hint: "Re-enter your password",
+                              icon: Icons.lock_reset,
+                              obscure: true,
+                            ),
+
                             const SizedBox(height: 20),
 
-                            
-                            // TextField(
-                            //   decoration: InputDecoration(
-                            //     prefixIcon: const Icon(Icons.email_outlined),
-                            //     border: const OutlineInputBorder(),
-                            //     hintText: "Enter your email",
-                            //   ),
-                            // ),
-                          
-
-                            /// Password field
-                            const Text(
-                              "Password",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            TextField(
-                              obscureText: true,
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.lock_outline),
-                                border: const OutlineInputBorder(),
-                                hintText: "Enter your password",
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-
-                            /// Confirm Password field
-                            const Text(
-                              "Confirm Password",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            TextField(
-                              obscureText: true,
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.lock_reset),
-                                border: const OutlineInputBorder(),
-                                hintText: "Re-enter your password",
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-
+                            /// Register Button
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
@@ -225,6 +221,38 @@ class RegisterScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  /// Helper: Label
+  Widget _buildLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8, top: 16),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  /// Helper: TextField
+  Widget _buildTextField({
+    required String hint,
+    required IconData icon,
+    bool obscure = false,
+    TextInputType keyboard = TextInputType.text,
+  }) {
+    return TextField(
+      obscureText: obscure,
+      keyboardType: keyboard,
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon),
+        border: const OutlineInputBorder(),
+        hintText: hint,
       ),
     );
   }

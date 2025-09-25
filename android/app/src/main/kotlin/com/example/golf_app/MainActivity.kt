@@ -1,4 +1,4 @@
-package com.example.golf_app
+package com.delhi.golf_federation
 
 import io.flutter.embedding.android.FlutterActivity
 

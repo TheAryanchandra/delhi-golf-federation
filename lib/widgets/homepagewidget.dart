@@ -1,5 +1,6 @@
 import 'package:delhi_golf_federation/components/custombutton.dart';
 import 'package:flutter/material.dart';
+import 'package:delhi_golf_federation/services/navigation_service.dart';
 
 /// Sponsors Section
 class SponsorsSection extends StatelessWidget {
@@ -216,7 +217,7 @@ class UpcomingEventsSection extends StatelessWidget {
                   child: CustomButton(
                     text: "View more",
                     onPressed: () {
-                      // TODO: handle navigation
+                      NavigationService.instance.navigateToTab(2);
                     },
                     borderRadius: 8,
                     padding: const EdgeInsets.symmetric(
@@ -394,7 +395,7 @@ class BottomBanner extends StatelessWidget {
             child: CustomButton(
               text: "Book Tee Time",
               onPressed: () {
-                // your logic
+                NavigationService.instance.navigateToTab(3);
               },
               textColor: const Color.fromARGB(
                 255,
