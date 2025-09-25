@@ -184,7 +184,9 @@ class _ScreenWithNavigationState extends State<_ScreenWithNavigation> {
 
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => const CustomBottomNav()),
+      MaterialPageRoute(
+        builder: (context) => CustomBottomNav(initialIndex: index),
+      ),
       (route) => false,
     );
   }

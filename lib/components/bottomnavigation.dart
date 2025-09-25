@@ -13,14 +13,16 @@ import 'package:delhi_golf_federation/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomNav extends StatefulWidget {
-  const CustomBottomNav({super.key});
+  final int initialIndex;
+
+  const CustomBottomNav({super.key, this.initialIndex = 0});
 
   @override
   State<CustomBottomNav> createState() => _CustomBottomNavState();
 }
 
 class _CustomBottomNavState extends State<CustomBottomNav> {
-  int _currentIndex = 0;
+  late int _currentIndex;
   String _bookingFlow = 'main'; // 'main', 'booking', 'slot-details', 'payment'
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -41,6 +43,7 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
   @override
   void initState() {
     super.initState();
+    _currentIndex = widget.initialIndex;
     // Register the navigation service
     NavigationService.instance.setBookingFlowNavigator(navigateToBookingFlow);
     NavigationService.instance.setTabNavigator(updateIndex);
@@ -88,9 +91,7 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
         onSettingsTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => _ProfileWithNavigation(),
-            ),
+            MaterialPageRoute(builder: (context) => _ProfileWithNavigation()),
           );
         },
         onNotificationTap: () {
@@ -105,48 +106,39 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
           topRight: Radius.circular(20),
         ),
         child: BottomNavigationBar(
-  currentIndex: _currentIndex,
-  onTap: (index) {
-    setState(() {
-      _currentIndex = index;
-      // Reset booking flow when changing tabs, especially for Book Tee Time
-      if (index == 3) {
-        _bookingFlow = 'main'; // Ensure we go to BookTeeTimeScreen
-      } else {
-        _bookingFlow = 'main';
-      }
-    });
-  },
-  type: BottomNavigationBarType.fixed,
-  backgroundColor: const Color(0xFF12563C), // ✅ Using #12563C
-  elevation: 8,
-  selectedItemColor: Colors.white, // ✅ White for selected items
-  unselectedItemColor: Colors.white70, // ✅ Slightly faded for unselected
-  showUnselectedLabels: true,
-  items: const [
-    BottomNavigationBarItem(
-      icon: Icon(Icons.home),
-      label: "Home",
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.emoji_events),
-      label: "Leaderboard",
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.event),
-      label: "Events",
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.golf_course),
-      label: "Book Tee Time",
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.info),
-      label: "About",
-    ),
-  ],
-)
-
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+              // Reset booking flow when changing tabs, especially for Book Tee Time
+              if (index == 3) {
+                _bookingFlow = 'main'; // Ensure we go to BookTeeTimeScreen
+              } else {
+                _bookingFlow = 'main';
+              }
+            });
+          },
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: const Color(0xFF12563C), // ✅ Using #12563C
+          elevation: 8,
+          selectedItemColor: Colors.white, // ✅ White for selected items
+          unselectedItemColor:
+              Colors.white70, // ✅ Slightly faded for unselected
+          showUnselectedLabels: true,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.emoji_events),
+              label: "Leaderboard",
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.golf_course),
+              label: "Book Tee Time",
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.info), label: "About"),
+          ],
+        ),
       ),
     );
   }
@@ -166,11 +158,13 @@ class _ProfileWithNavigationState extends State<_ProfileWithNavigation> {
     setState(() {
       _currentIndex = index;
     });
-    
+
     // Navigate to the corresponding screen based on bottom nav selection
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => const CustomBottomNav()),
+      MaterialPageRoute(
+        builder: (context) => CustomBottomNav(initialIndex: index),
+      ),
       (route) => false,
     );
   }
@@ -211,26 +205,17 @@ class _ProfileWithNavigationState extends State<_ProfileWithNavigation> {
           unselectedItemColor: Colors.white70,
           showUnselectedLabels: true,
           items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Home",
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(
               icon: Icon(Icons.emoji_events),
               label: "Leaderboard",
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.event),
-              label: "Events",
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
             BottomNavigationBarItem(
               icon: Icon(Icons.golf_course),
               label: "Book Tee Time",
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.info),
-              label: "About",
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.info), label: "About"),
           ],
         ),
       ),
