@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.golf_app"
+    namespace = "com.delhi.golf_federation"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -22,7 +22,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.golf_app"
+        applicationId = "com.delhi.golf_federation"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
