@@ -2,6 +2,7 @@ import 'package:delhi_golf_federation/bloc/auth/auth_bloc.dart';
 import 'package:delhi_golf_federation/bloc/auth/auth_event.dart';
 import 'package:delhi_golf_federation/bloc/auth/auth_state.dart';
 import 'package:delhi_golf_federation/model/registermodel.dart';
+import 'package:delhi_golf_federation/services/TextFieldWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../components/bottomnavigation.dart';
@@ -78,9 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           if (state.response.status == true) {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(
-                builder: (context) => const CustomBottomNav(),
-              ),
+              MaterialPageRoute(builder: (context) => const CustomBottomNav()),
               (route) => false,
             );
           } else {
@@ -96,9 +95,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             _isButtonDisabled = false;
             _errorMessage = state.error;
           });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.error)));
         }
       },
       child: Scaffold(
@@ -161,40 +160,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
 
                                 // Full Name
-                                _buildLabel("Full Name"),
-                                _buildTextField(
+                                GlobalTextField(
                                   controller: _nameController,
                                   hint: "Enter your full name",
-                                  icon: Icons.person,
-                                  validator: (value) => value == null || value.trim().isEmpty
+                                  prefixIcon: Icons.person,
+                                  validator: (value) =>
+                                      value == null || value.trim().isEmpty
                                       ? "Full name is required"
                                       : null,
                                 ),
 
                                 // Home Club
-                                _buildLabel("Home Club"),
-                                _buildTextField(
+                                GlobalTextField(
                                   controller: _homeClubController,
                                   hint: "Enter your home club",
-                                  icon: Icons.sports_golf,
-                                  validator: (value) => value == null || value.trim().isEmpty
+                                  prefixIcon: Icons.sports_golf,
+                                  validator: (value) =>
+                                      value == null || value.trim().isEmpty
                                       ? "Home club is required"
                                       : null,
                                 ),
 
                                 // Email
-                                _buildLabel("Email"),
-                                _buildTextField(
+                                GlobalTextField(
                                   controller: _emailController,
                                   hint: "Enter your email",
-                                  icon: Icons.email_outlined,
-                                  keyboard: TextInputType.emailAddress,
+                                  keyboardType: TextInputType.emailAddress,
+                                  prefixIcon: Icons.email_outlined,
                                   validator: (value) {
                                     if (value == null || value.trim().isEmpty) {
                                       return "Email is required";
                                     }
                                     final emailRegex = RegExp(
-                                        r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+                                      r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$",
+                                    );
                                     if (!emailRegex.hasMatch(value.trim())) {
                                       return "Enter a valid email";
                                     }
@@ -203,40 +202,95 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
 
                                 // Phone
-                                _buildLabel("Phone Number"),
-                                _buildTextField(
+                                GlobalTextField(
                                   controller: _phoneController,
                                   hint: "Enter your phone number",
-                                  icon: Icons.phone,
-                                  keyboard: TextInputType.phone,
-                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                  
+                                  keyboardType: TextInputType.phone,
+                                  prefixIcon: Icons.phone,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter
+                                        .digitsOnly, // allow only digits
+                                    LengthLimitingTextInputFormatter(
+                                      10,
+                                    ), // max 10 digits
+                                  ],
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return "Phone number is required";
+                                    }
+                                    final phoneRegex = RegExp(
+                                      r'^[6-9]\d{9}$',
+                                    ); // starts with 6-9, total 10 digits
+                                    if (!phoneRegex.hasMatch(value.trim())) {
+                                      return "Enter a valid 10-digit phone number starting with 6-9";
+                                    }
+                                    return null;
+                                  },
                                 ),
 
                                 // Gender
-                                _buildLabel("Gender"),
-                                DropdownButtonFormField<String>(
-                                  decoration: InputDecoration(
-                                    prefixIcon: const Icon(Icons.person),
-                                    hintText: "Select your gender",
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8)),
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                    vertical: 8,
                                   ),
-                                  value: _selectedGender,
-                                  items: const [
-                                    DropdownMenuItem(value: "Male", child: Text("Male")),
-                                    DropdownMenuItem(value: "Female", child: Text("Female")),
-                                    DropdownMenuItem(value: "Other", child: Text("Other")),
-                                  ],
-                                  onChanged: (value) {
-                                    setState(() => _selectedGender = value);
-                                  },
-                                  validator: (value) =>
-                                      value == null ? "Please select your gender" : null,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: Colors.grey.shade300,
+                                      width: 1,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 5,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: DropdownButtonFormField<String>(
+                                    value: _selectedGender,
+                                    decoration: const InputDecoration(
+                                      prefixIcon: Icon(
+                                        Icons.person,
+                                        color: Colors.grey,
+                                      ),
+                                      hintText: "Select your gender",
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 14,
+                                      ),
+                                    ),
+                                    items: const [
+                                      DropdownMenuItem(
+                                        value: "Male",
+                                        child: Text("Male"),
+                                      ),
+                                      DropdownMenuItem(
+                                        value: "Female",
+                                        child: Text("Female"),
+                                      ),
+                                      // DropdownMenuItem(
+                                      //   value: "Other",
+                                      //   child: Text("Other"),
+                                      // ),
+                                    ],
+                                    onChanged: (value) {
+                                      setState(() => _selectedGender = value);
+                                    },
+                                    validator: (value) => value == null
+                                        ? "Please select your gender"
+                                        : null,
+                                  ),
                                 ),
 
-                                // DOB
-                                _buildLabel("Date of Birth"),
+                                // Date of Birth
+
+                                // Date of Birth
                                 GestureDetector(
                                   onTap: () async {
                                     DateTime today = DateTime.now();
@@ -260,26 +314,71 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           "${pickedDate.year}";
                                       setState(() {
                                         _dobController.text = formattedDate;
-                                        _calculatedAge = _calculateAge(pickedDate);
+                                        _calculatedAge = _calculateAge(
+                                          pickedDate,
+                                        );
                                       });
                                     }
                                   },
                                   child: AbsorbPointer(
-                                    child: _buildTextField(
-                                      controller: _dobController,
-                                      hint: "DD/MM/YYYY",
-                                      icon: Icons.date_range,
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                        vertical: 8,
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: Colors.grey.shade300,
+                                          width: 1,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius: 5,
+                                            offset: const Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      child: TextFormField(
+                                        controller: _dobController,
+                                        readOnly:
+                                            true, // ensures only datepicker opens
+                                        keyboardType: TextInputType.none,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                        ),
+                                        decoration: const InputDecoration(
+                                          hintText: "DD/MM/YYYY",
+                                          labelText: "Date of Birth",
+                                          prefixIcon: Icon(
+                                            Icons.date_range,
+                                            color: Colors.grey,
+                                          ),
+                                          border: InputBorder.none,
+                                          counterText: "",
+                                          floatingLabelStyle: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                          ),
+                                          floatingLabelBehavior:
+                                              FloatingLabelBehavior.auto,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
 
                                 // Handicap
-                                _buildLabel("USGA Handicap (Index)"),
-                                _buildTextField(
+                                GlobalTextField(
                                   controller: _handicapController,
                                   hint: "Enter your handicap index",
-                                  icon: Icons.score,
-                                  keyboard: TextInputType.number,
+                                  keyboardType: TextInputType.number,
+                                  prefixIcon: Icons.score,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.allow(
                                       RegExp(r"^[0-9]*\.?[0-9]*$"),
@@ -289,8 +388,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     if (value == null || value.trim().isEmpty) {
                                       return "Handicap is required";
                                     }
-                                    final numericRegex =
-                                        RegExp(r"^[0-9]+(\.[0-9]+)?$");
+                                    final numericRegex = RegExp(
+                                      r"^[0-9]+(\.[0-9]+)?$",
+                                    );
                                     if (!numericRegex.hasMatch(value.trim())) {
                                       return "Enter a valid number";
                                     }
@@ -299,25 +399,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
 
                                 // GHIN
-                                _buildLabel("GHIN No"),
-                                _buildTextField(
+                                GlobalTextField(
                                   controller: _ghinController,
                                   hint: "Enter your GHIN number",
-                                  icon: Icons.confirmation_number,
-                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                  validator: (value) => value == null || value.trim().isEmpty
+                                  prefixIcon: Icons.confirmation_number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  validator: (value) =>
+                                      value == null || value.trim().isEmpty
                                       ? "GHIN number is required"
                                       : null,
                                 ),
 
                                 // Password
-                                _buildLabel("Password"),
-                                _buildTextField(
+                                GlobalTextField(
                                   controller: _passwordController,
                                   hint: "Enter your password",
-                                  icon: Icons.lock_outline,
-                                  obscure: true,
-                                 
+                                  prefixIcon: Icons.lock_outline,
+                                  obscureText: true,
                                 ),
 
                                 const SizedBox(height: 20),
@@ -328,7 +428,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF0B592A),
-                                      padding: const EdgeInsets.symmetric(vertical: 14),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 14,
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(30),
                                       ),
@@ -336,10 +438,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     onPressed: () {
                                       if (_formKey.currentState!.validate()) {
                                         if (_isButtonDisabled) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
                                             SnackBar(
-                                              content: Text(_errorMessage ??
-                                                  'Registration failed'),
+                                              content: Text(
+                                                _errorMessage ??
+                                                    'Registration failed',
+                                              ),
                                             ),
                                           );
                                           return;
@@ -349,59 +455,81 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         int? age = _calculatedAge;
 
                                         if (dob.isEmpty || age == null) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
                                             const SnackBar(
-                                              content: Text("Please select your Date of Birth"),
+                                              content: Text(
+                                                "Please select your Date of Birth",
+                                              ),
                                             ),
                                           );
                                           return;
                                         }
 
                                         if (age < 10) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
                                             const SnackBar(
-                                              content: Text("You must be at least 10 years old"),
+                                              content: Text(
+                                                "You must be at least 10 years old",
+                                              ),
                                             ),
                                           );
                                           return;
                                         }
 
-
-                                      print("Name: ${_nameController.text}");
-                                      print("Phone Number: ${_phoneController.text}");  
-                                      print("Date of Birth: $dob");
-                                      print("Age: $age");
-                                      print("Gender: $_selectedGender");
-                                      print("Handicap Index: ${double.parse(_handicapController.text)}");
-                                      print("GHIN No: ${_ghinController.text}");
-                                      print("Source: APP");
-                                      print("Home Club: ${_homeClubController.text}");
-                                      print("Email: ${_emailController.text}");
-                                    
-                                      // Perform registration logic here
-                                        final request = RegistrationRequestModel(
-                                          id: 0,
-                                          name: _nameController.text,
-                                          phonumber: _phoneController.text,
-                                          email: _emailController.text,
-                                          gender: _selectedGender ?? "",
-                                          password: _passwordController.text,
-                                          dob: dob,
-                                          age: age,
-                                          homeClub: _homeClubController.text,
-                                          usgaHandicapIndex: double.tryParse(
-                                                  _handicapController.text) ??
-                                              0.0,
-                                          ghinNo: _ghinController.text,
-                                          cmpCode: null,
-                                          roleId: null,
-                                          refNo: null,
-                                          source: "APP",
+                                        print("Name: ${_nameController.text}");
+                                        print(
+                                          "Phone Number: ${_phoneController.text}",
+                                        );
+                                        print("Date of Birth: $dob");
+                                        print("Age: $age");
+                                        print("Gender: $_selectedGender");
+                                        print(
+                                          "Handicap Index: ${double.parse(_handicapController.text)}",
+                                        );
+                                        print(
+                                          "GHIN No: ${_ghinController.text}",
+                                        );
+                                        print("Source: APP");
+                                        print(
+                                          "Home Club: ${_homeClubController.text}",
+                                        );
+                                        print(
+                                          "Email: ${_emailController.text}",
                                         );
 
-                                        context
-                                            .read<RegistrationBloc>()
-                                            .add(SubmitRegistrationEvent(request));
+                                        // Perform registration logic here
+                                        final request =
+                                            RegistrationRequestModel(
+                                              id: 0,
+                                              name: _nameController.text,
+                                              phonumber: _phoneController.text,
+                                              email: _emailController.text,
+                                              gender: _selectedGender ?? "",
+                                              password:
+                                                  _passwordController.text,
+                                              dob: dob,
+                                              age: age,
+                                              homeClub:
+                                                  _homeClubController.text,
+                                              usgaHandicapIndex:
+                                                  double.tryParse(
+                                                    _handicapController.text,
+                                                  ) ??
+                                                  0.0,
+                                              ghinNo: _ghinController.text,
+                                              cmpCode: null,
+                                              roleId: null,
+                                              refNo: null,
+                                              source: "APP",
+                                            );
+
+                                        context.read<RegistrationBloc>().add(
+                                          SubmitRegistrationEvent(request),
+                                        );
                                       }
                                     },
                                     child: const Text(
@@ -421,7 +549,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     onPressed: () {
                                       Navigator.pop(context);
                                     },
-                                    child: const Text("Already have an account? Login"),
+                                    child: const Text(
+                                      "Already have an account? Login",
+                                    ),
                                   ),
                                 ),
                               ],
@@ -460,10 +590,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       padding: const EdgeInsets.only(bottom: 8, top: 16),
       child: Text(
         text,
-        style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-        ),
+        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
       ),
     );
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
 /// Blocks emoji characters (but allows normal characters).
 /// Blocks all emojis (including new Unicode ones).
 class NoEmojiFormatter extends TextInputFormatter {
@@ -18,15 +17,22 @@ class NoEmojiFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
-    // Strip all emojis (instead of rejecting whole input).
     final newText = newValue.text.replaceAll(_emojiRegex, '');
+    final cursorPosition = newValue.selection;
+
     return TextEditingValue(
       text: newText,
-      selection: TextSelection.collapsed(offset: newText.length),
+      selection: cursorPosition.copyWith(
+        baseOffset: newText.length < cursorPosition.baseOffset
+            ? newText.length
+            : cursorPosition.baseOffset,
+        extentOffset: newText.length < cursorPosition.extentOffset
+            ? newText.length
+            : cursorPosition.extentOffset,
+      ),
     );
   }
 }
-
 
 /// Blocks emoji and also blocks non-allowed special characters
 /// (useful for strict fields like mobile / ids).
@@ -39,118 +45,104 @@ class NoEmojiStrictFormatter extends TextInputFormatter {
     if (!_strictRegex.hasMatch(newValue.text)) {
       return oldValue; // reject disallowed characters
     }
-    return newValue; // emoji already blocked by NoEmojiFormatter
+    return newValue;
   }
 }
-
 
 class GlobalTextField extends StatelessWidget {
   final String? hint;
   final TextEditingController controller;
   final TextInputType keyboardType;
-  final bool isPassword; // kept for compatibility, you can wire toggle logic
-  final bool autoCorrect;
-  final TextCapitalization textCapitalization; // <-- added
-  final int? maxLength;
   final bool obscureText;
+  final bool autoCorrect;
+  final TextCapitalization textCapitalization;
+  final int? maxLength;
   final String? prefixText;
   final TextStyle? prefixStyle;
   final IconData? prefixIcon;
   final int? maxLine;
   final Widget? suffixIcon;
-  final InputBorder? border;
-  final VoidCallback? onTogglePassword;
   final String? Function(String?)? validator;
   final List<TextInputFormatter>? inputFormatters;
-  final InputDecoration? decoration; // <-- added: accept custom decoration
 
   const GlobalTextField({
     Key? key,
     this.hint,
     required this.controller,
     this.keyboardType = TextInputType.text,
-    this.isPassword = false,
+    this.obscureText = false,
     this.autoCorrect = true,
     this.textCapitalization = TextCapitalization.none,
     this.maxLength,
-    this.obscureText = false,
-    this.onTogglePassword,
     this.prefixText,
     this.prefixStyle,
     this.prefixIcon,
     this.maxLine,
     this.validator,
     this.suffixIcon,
-    this.border,
     this.inputFormatters,
-    this.decoration,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final fieldLabel = (hint ?? decoration?.hintText ?? decoration?.labelText ?? '').toLowerCase();
-    final isNameOrEmail = fieldLabel.contains('name') || fieldLabel.contains('email');
+    final fieldLabel = (hint ?? '').toLowerCase();
+    final isNameOrEmail =
+        fieldLabel.contains('name') || fieldLabel.contains('email');
 
-   final appliedInputFormatters = <TextInputFormatter>[
-  NoEmojiFormatter(), // always block emoji
-  if (!isNameOrEmail) NoEmojiStrictFormatter(), // strict for other fields
-  ...?inputFormatters,
-];
+    final appliedInputFormatters = <TextInputFormatter>[
+      NoEmojiFormatter(),
+      if (!isNameOrEmail) NoEmojiStrictFormatter(),
+      ...?inputFormatters,
+    ];
 
-
-    final InputDecoration effectiveDecoration = decoration != null
-        ? decoration!.copyWith(counterText: "")
-        : InputDecoration(
-            labelText: hint,
-            prefixText: prefixText,
-            prefixStyle: prefixStyle,
-            // border: OutlineInputBorder(
-            //   borderRadius: BorderRadius.circular(5),
-            //   borderSide: BorderSide(color: ColorConstants.grey600Color, width: 1),
-            // ),
-            // enabledBorder: OutlineInputBorder(
-            //   borderRadius: BorderRadius.circular(5),
-            //   borderSide: BorderSide(color: ColorConstants.grey600Color, width: 1),
-            // ),
-            // focusedBorder: OutlineInputBorder(
-            //   borderRadius: BorderRadius.circular(5),
-            //   borderSide: BorderSide(color: ColorConstants.buttonBlueColor, width: 1),
-            // ),
-            // errorBorder: OutlineInputBorder(
-            //   borderRadius: BorderRadius.circular(5),
-            //   borderSide: BorderSide(color: ColorConstants.redColor, width: 1),
-            // ),
-            floatingLabelStyle: TextStyle(
-              // color: ColorConstants.buttonBlueColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
-            floatingLabelBehavior: FloatingLabelBehavior.auto,
-            suffixIcon: suffixIcon,
-            counterText: "",
-            prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
-          );
-
-   return TextFormField(
-  controller: controller,
-  keyboardType: keyboardType,
-  obscureText: obscureText,
-  autocorrect: autoCorrect,
-  textCapitalization: textCapitalization,
-  maxLength: maxLength,
-  maxLines: maxLine ?? 1,
-  validator: validator,
-  inputFormatters: appliedInputFormatters,
-  // cursorColor: ColorConstants.blackColor,
-  onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
-  // ❌ Remove auto-trim from here
-  style: TextStyle(
-    // color: ColorConstants.blackColor,
-    fontWeight: FontWeight.w600,
-    fontSize: 14,
-  ),
-  decoration: effectiveDecoration,
-);
-
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        obscureText: obscureText,
+        autocorrect: autoCorrect,
+        textCapitalization: textCapitalization,
+        maxLength: maxLength,
+        maxLines: maxLine ?? 1,
+        validator: validator,
+        inputFormatters: appliedInputFormatters,
+        onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+        ),
+        decoration: InputDecoration(
+          hintText: hint,
+          labelText: hint,
+          prefixText: prefixText,
+          prefixStyle: prefixStyle,
+          suffixIcon: suffixIcon,
+          prefixIcon: prefixIcon != null
+              ? Icon(prefixIcon, color: Colors.grey)
+              : null,
+          border: InputBorder.none,
+          counterText: "",
+          floatingLabelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+        ),
+      ),
+    );
   }
 }
