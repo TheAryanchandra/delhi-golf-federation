@@ -1,7 +1,11 @@
 const String baseUrl = "https://admin.delhigolf.org/api";
 
-// Default headers
+/// Default headers
 const String headersJson = "application/json";
 
-// Registration endpoint
+/// API Key
+const String apiKey = "065A0566-4ACA-4C5B-9789-9B4992AC40F3";
+
+/// Endpoints
 const String registrationEndpoint = "$baseUrl/account/registration";
+const String loginEndpoint = "$baseUrl/account/login";
