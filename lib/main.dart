@@ -24,6 +24,9 @@ class GolfApp extends StatelessWidget {
       providers: [
        
         BlocProvider(create: (_) => RegistrationBloc(RegistrationRepository())),
+        BlocProvider<LoginBloc>(
+          create: (context) => LoginBloc(LoginRepository()),
+        ),
       ],
       child: SafeArea(
         bottom: true,

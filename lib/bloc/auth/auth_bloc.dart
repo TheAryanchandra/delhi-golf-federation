@@ -19,3 +19,46 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     });
   }
 }
+
+
+// login bloc
+
+
+
+class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  final LoginRepository repository;
+
+  LoginBloc(this.repository) : super(LoginInitial()) {
+    on<LoginSubmitted>((event, emit) async {
+      emit(LoginLoading());
+      try {
+        final response = await repository.login(
+          email: event.email,
+          password: event.password,
+        );
+
+        // ✅ Some APIs return lowercase keys ("status"), some return uppercase ("Status")
+        final bool isSuccess = response.status;
+
+        if (isSuccess) {
+          // ✅ Save token if available
+          // if (response.token != null && response.token!.isNotEmpty) {
+          //   final prefs = await SharedPreferences.getInstance();
+          //   await prefs.setString("auth_token", response.token!);
+          // }
+
+          emit(LoginSuccess(response));
+        } else {
+          // API failed, show message
+          emit(LoginFailure(response.message.isNotEmpty
+              ? response.message
+              : "Invalid credentials"));
+        }
+      } catch (e) {
+        emit(LoginFailure("Login failed: $e"));
+      }
+    });
+  }
+}
+
+

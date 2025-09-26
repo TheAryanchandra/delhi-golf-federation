@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../components/bottomnavigation.dart';
-import './registerscreen.dart'; // Add this import
+import './registerscreen.dart';
+import '../services/TextFieldWidget.dart';
+import '../bloc/auth/auth_bloc.dart';
+import '../bloc/auth/auth_event.dart';
+import '../bloc/auth/auth_state.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
-          /// Background Image
           Image.asset("assets/images/background.png", fit: BoxFit.cover),
-
-          /// Overlay
           Container(color: Colors.black.withOpacity(0.3)),
 
-          /// Main content
           SingleChildScrollView(
             child: Center(
               child: Column(
                 children: [
                   const SizedBox(height: 150),
 
-                  /// Card with Logo Overlap
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      /// Login Card
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 24),
                         padding: const EdgeInsets.all(20),
@@ -46,8 +48,7 @@ class LoginScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(height: 60), // Space for Logo
-
+                            const SizedBox(height: 60),
                             const Center(
                               child: Text(
                                 "LOGIN",
@@ -59,65 +60,37 @@ class LoginScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 25),
 
-                            /// Mail Id field
-                            const Text(
-                              "Mail Id",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            TextField(
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.person_outline),
-                                border: const OutlineInputBorder(),
-                                hintText: "Enter your email",
-                              ),
+                            GlobalTextField(
+                              controller: emailController,
+                              hint: "Enter your email",
+                              keyboardType: TextInputType.emailAddress,
+                              prefixIcon: Icons.person_outline,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return "Email is required";
+                                }
+                                return null;
+                              },
                             ),
                             const SizedBox(height: 20),
 
-                            /// Password field
-                            const Text(
-                              "Password",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            TextField(
+                            GlobalTextField(
+                              controller: passwordController,
+                              hint: "Enter your password",
+                              prefixIcon: Icons.lock_outline,
                               obscureText: true,
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.lock_outline),
-                                border: const OutlineInputBorder(),
-                                hintText: "Enter your password",
-                              ),
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return "Password is required";
+                                }
+                                return null;
+                              },
                             ),
-
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                onPressed: () {},
-                                child: const Text("Forgot Password?"),
-                              ),
-                            ),
-
                             const SizedBox(height: 10),
 
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF0B592A),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 14,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                ),
-                                onPressed: () {
+                            BlocConsumer<LoginBloc, LoginState>(
+                              listener: (context, state) {
+                                if (state is LoginSuccess) {
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
@@ -125,20 +98,56 @@ class LoginScreen extends StatelessWidget {
                                           const CustomBottomNav(),
                                     ),
                                   );
-                                },
-                                child: const Text(
-                                  "Submit",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
+                                } else if (state is LoginFailure) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(state.error),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              },
+                              builder: (context, state) {
+                                if (state is LoginLoading) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+
+                                return SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF0B592A),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 14,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      context.read<LoginBloc>().add(
+                                            LoginSubmitted(
+                                              emailController.text.trim(),
+                                              passwordController.text.trim(),
+                                            ),
+                                          );
+                                    },
+                                    child: const Text(
+                                      "Submit",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             ),
 
                             const SizedBox(height: 15),
 
-                            /// Bottom Sign Up INSIDE CARD
                             Center(
                               child: TextButton(
                                 onPressed: () {
@@ -159,7 +168,6 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
 
-                      /// Positioned Logo Overlapping
                       Positioned(
                         top: -50,
                         left: 0,
@@ -168,9 +176,8 @@ class LoginScreen extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 55,
                             backgroundColor: Colors.white,
-                            backgroundImage: const AssetImage(
-                              "assets/images/logo.png",
-                            ),
+                            backgroundImage:
+                                const AssetImage("assets/images/logo.png"),
                           ),
                         ),
                       ),

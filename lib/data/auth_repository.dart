@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:delhi_golf_federation/config/network/web_constant.dart';
+import 'package:delhi_golf_federation/model/login_model.dart';
 import 'package:delhi_golf_federation/model/registermodel.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,3 +27,48 @@ class RegistrationRepository {
     }
   }
 }
+
+// login repository
+
+class LoginRepository {
+  Future<LoginResponse> login({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final uri = Uri.parse("https://admin.delhigolf.org/api/account/login");
+
+      final headers = {
+        // "Accept": "*/*",
+        "Content-Type": "application/json",
+        "api-key": "065A0566-4ACA-4C5B-9789-9B4992AC40F3", // 👈 Bearer token
+        "a_Id_UserId": email,
+        "Passowrd_User": password,
+      };
+
+      print("🔹 Login API Request:");
+      print("URL: $uri");
+      print("Headers: $headers");
+
+      final response = await http.post(uri, headers: headers);
+
+      print("🔹 Login API Response:");
+      print("Status Code: ${response.statusCode}");
+      print("Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        return LoginResponse.fromJson(jsonResponse);
+      } else {
+        throw Exception("Failed to login: ${response.statusCode}");
+      }
+    } catch (e) {
+      throw Exception("Login failed: $e");
+    }
+  }
+}
+
+
+
+
+
