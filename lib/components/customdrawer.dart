@@ -1,3 +1,8 @@
+import 'package:delhi_golf_federation/bloc/auth/auth_bloc.dart';
+import 'package:delhi_golf_federation/bloc/auth/auth_event.dart';
+import 'package:delhi_golf_federation/bloc/auth/auth_state.dart';
+import 'package:delhi_golf_federation/config/routes_name.dart';
+import 'package:delhi_golf_federation/database/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:delhi_golf_federation/screens/mybookings.dart';
 import 'package:delhi_golf_federation/screens/gallery.dart';
@@ -6,6 +11,7 @@ import 'package:delhi_golf_federation/screens/news.dart';
 import 'package:delhi_golf_federation/screens/myprofile.dart';
 import 'package:delhi_golf_federation/components/bottomnavigation.dart';
 import 'package:delhi_golf_federation/components/topnavigationbar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomDrawer extends StatelessWidget {
   final Function(int)? onItemTap;
@@ -85,6 +91,79 @@ class CustomDrawer extends StatelessWidget {
                 ),
                 _buildDrawerItem(context, Icons.event, "Events", "/events"),
                 _buildDrawerItem(context, Icons.article, "News", "/news"),
+
+                const Divider(
+                  color: Colors.white38,
+                  indent: 20,
+                  endIndent: 20,
+                  thickness: 0.7,
+                ),
+
+                // Logout Button at bottom right
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0, bottom: 16.0),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: BlocConsumer<LogoutBloc, LogoutState>(
+                      listener: (context, state) async {
+                        if (state is LogoutSuccess) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(state.message)),
+                          );
+
+                          // ✅ Navigate to login screen and clear all previous routes
+                          Navigator.of(
+                            context,
+                            rootNavigator: true,
+                          ).pushNamedAndRemoveUntil(
+                            RoutesName.loginScreen,
+                            (route) => false,
+                          );
+                        } else if (state is LogoutFailure) {
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(SnackBar(content: Text(state.error)));
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state is LogoutLoading) {
+                          return const SizedBox(
+                            height: 40,
+                            width: 40,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          );
+                        }
+
+                        return ElevatedButton.icon(
+                          onPressed: () {
+                            context.read<LogoutBloc>().add(LogoutRequested());
+                          },
+                          icon: const Icon(Icons.logout, color: Colors.white),
+                          label: const Text(
+                            'Logout',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.redAccent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

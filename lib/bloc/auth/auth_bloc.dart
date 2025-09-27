@@ -1,6 +1,7 @@
 import 'package:delhi_golf_federation/bloc/auth/auth_event.dart';
 import 'package:delhi_golf_federation/bloc/auth/auth_state.dart';
 import 'package:delhi_golf_federation/data/auth_repository.dart';
+import 'package:delhi_golf_federation/model/logout_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // register bloc
@@ -20,11 +21,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
   }
 }
 
-
 // login bloc
-
-
-
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final LoginRepository repository;
 
@@ -50,9 +47,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           emit(LoginSuccess(response));
         } else {
           // API failed, show message
-          emit(LoginFailure(response.message.isNotEmpty
-              ? response.message
-              : "Invalid credentials"));
+          emit(
+            LoginFailure(
+              response.message.isNotEmpty
+                  ? response.message
+                  : "Invalid credentials",
+            ),
+          );
         }
       } catch (e) {
         emit(LoginFailure("Login failed: $e"));
@@ -61,4 +62,24 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 }
 
+// logout bloc
+class LogoutBloc extends Bloc<LogoutEvent, LogoutState> {
+  final LogoutRepository repository;
 
+  LogoutBloc(this.repository) : super(LogoutInitial()) {
+    on<LogoutRequested>((event, emit) async {
+      emit(LogoutLoading());
+      try {
+        final result = await repository.logout();
+
+        if (result.status == false) {
+          emit(LogoutSuccess(result.response ?? "Token expired successfully"));
+        } else {
+          emit(LogoutFailure(result.message ?? "Token already expired"));
+        }
+      } catch (e) {
+        emit(LogoutFailure("Something went wrong: $e"));
+      }
+    });
+  }
+}

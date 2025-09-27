@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:delhi_golf_federation/config/network/web_constant.dart';
+import 'package:delhi_golf_federation/database/shared_preferences.dart';
 import 'package:delhi_golf_federation/model/login_model.dart';
+import 'package:delhi_golf_federation/model/logout_model.dart';
 import 'package:delhi_golf_federation/model/registermodel.dart';
 import 'package:http/http.dart' as http;
 
@@ -10,12 +12,13 @@ class RegistrationRepository {
   final String apiKey = "065A0566-4ACA-4C5B-9789-9B4992AC40F3";
 
   Future<RegistrationResponseModel> registerUser(
-      RegistrationRequestModel requestModel) async {
+    RegistrationRequestModel requestModel,
+  ) async {
     final response = await http.post(
       Uri.parse(registrationEndpoint), // use constant from webconstant
       headers: {
         "Content-Type": headersJson, // also use constant for content type
-        "api-key": apiKey,            // or "x-api-key" depending on backend
+        "api-key": apiKey, // or "x-api-key" depending on backend
       },
       body: jsonEncode(requestModel.toJson()),
     );
@@ -36,12 +39,12 @@ class LoginRepository {
     required String password,
   }) async {
     try {
-     final uri = Uri.parse(loginEndpoint);
+      final uri = Uri.parse(loginEndpoint);
 
       final headers = {
         // "Accept": "*/*",
         "Content-Type": "application/json",
-        "api-key": "065A0566-4ACA-4C5B-9789-9B4992AC40F3", 
+        "api-key": "065A0566-4ACA-4C5B-9789-9B4992AC40F3",
         "a_Id_UserId": email,
         "Passowrd_User": password,
       };
@@ -58,17 +61,68 @@ class LoginRepository {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+        // ✅ Extract token from response
+        final String? token = jsonResponse["response"] as String?;
+        if (token != null && token.isNotEmpty) {
+          await SharedPreferencesHelper.setUserToken(token);
+          await SharedPreferencesHelper.setLoggedIn(true);
+          print("✅ Token saved in SharedPreferences: $token");
+        }
         return LoginResponse.fromJson(jsonResponse);
       } else {
         throw Exception("Failed to login: ${response.statusCode}");
       }
     } catch (e) {
+      // Ensure auth status is reset on failure
+      await SharedPreferencesHelper.setLoggedIn(false);
+      await SharedPreferencesHelper.setUserToken('');
       throw Exception("Login failed: $e");
     }
   }
 }
 
+class LogoutRepository {
+  Future<LogoutModel> logout() async {
+    final token = await SharedPreferencesHelper.getUserToken();
 
+    if (token == null || token.isEmpty) {
+      // Already expired or never saved
+      return LogoutModel(
+        id: 0,
+        bigId: 0,
+        status: true,
+        response: "Token already expired",
+      );
+    }
 
+    print("🔑 Token for logout: $token");
+    print("Logout URL: https://admin.delhigolf.org/api/account/logout");
+    print(
+      "Logout Headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'}",
+    );
 
+    final response = await http.get(
+      Uri.parse("https://admin.delhigolf.org/api/account/logout"),
+      headers: {"Accept": "application/json", "Authorization": "Bearer $token"},
+    );
 
+    print("🔹 Logout API Response:");
+    print("Status Code: ${response.statusCode}");
+    print("Body: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final logoutModel = LogoutModel.fromJson(data);
+
+      // Clear user data when status is false (successful logout)
+      if (logoutModel.status == false) {
+        await SharedPreferencesHelper.clearUserData();
+      }
+
+      return logoutModel;
+    } else {
+      throw Exception("Logout failed: ${response.statusCode}");
+    }
+  }
+}

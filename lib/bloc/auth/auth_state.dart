@@ -49,3 +49,26 @@ class LoginFailure extends LoginState {
   @override
   List<Object?> get props => [error];
 }
+
+// logout state
+abstract class LogoutState extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
+
+class LogoutInitial extends LogoutState {}
+class LogoutLoading extends LogoutState {}
+class LogoutSuccess extends LogoutState {
+  final String message;
+  LogoutSuccess(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+class LogoutFailure extends LogoutState {
+  final String error;
+  LogoutFailure(this.error);
+
+  @override
+  List<Object?> get props => [error];
+}

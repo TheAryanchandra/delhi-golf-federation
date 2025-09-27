@@ -31,3 +31,10 @@ class LoginSubmitted extends LoginEvent {
   List<Object?> get props => [email, password];
 }
 
+// logout event
+abstract class LogoutEvent extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
+
+class LogoutRequested extends LogoutEvent {}
