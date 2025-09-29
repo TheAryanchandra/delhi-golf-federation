@@ -96,16 +96,19 @@ class LogoutRepository {
       );
     }
 
-    print("🔑 Token for logout: $token");
-    print("Logout URL: https://admin.delhigolf.org/api/account/logout");
-    print(
-      "Logout Headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'}",
-    );
+    final uri = Uri.parse(logoutEndpoint); // ✅ use constant
 
-    final response = await http.get(
-      Uri.parse("https://admin.delhigolf.org/api/account/logout"),
-      headers: {"Accept": "application/json", "Authorization": "Bearer $token"},
-    );
+    final headers = {
+      "Accept": headersJson,
+      "Authorization": "Bearer $token",
+      "api-key": apiKey, // ✅ same as login
+    };
+
+    print("🔑 Token for logout: $token");
+    print("Logout URL: $uri");
+    print("Logout Headers: $headers");
+
+    final response = await http.get(uri, headers: headers);
 
     print("🔹 Logout API Response:");
     print("Status Code: ${response.statusCode}");
@@ -115,7 +118,7 @@ class LogoutRepository {
       final data = json.decode(response.body);
       final logoutModel = LogoutModel.fromJson(data);
 
-      // Clear user data when status is false (successful logout)
+      // Clear user data when status == false (successful logout)
       if (logoutModel.status == false) {
         await SharedPreferencesHelper.clearUserData();
       }
