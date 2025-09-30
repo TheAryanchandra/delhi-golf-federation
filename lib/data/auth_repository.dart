@@ -101,7 +101,7 @@ class LogoutRepository {
     final headers = {
       "Accept": headersJson,
       "Authorization": "Bearer $token",
-      "api-key": apiKey, // ✅ same as login
+      // "api-key": apiKey, // ✅ same as login
     };
 
     print("🔑 Token for logout: $token");

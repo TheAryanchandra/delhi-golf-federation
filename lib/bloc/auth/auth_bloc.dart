@@ -73,7 +73,7 @@ class LogoutBloc extends Bloc<LogoutEvent, LogoutState> {
         final result = await repository.logout();
 
         if (result.status == false) {
-          emit(LogoutSuccess(result.response ?? "Token expired successfully"));
+          emit(LogoutSuccess(result.response ?? ""));
         } else {
           emit(LogoutFailure(result.message ?? "Token already expired"));
         }

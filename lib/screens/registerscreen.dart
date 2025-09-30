@@ -1,6 +1,7 @@
 import 'package:delhi_golf_federation/bloc/auth/auth_bloc.dart';
 import 'package:delhi_golf_federation/bloc/auth/auth_event.dart';
 import 'package:delhi_golf_federation/bloc/auth/auth_state.dart';
+import 'package:delhi_golf_federation/config/routes_name.dart';
 import 'package:delhi_golf_federation/model/registermodel.dart';
 import 'package:delhi_golf_federation/services/TextFieldWidget.dart';
 import 'package:flutter/material.dart';
@@ -77,9 +78,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           });
 
           if (state.response.status == true) {
-            Navigator.pushAndRemoveUntil(
+            Navigator.pushNamedAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const CustomBottomNav()),
+              RoutesName.loginScreen,
               (route) => false,
             );
           } else {

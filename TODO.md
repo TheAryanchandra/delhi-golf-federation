@@ -1,6 +1,0 @@
-- [x] Add shared_preferences dependency to pubspec.yaml
-- [x] Create new file lib/database/shared_preferences.dart with correct import and content
-- [x] Update import in lib/main.dart to use shared_preferences.dart
-- [x] Update import in lib/data/auth_repository.dart to use shared_preferences.dart
-- [x] Run flutter pub get to install dependencies
-- [ ] Verify no compilation errors
