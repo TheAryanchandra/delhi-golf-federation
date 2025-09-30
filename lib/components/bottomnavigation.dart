@@ -33,46 +33,30 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
     });
   }
 
-  void navigateToBookingFlow(String flow) {
-    setState(() {
-      _bookingFlow = flow;
-      _currentIndex = 3; // Keep Book Tee Time tab selected
-    });
-  }
+  // void navigateToBookingFlow(String flow) {
+  //   setState(() {
+  //     _bookingFlow = flow;
+  //     _currentIndex = 3; // Keep Book Tee Time tab selected
+  //   });
+  // }
 
   @override
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
     // Register the navigation service
-    NavigationService.instance.setBookingFlowNavigator(navigateToBookingFlow);
+    // NavigationService.instance.setBookingFlowNavigator(navigateToBookingFlow);
     NavigationService.instance.setTabNavigator(updateIndex);
   }
 
   Widget _getCurrentScreen() {
-    if (_currentIndex == 3) {
-      // Book Tee Time tab
-      switch (_bookingFlow) {
-        case 'booking':
-          return BookingScreen();
-        case 'slot-details':
-          return SlotDetailsPage();
-        case 'payment':
-          return PaymentScreen();
-        default:
-          return BookTeeTimeScreen();
-      }
-    } else {
-      // Other tabs
-      final List<Widget> _screens = const [
-        HomePage(),
-        LeaderboardScreen(),
-        EventsScreen(),
-        BookTeeTimeScreen(),
-        AboutScreen(),
-      ];
-      return _screens[_currentIndex];
-    }
+    final List<Widget> _screens = const [
+      HomePage(),
+      LeaderboardScreen(),
+      EventsScreen(),
+      AboutScreen(),
+    ];
+    return _screens[_currentIndex];
   }
 
   @override
@@ -132,10 +116,10 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
               label: "Leaderboard",
             ),
             BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.golf_course),
-              label: "Book Tee Time",
-            ),
+            // BottomNavigationBarItem(
+            //   icon: Icon(Icons.golf_course),
+            //   label: "Book Tee Time",
+            // ),
             BottomNavigationBarItem(icon: Icon(Icons.info), label: "About"),
           ],
         ),
@@ -211,10 +195,10 @@ class _ProfileWithNavigationState extends State<_ProfileWithNavigation> {
               label: "Leaderboard",
             ),
             BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.golf_course),
-              label: "Book Tee Time",
-            ),
+            // BottomNavigationBarItem(
+            //   icon: Icon(Icons.golf_course),
+            //   label: "Book Tee Time",
+            // ),
             BottomNavigationBarItem(icon: Icon(Icons.info), label: "About"),
           ],
         ),

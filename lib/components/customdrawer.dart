@@ -69,12 +69,12 @@ class CustomDrawer extends StatelessWidget {
                   "About",
                   "/about",
                 ),
-                _buildDrawerItem(
-                  context,
-                  Icons.sports_golf,
-                  "Book Tee Time",
-                  "/bookTee",
-                ),
+                // _buildDrawerItem(
+                //   context,
+                //   Icons.sports_golf,
+                //   "Book Tee Time",
+                //   "/bookTee",
+                // ),
                 _buildDrawerItem(context, Icons.book, "Booking", "/booking"),
                 _buildDrawerItem(
                   context,
@@ -194,7 +194,7 @@ class CustomDrawer extends StatelessWidget {
   void _navigateToTab(BuildContext context, String route) {
     switch (route) {
       case "/about":
-        if (onItemTap != null) onItemTap!(4);
+        if (onItemTap != null) onItemTap!(3);
         break;
 
       case "/bookTee":
@@ -318,10 +318,10 @@ class _ScreenWithNavigationState extends State<_ScreenWithNavigation> {
               label: "Leaderboard",
             ),
             BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.golf_course),
-              label: "Book Tee Time",
-            ),
+            // BottomNavigationBarItem(
+            //   icon: Icon(Icons.golf_course),
+            //   label: "Book Tee Time",
+            // ),
             BottomNavigationBarItem(icon: Icon(Icons.info), label: "About"),
           ],
         ),
