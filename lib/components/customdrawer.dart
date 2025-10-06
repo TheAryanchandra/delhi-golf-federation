@@ -194,12 +194,12 @@ class CustomDrawer extends StatelessWidget {
   void _navigateToTab(BuildContext context, String route) {
     switch (route) {
       case "/about":
-        if (onItemTap != null) onItemTap!(3);
+        if (onItemTap != null) onItemTap!(4);
         break;
 
-      case "/bookTee":
-        if (onItemTap != null) onItemTap!(3);
-        break;
+      // case "/bookTee":
+      //   if (onItemTap != null) onItemTap!(3);
+      //   break;
 
       case "/leaderboard":
         if (onItemTap != null) onItemTap!(1);

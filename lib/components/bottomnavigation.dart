@@ -114,7 +114,7 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
               label: "Leaderboard",
             ),
             BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
-            BottomNavigationBarItem(icon: Icon(Icons.score), label: 'Scorecard'),
+            BottomNavigationBarItem(icon: Icon(Icons.score), label: 'MyScorecard'),
             BottomNavigationBarItem(icon: Icon(Icons.info), label: "About"),
           ],
         ),
@@ -190,7 +190,7 @@ class _ProfileWithNavigationState extends State<_ProfileWithNavigation> {
               label: "Leaderboard",
             ),
             BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
-            BottomNavigationBarItem(icon: Icon(Icons.score), label: 'Scorecard'),
+            BottomNavigationBarItem(icon: Icon(Icons.score), label: 'MyScorecard'),
 
             // BottomNavigationBarItem(
             //   icon: Icon(Icons.golf_course),
