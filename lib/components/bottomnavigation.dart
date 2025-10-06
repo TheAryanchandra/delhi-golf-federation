@@ -1,11 +1,12 @@
 import 'package:delhi_golf_federation/screens/homepage.dart';
 import 'package:delhi_golf_federation/screens/leaderboard_screen.dart';
 import 'package:delhi_golf_federation/screens/event_screen.dart';
-import 'package:delhi_golf_federation/screens/bookteetime.dart';
+import 'package:delhi_golf_federation/screens/eventreport.dart';
+// import 'package:delhi_golf_federation/screens/bookteetime.dart';
 import 'package:delhi_golf_federation/screens/about.dart';
-import 'package:delhi_golf_federation/screens/bookingscreen.dart';
-import 'package:delhi_golf_federation/screens/slot_details.dart';
-import 'package:delhi_golf_federation/screens/payment_screen.dart';
+// import 'package:delhi_golf_federation/screens/bookingscreen.dart';
+// import 'package:delhi_golf_federation/screens/slot_details.dart';
+// import 'package:delhi_golf_federation/screens/payment_screen.dart';
 import 'package:delhi_golf_federation/screens/myprofile.dart';
 import 'package:delhi_golf_federation/components/topnavigationbar.dart';
 import 'package:delhi_golf_federation/components/customdrawer.dart';
@@ -54,6 +55,7 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
       HomePage(),
       LeaderboardScreen(),
       EventsScreen(),
+      EventReportScreen(),
       AboutScreen(),
     ];
     return _screens[_currentIndex];
@@ -94,12 +96,8 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
           onTap: (index) {
             setState(() {
               _currentIndex = index;
-              // Reset booking flow when changing tabs, especially for Book Tee Time
-              if (index == 3) {
-                _bookingFlow = 'main'; // Ensure we go to BookTeeTimeScreen
-              } else {
-                _bookingFlow = 'main';
-              }
+              // Reset auxiliary flows whenever the tab changes
+              _bookingFlow = 'main';
             });
           },
           type: BottomNavigationBarType.fixed,
@@ -116,10 +114,7 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
               label: "Leaderboard",
             ),
             BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
-            // BottomNavigationBarItem(
-            //   icon: Icon(Icons.golf_course),
-            //   label: "Book Tee Time",
-            // ),
+            BottomNavigationBarItem(icon: Icon(Icons.score), label: 'Scorecard'),
             BottomNavigationBarItem(icon: Icon(Icons.info), label: "About"),
           ],
         ),
@@ -195,6 +190,8 @@ class _ProfileWithNavigationState extends State<_ProfileWithNavigation> {
               label: "Leaderboard",
             ),
             BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
+            BottomNavigationBarItem(icon: Icon(Icons.score), label: 'Scorecard'),
+
             // BottomNavigationBarItem(
             //   icon: Icon(Icons.golf_course),
             //   label: "Book Tee Time",

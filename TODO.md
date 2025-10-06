@@ -1,0 +1,2 @@
+- [ ] Add import for EventReportScreen in eventscorecard.dart
+- [ ] Update onPressed of Save Score button to navigate to EventReportScreen
