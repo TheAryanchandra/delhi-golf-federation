@@ -9,6 +9,7 @@ import 'package:delhi_golf_federation/screens/gallery.dart';
 import 'package:delhi_golf_federation/screens/video.dart';
 import 'package:delhi_golf_federation/screens/news.dart';
 import 'package:delhi_golf_federation/screens/myprofile.dart';
+import 'package:delhi_golf_federation/screens/eventreport.dart';
 import 'package:delhi_golf_federation/components/bottomnavigation.dart';
 import 'package:delhi_golf_federation/components/topnavigationbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -76,6 +77,7 @@ class CustomDrawer extends StatelessWidget {
                 //   "/bookTee",
                 // ),
                 _buildDrawerItem(context, Icons.book, "Booking", "/booking"),
+                _buildDrawerItem(context, Icons.sports_golf, "Event Report", "/eventreport"),
                 _buildDrawerItem(
                   context,
                   Icons.emoji_events,
@@ -197,9 +199,9 @@ class CustomDrawer extends StatelessWidget {
         if (onItemTap != null) onItemTap!(4);
         break;
 
-      // case "/bookTee":
-      //   if (onItemTap != null) onItemTap!(3);
-      //   break;
+      case "/eventreport":
+        if (onItemTap != null) onItemTap!(3);
+        break;
 
       case "/leaderboard":
         if (onItemTap != null) onItemTap!(1);
@@ -224,6 +226,10 @@ class CustomDrawer extends StatelessWidget {
       case "/news":
         _pushSimpleScreen(context, const NewsScreen(), "News");
         break;
+
+      // case "/eventreport":
+      //   _pushSimpleScreen(context, const EventReportScreen(), "Event Report");
+      //   break;
 
       default:
         if (onItemTap != null) onItemTap!(0);
@@ -322,7 +328,9 @@ class _ScreenWithNavigationState extends State<_ScreenWithNavigation> {
             //   icon: Icon(Icons.golf_course),
             //   label: "Book Tee Time",
             // ),
+             BottomNavigationBarItem(icon: Icon(Icons.sports_golf), label: 'MyScorecard'),
             BottomNavigationBarItem(icon: Icon(Icons.info), label: "About"),
+            
           ],
         ),
       ),
