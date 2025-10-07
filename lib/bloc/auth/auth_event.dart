@@ -38,3 +38,11 @@ abstract class LogoutEvent extends Equatable {
 }
 
 class LogoutRequested extends LogoutEvent {}
+
+// industry event
+abstract class IndustryEvent extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
+
+class FetchIndustriesEvent extends IndustryEvent {}

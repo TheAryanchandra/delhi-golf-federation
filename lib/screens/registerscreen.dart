@@ -14,6 +14,7 @@ class RegisterScreen extends StatefulWidget {
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
+  
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
@@ -29,6 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   String? _selectedGender;
   int? _calculatedAge;
+  String? _selectedIndustry;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -45,6 +47,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       age--;
     }
     return age;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<IndustryBloc>().add(FetchIndustriesEvent());
+    });
   }
 
   @override
@@ -78,6 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           });
 
           if (state.response.status == true) {
+            print("Registration successful");
             Navigator.pushNamedAndRemoveUntil(
               context,
               RoutesName.loginScreen,
@@ -289,8 +300,88 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                 ),
 
-                                // Date of Birth
+                                // Industry
+                                BlocBuilder<IndustryBloc, IndustryState>(
+                                  builder: (context, state) {
+                                    if (state is IndustryLoading) {
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    } else if (state is IndustryLoaded) {
+                                      return Container(
+                                        margin: const EdgeInsets.symmetric(
+                                          vertical: 8,
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.grey.shade300,
+                                            width: 1,
+                                          ),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.black12,
+                                              blurRadius: 5,
+                                              offset: Offset(0, 3),
+                                            ),
+                                          ],
+                                        ),
+                                        child: DropdownButtonFormField<String>(
+                                          value: _selectedIndustry,
+                                          decoration: const InputDecoration(
+                                            prefixIcon: Icon(
+                                              Icons.business,
+                                              color: Colors.grey,
+                                            ),
+                                            hintText: "Select your industry",
+                                            border: InputBorder.none,
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                  horizontal: 12,
+                                                  vertical: 14,
+                                                ),
+                                          ),
+                                          items: state.industries
+                                              .map(
+                                                (
+                                                  industry,
+                                                ) => DropdownMenuItem<String>(
+                                                  value: industry
+                                                      .refNo, // store RefNo as value
+                                                  child: Text(industry.name),
+                                                ),
+                                              )
+                                              .toList(),
+                                          onChanged: (value) {
+                                            setState(
+                                              () => _selectedIndustry = value,
+                                            );
+                                          },
+                                          validator: (value) => value == null
+                                              ? "Please select your industry"
+                                              : null,
+                                        ),
+                                      );
+                                    } else if (state is IndustryError) {
+                                      return Text(
+                                        "Failed to load industries: ${state.message}",
+                                        style: const TextStyle(
+                                          color: Colors.red,
+                                        ),
+                                      );
+                                    } else {
+                                      return const SizedBox.shrink();
+                                    }
+                                  },
+                                ),
 
+                         
                                 // Date of Birth
                                 GestureDetector(
                                   onTap: () async {
@@ -488,6 +579,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         print("Date of Birth: $dob");
                                         print("Age: $age");
                                         print("Gender: $_selectedGender");
+                                        print("Industry RefNo: $_selectedIndustry");
                                         print(
                                           "Handicap Index: ${double.parse(_handicapController.text)}",
                                         );
@@ -510,6 +602,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                               phonumber: _phoneController.text,
                                               email: _emailController.text,
                                               gender: _selectedGender ?? "",
+                                              industryRefNo: _selectedIndustry,
                                               password:
                                                   _passwordController.text,
                                               dob: dob,

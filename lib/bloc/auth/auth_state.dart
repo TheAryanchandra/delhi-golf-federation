@@ -1,5 +1,6 @@
 
 
+import 'package:delhi_golf_federation/model/industrymodel.dart';
 import 'package:delhi_golf_federation/model/login_model.dart';
 import 'package:delhi_golf_federation/model/registermodel.dart';
 import 'package:equatable/equatable.dart';
@@ -71,4 +72,33 @@ class LogoutFailure extends LogoutState {
 
   @override
   List<Object?> get props => [error];
+}
+
+
+// industry 
+abstract class IndustryState extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
+
+class IndustryInitial extends IndustryState {}
+
+class IndustryLoading extends IndustryState {}
+
+class IndustryLoaded extends IndustryState {
+  final List<IndustryModel> industries;
+
+  IndustryLoaded(this.industries);
+
+  @override
+  List<Object?> get props => [industries];
+}
+
+class IndustryError extends IndustryState {
+  final String message;
+
+  IndustryError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

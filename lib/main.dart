@@ -12,6 +12,8 @@ import 'config/routes_name.dart';
 
 import 'bloc/auth/auth_bloc.dart';
 
+
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -42,6 +44,7 @@ class GolfApp extends StatelessWidget {
           create: (context) => LoginBloc(LoginRepository()),
         ),
         BlocProvider(create: (_) => LogoutBloc(LogoutRepository())),
+         BlocProvider(create: (_) => IndustryBloc(IndustryRepository())),
       ],
       child: SafeArea(
         bottom: true,

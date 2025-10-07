@@ -83,3 +83,20 @@ class LogoutBloc extends Bloc<LogoutEvent, LogoutState> {
     });
   }
 }
+
+//industry bloc
+class IndustryBloc extends Bloc<IndustryEvent, IndustryState> {
+  final IndustryRepository repository;
+
+  IndustryBloc(this.repository) : super(IndustryInitial()) {
+    on<FetchIndustriesEvent>((event, emit) async {
+      emit(IndustryLoading());
+      try {
+        final response = await repository.fetchIndustries();
+        emit(IndustryLoaded(response.industries));
+      } catch (e) {
+        emit(IndustryError(e.toString()));
+      }
+    });
+  }
+}

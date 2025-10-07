@@ -4,6 +4,7 @@ class RegistrationRequestModel {
   final String? phonumber;
   final String? email;
   final String? gender;
+  final String? industryRefNo;
   final String? password;
   final String? dob;
   final int? age;
@@ -21,6 +22,7 @@ class RegistrationRequestModel {
     this.phonumber,
     this.email,
     this.gender,
+    this.industryRefNo,
     this.password,
     this.dob,
     this.age,
@@ -40,6 +42,7 @@ class RegistrationRequestModel {
       "Phonumber": phonumber,
       "Email": email,
       "Gender": gender,
+      "IndustryRefNo": industryRefNo, // ✅ fixed key
       "Password": password,
       "DOB": dob,
       "Age": age,
@@ -53,6 +56,7 @@ class RegistrationRequestModel {
     };
   }
 }
+
 
 class RegistrationResponseModel {
   final int? id;
