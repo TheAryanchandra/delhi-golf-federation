@@ -13,25 +13,25 @@ class EventReportScreen extends StatelessWidget {
     final List<Map<String, String>> events = [
       {
         "sr": "1",
-        "eventTime": "06 Oct 2025, 10:00 AM",
-        "courseName": "Pebble Beach Golf Links",
+        "eventname": "Delhi Open 2025",
+        "eventdate": "06 Oct 2025 - 08 Oct 2025",
       },
       {
         "sr": "2",
-        "eventTime": "07 Oct 2025, 02:00 PM",
-        "courseName": "Augusta National Golf Club",
+        "eventname": "Banglore Open 2025",
+        "eventdate": "10 Oct 2025 - 12 Oct 2025",
       },
       {
         "sr": "3",
-        "eventTime": "08 Oct 2025, 09:30 AM",
-        "courseName": "St. Andrews Old Course",
+        "eventname": "Gurgoan Open 2025",
+        "eventdate": "15 Oct 2025 - 17 Oct 2025",
       },
     ];
 
     return Scaffold(
       body: Column(
         children: [
-          // Custom header with image and text
+          // Header with background image + title
           ClipRRect(
             borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(20),
@@ -69,18 +69,22 @@ class EventReportScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Scrollbar(
-                thumbVisibility: true, // Always show horizontal scrollbar
+                thumbVisibility: true,
                 trackVisibility: true,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Scrollbar(
-                    thumbVisibility: true, // Always show vertical scrollbar
+                    thumbVisibility: true,
                     trackVisibility: true,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.vertical,
                       child: DataTable(
                         headingRowColor: MaterialStateProperty.all(
-                          Colors.green.shade100,
+                          const Color(0xFF12563C), // your theme color
+                        ),
+                        headingTextStyle: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                         border: TableBorder.all(
                           color: Colors.grey.shade300,
@@ -88,16 +92,16 @@ class EventReportScreen extends StatelessWidget {
                         ),
                         columns: const [
                           DataColumn(label: Text("Sr.No")),
-                          DataColumn(label: Text("Event Time")),
-                          DataColumn(label: Text("Course Name")),
+                          DataColumn(label: Text("Event Name")),
+                          DataColumn(label: Text("Event Date")),
                           DataColumn(label: Text("Action")),
                         ],
                         rows: events.map((event) {
                           return DataRow(
                             cells: [
                               DataCell(Text(event["sr"]!)),
-                              DataCell(Text(event["eventTime"]!)),
-                              DataCell(Text(event["courseName"]!)),
+                              DataCell(Text(event["eventname"]!)),
+                              DataCell(Text(event["eventdate"]!)),
                               DataCell(
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
