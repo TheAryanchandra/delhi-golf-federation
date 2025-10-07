@@ -1,8 +1,6 @@
 import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/components/custombutton.dart';
-import 'package:delhi_golf_federation/screens/eventreport.dart';
 import 'package:flutter/material.dart';
-
 
 class EventScorecardScreen extends StatefulWidget {
   const EventScorecardScreen({super.key});
@@ -29,176 +27,244 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
+    const mainColor = Color(0xFF12563C);
 
     return Scaffold(
       appBar: AppBar(
-        // title: const Text(
-        //   "Event Scorecard",
-        //   style: TextStyle(fontWeight: FontWeight.bold),
-        // ),
-        backgroundColor: const Color.fromARGB(255, 248, 250, 249),
+        backgroundColor: Colors.white,
+        elevation: 1,
         centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          // ClipRRect header below AppBar
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
-            ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Image.asset(
-                  "assets/images/welcome.png",
-                  height: screenHeight * 0.15,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-                Container(
-                  height: screenHeight * 0.15,
-                  width: double.infinity,
-                  color: Colors.black.withOpacity(0.35),
-                ),
-                const Text(
-                  "Event Scorecard",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
-                  ),
-                ),
-              ],
-            ),
+        iconTheme: const IconThemeData(color: mainColor),
+        title: const Text(
+          "Event Scorecard",
+          style: TextStyle(
+            color: mainColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
+        ),
+      ),
+      body: Scrollbar(
+        thumbVisibility: true,
+        trackVisibility: true,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
 
-          // Event Score Table
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Scrollbar(
-                thumbVisibility: true,
-                trackVisibility: true,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Scrollbar(
-                    thumbVisibility: true,
-                    trackVisibility: true,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: DataTable(
-                        headingRowColor: MaterialStateProperty.all(
-                          ColorConstants.buttonColor.withOpacity(0.2),
+              // Event Info Section
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: mainColor.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: mainColor, width: 1.2),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "Event: Delhi Golf Championship 2025",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: mainColor,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "Player: Aryan Chandra",
+                      style: TextStyle(fontSize: 16, color: Colors.black87),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      "Handicap: 12",
+                      style: TextStyle(fontSize: 16, color: Colors.black87),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Score Table Vertical Layout
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: mainColor.withOpacity(0.05),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: mainColor.withOpacity(0.4)),
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        decoration: const BoxDecoration(
+                          color: mainColor,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(12),
+                            topRight: Radius.circular(12),
+                          ),
                         ),
-                        dataRowColor: MaterialStateProperty.all(
-                          Colors.green.shade50,
+                        child: const Center(
+                          child: Text(
+                            "Hole-wise Details",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                        border: TableBorder.all(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        columns: const [
-                          DataColumn(label: Text("Hole")),
-                          DataColumn(label: Text("Par")),
-                          DataColumn(label: Text("Index")),
-                          DataColumn(label: Text("Score")),
-                          DataColumn(label: Text("Total")),
-                        ],
-                        rows: holes.map((hole) {
-                          return DataRow(
-                            cells: [
-                              DataCell(Text(hole["hole"].toString())),
-                              DataCell(Text(hole["par"].toString())),
-                              DataCell(Text(hole["index"].toString())),
-                              DataCell(
-                                SizedBox(
-                                  width: 60,
-                                  child: TextFormField(
-                                    initialValue: hole["score"].toString(),
-                                    textAlign: TextAlign.center,
-                                    keyboardType: TextInputType.number,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 8, vertical: 4),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      // Dynamic Hole Cards
+                      ...holes.map((hole) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 6),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                                color: mainColor.withOpacity(0.3), width: 1),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.15),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // Hole Info
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Hole ${hole["hole"]}",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: mainColor,
                                     ),
-                                    onChanged: (val) {
-                                      setState(() {
-                                        hole["score"] = int.tryParse(val) ?? 0;
-                                      });
-                                    },
                                   ),
+                                  const SizedBox(height: 4),
+                                  Text("Par: ${hole["par"]}"),
+                                  Text("Index: ${hole["index"]}"),
+                                ],
+                              ),
+
+                              // Score Input Box
+                              SizedBox(
+                                width: 70,
+                                child: TextFormField(
+                                  initialValue: hole["score"].toString(),
+                                  textAlign: TextAlign.center,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    labelText: "Score",
+                                    labelStyle: const TextStyle(
+                                        fontSize: 12, color: mainColor),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          color: mainColor, width: 1.5),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                  ),
+                                  onChanged: (val) {
+                                    setState(() {
+                                      hole["score"] = int.tryParse(val) ?? 0;
+                                    });
+                                  },
                                 ),
                               ),
-                              DataCell(
-                                Text(
-                                  hole["score"].toString(),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
+
+                              // Total per Hole
+                              Text(
+                                hole["score"].toString(),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: mainColor,
                                 ),
                               ),
                             ],
-                          );
-                        }).toList(),
-                      ),
-                    ),
+                          ),
+                        );
+                      }).toList(),
+                    ],
                   ),
                 ),
               ),
-            ),
-          ),
 
-          const SizedBox(height: 16),
+              const SizedBox(height: 20),
 
-          // Total Score Section
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.green.shade50,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: ColorConstants.buttonColor),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Total Score:",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              // Total Score Section
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: mainColor.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: mainColor, width: 1.2),
                 ),
-                Text(
-                  totalScore.toString(),
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: ColorConstants.buttonColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Total Score:",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      totalScore.toString(),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: mainColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Save Button
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: CustomButton(
+                    text: "Save Score",
+                    backgroundColor: mainColor,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
                 ),
-              ],
-            ),
+              ),
+
+              const SizedBox(height: 20),
+            ],
           ),
-
-          const SizedBox(height: 16),
-
-          // Save Button
-          SizedBox(
-            width: double.infinity,
-            child: CustomButton(
-              text: "Save Score",
-              backgroundColor: ColorConstants.buttonColor,
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-
-          const SizedBox(height: 16),
-        ],
+        ),
       ),
     );
   }
