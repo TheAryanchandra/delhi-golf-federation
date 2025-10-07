@@ -55,8 +55,10 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
               // Event Info Section
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: mainColor.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(12),
@@ -126,15 +128,22 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
 
                       // Dynamic Hole Cards
                       ...holes.map((hole) {
+                        bool highlightHole =
+                            hole["hole"] == 1 || hole["hole"] == 1;
+
                         return Container(
                           margin: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 6),
+                            horizontal: 8,
+                            vertical: 6,
+                          ),
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                                color: mainColor.withOpacity(0.3), width: 1),
+                              color: mainColor.withOpacity(0.3),
+                              width: 1,
+                            ),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.15),
@@ -150,16 +159,66 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "Hole ${hole["hole"]}",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      color: mainColor,
-                                    ),
+                                  // Hole number with black dot
+                                  Row(
+                                    children: [
+                                      if (highlightHole)
+                                        Container(
+                                          width: 8,
+                                          height: 8,
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      if (highlightHole)
+                                        const SizedBox(width: 6),
+                                      Text(
+                                        "Hole ${hole["hole"]}",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: mainColor,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   const SizedBox(height: 4),
-                                  Text("Par: ${hole["par"]}"),
+                                  // Par with circled hole number
+                                  
+                                  // Par with hole number as superscript on top-right
+                                  Row(
+                                    children: [
+                                      Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          Text(
+                                            "Par: ${hole["par"]}",
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          if (highlightHole)
+                                            Positioned(
+                                              right:
+                                                  -10, // adjust horizontal position
+                                              top:
+                                                  -6, // adjust vertical position
+                                              child: Text(
+                                                hole["hole"].toString(),
+                                                style: const TextStyle(
+                                                  fontSize: 10,
+                                                  color: mainColor,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+
                                   Text("Index: ${hole["index"]}"),
                                 ],
                               ),
@@ -174,17 +233,23 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                   decoration: InputDecoration(
                                     labelText: "Score",
                                     labelStyle: const TextStyle(
-                                        fontSize: 12, color: mainColor),
+                                      fontSize: 12,
+                                      color: mainColor,
+                                    ),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: const BorderSide(
-                                          color: mainColor, width: 1.5),
+                                        color: mainColor,
+                                        width: 1.5,
+                                      ),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 4),
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
                                   ),
                                   onChanged: (val) {
                                     setState(() {
@@ -217,8 +282,10 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
               // Total Score Section
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: mainColor.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(8),
@@ -229,8 +296,10 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                   children: [
                     const Text(
                       "Total Score:",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       totalScore.toString(),
