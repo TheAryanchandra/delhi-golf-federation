@@ -1,4 +1,6 @@
+import 'package:delhi_golf_federation/bloc/event/bloc/event_bloc.dart';
 import 'package:delhi_golf_federation/data/auth_repository.dart';
+import 'package:delhi_golf_federation/data/events_repository.dart';
 import 'package:delhi_golf_federation/database/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,17 +14,13 @@ import 'config/routes_name.dart';
 
 import 'bloc/auth/auth_bloc.dart';
 
-
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final bool isLoggedIn = await SharedPreferencesHelper.isLoggedIn();
   final String? storedToken = await SharedPreferencesHelper.getUserToken();
 
-  if (storedToken != null && storedToken.isNotEmpty) {
-    debugPrint('🔐 Stored auth token found: $storedToken');
-  }
+  debugPrint('🔐 Stored auth token: $storedToken');
 
   runApp(GolfApp(isLoggedIn: isLoggedIn, storedToken: storedToken));
 }
@@ -44,8 +42,12 @@ class GolfApp extends StatelessWidget {
           create: (context) => LoginBloc(LoginRepository()),
         ),
         BlocProvider(create: (_) => LogoutBloc(LogoutRepository())),
-         BlocProvider(create: (_) => IndustryBloc(IndustryRepository())),
-         BlocProvider(create: (_) => RefreshTokenBloc(RefreshTokenRepository())),
+        BlocProvider(create: (_) => IndustryBloc(IndustryRepository())),
+        BlocProvider(create: (_) => RefreshTokenBloc(RefreshTokenRepository())),
+        BlocProvider(
+          create: (_) => EventsBloc(EventsRepository()), // positional argument
+        ),
+        
       ],
       child: SafeArea(
         bottom: true,

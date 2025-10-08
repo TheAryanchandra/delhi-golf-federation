@@ -186,6 +186,7 @@ class RefreshTokenRepository {
 
         if (data.status && data.response.isNotEmpty) {
           await SharedPreferencesHelper.setUserToken(data.response);
+          print('🔄 Refreshed token: ${data.response}');
         }
 
         return data;

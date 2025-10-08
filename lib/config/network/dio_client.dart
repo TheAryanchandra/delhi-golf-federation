@@ -39,6 +39,7 @@ class DioClient {
           final token = await SharedPreferencesHelper.getUserToken();
           options.headers['Authorization'] = 'Bearer $token';
           options.headers['Connection'] = 'keep-alive';
+          print('🔑 Current token: $token');
           return handler.next(options);
         },
 
@@ -61,10 +62,11 @@ class DioClient {
             await _refreshLock.synchronized(() async {
               // if this is the first waiter → actually refresh
               if (_queue.length == 1) {
-                try {
+              try {
                   final newTokenModel = await _auth.refreshToken();
                   if (newTokenModel.status && newTokenModel.response.isNotEmpty) {
                     await SharedPreferencesHelper.setUserToken(newTokenModel.response);
+                    print('🔄 Token refreshed in dio_client: ${newTokenModel.response}');
                   }
                 } finally {
                   // 3️⃣ replay every queued request (success or failure)

@@ -1,2 +1,5 @@
-- [ ] Add print statement in registerscreen.dart when registration is successful
-- [ ] Test the registration process to ensure print appears
+- [x] Add timeouts to Dio client (connectTimeout, receiveTimeout, sendTimeout: 30 seconds)
+- [x] Change RoleId from 0 to null in request data
+- [x] Add 'Accept': 'application/json' header
+- [x] Simplify request data to only essential fields: EntryType, Page, PageSize
+- [ ] Test the app to verify the 408 error is resolved
