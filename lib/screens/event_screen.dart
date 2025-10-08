@@ -257,15 +257,6 @@ class _EventsScreenState extends State<EventsScreen> {
           ),
           const SizedBox(height: 8),
 
-          /// Event Type
-          if (event.eventType != null)
-            Text(
-              'Type: ${event.eventType}',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 15, color: Colors.grey),
-            ),
-
-          const SizedBox(height: 12),
 
           /// Date Row
           Row(

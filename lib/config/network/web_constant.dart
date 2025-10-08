@@ -11,3 +11,11 @@ const String registrationEndpoint = "$baseUrl/account/registration";
 const String loginEndpoint = "$baseUrl/account/login";
 
 const String logoutEndpoint = "$baseUrl/account/logout";
+
+const String refreshTokenEndpoint = "$baseUrl/account/refresh-token";
+
+const String eventsEndpoint = "$baseUrl/account/events";
+
+
+/// Master APIs
+const String industryEndpoint = "$baseUrl/master/industry";

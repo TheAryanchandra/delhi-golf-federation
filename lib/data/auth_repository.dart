@@ -138,20 +138,18 @@ class LogoutRepository {
 // industry repository
 
 class IndustryRepository {
-  final String baseUrl = "http://admin.delhigolf.org/api/master/industry";
-
   Future<IndustryResponse> fetchIndustries() async {
     try {
       final response = await http.get(
-        Uri.parse(baseUrl),
+        Uri.parse(industryEndpoint),
         headers: {
-          "Content-Type": "application/json",
-          "api-key": "065A0566-4ACA-4C5B-9789-9B4992AC40F3",
+          "Content-Type": headersJson,
+          "api-key": apiKey,
         },
       );
 
-      print("API Response Status Code: ${response.statusCode}");
-      print("API Response Body: ${response.body}");
+      print("🟢 API Response Status Code: ${response.statusCode}");
+      print("🟢 API Response Body: ${response.body}");
       
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
@@ -165,42 +163,48 @@ class IndustryRepository {
   }
 }
 
+
 // refresh token
 
 class RefreshTokenRepository {
-  final String _url = 'https://admin.delhigolf.org/api/account/refresh-token';
-  final Dio _dio = Dio(BaseOptions(
-    connectTimeout: const Duration(seconds: 10),
-    receiveTimeout: const Duration(seconds: 10),
-  ));
+  final Dio _dio = Dio(
+    BaseOptions(
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+    ),
+  );
 
   Future<RefreshTokenModel> refreshToken() async {
     try {
       final oldToken = await SharedPreferencesHelper.getUserToken();
 
       final response = await _dio.post(
-        _url,
+        refreshTokenEndpoint,
         options: Options(
           headers: {
             'Authorization': 'Bearer $oldToken',
             'Connection': 'keep-alive',
+            'api-key': apiKey,
+            'Content-Type': headersJson,
           },
         ),
       );
 
+      print("🟢 Refresh Token API Status Code: ${response.statusCode}");
+      print("🟢 Refresh Token API Response: ${response.data}");
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = response.data;
-
         final data = RefreshTokenModel.fromJson(jsonResponse);
 
         if (data.status && data.response.isNotEmpty) {
           await SharedPreferencesHelper.setUserToken(data.response);
-          print('🔄 Refreshed token: ${data.response}');
+          print('🔄 Token refreshed successfully: ${data.response}');
         }
 
         return data;
       } else {
-        throw Exception('Failed to refresh token. Status code: ${response.statusCode}');
+        throw Exception('Failed to refresh token (status: ${response.statusCode})');
       }
     } catch (e) {
       throw Exception('Token refresh failed: $e');
