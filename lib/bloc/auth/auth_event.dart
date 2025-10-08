@@ -46,3 +46,11 @@ abstract class IndustryEvent extends Equatable {
 }
 
 class FetchIndustriesEvent extends IndustryEvent {}
+
+// refresh token
+abstract class RefreshTokenEvent extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
+
+class RefreshTokenRequested extends RefreshTokenEvent {}

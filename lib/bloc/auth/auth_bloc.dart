@@ -100,3 +100,26 @@ class IndustryBloc extends Bloc<IndustryEvent, IndustryState> {
     });
   }
 }
+
+// refresh token
+
+class RefreshTokenBloc extends Bloc<RefreshTokenEvent, RefreshTokenState> {
+  final RefreshTokenRepository repository;
+
+  RefreshTokenBloc(this.repository) : super(RefreshTokenInitial()) {
+    on<RefreshTokenRequested>(_onRefreshTokenRequested);
+  }
+
+  Future<void> _onRefreshTokenRequested(
+    RefreshTokenRequested event,
+    Emitter<RefreshTokenState> emit,
+  ) async {
+    emit(RefreshTokenLoading());
+    try {
+      final result = await repository.refreshToken();
+      emit(RefreshTokenSuccess(result));
+    } catch (e) {
+      emit(RefreshTokenFailure(e.toString()));
+    }
+  }
+}

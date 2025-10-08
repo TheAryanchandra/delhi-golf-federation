@@ -2,6 +2,7 @@
 
 import 'package:delhi_golf_federation/model/industrymodel.dart';
 import 'package:delhi_golf_federation/model/login_model.dart';
+import 'package:delhi_golf_federation/model/refresh_token_model.dart';
 import 'package:delhi_golf_federation/model/registermodel.dart';
 import 'package:equatable/equatable.dart';
 
@@ -101,4 +102,32 @@ class IndustryError extends IndustryState {
 
   @override
   List<Object?> get props => [message];
+}
+
+// refresh token 
+abstract class RefreshTokenState extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
+
+class RefreshTokenInitial extends RefreshTokenState {}
+
+class RefreshTokenLoading extends RefreshTokenState {}
+
+class RefreshTokenSuccess extends RefreshTokenState {
+  final RefreshTokenModel model;
+
+  RefreshTokenSuccess(this.model);
+
+  @override
+  List<Object?> get props => [model];
+}
+
+class RefreshTokenFailure extends RefreshTokenState {
+  final String error;
+
+  RefreshTokenFailure(this.error);
+
+  @override
+  List<Object?> get props => [error];
 }
