@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'package:delhi_golf_federation/bloc/event/bloc/event_bloc.dart';
+import 'package:delhi_golf_federation/config/network/dio_client.dart';
+import 'package:delhi_golf_federation/config/network/web_constant.dart';
 import 'package:delhi_golf_federation/data/auth_repository.dart';
 import 'package:delhi_golf_federation/data/events_repository.dart';
 import 'package:delhi_golf_federation/database/shared_preferences.dart';
@@ -17,10 +20,37 @@ import 'bloc/auth/auth_bloc.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize DioClient
+  await DioClient().init(baseUrl: baseUrl);
+
   final bool isLoggedIn = await SharedPreferencesHelper.isLoggedIn();
   final String? storedToken = await SharedPreferencesHelper.getUserToken();
 
   debugPrint('🔐 Stored auth token: $storedToken');
+
+  // Refresh token on app start if logged in
+  if (isLoggedIn && storedToken != null && storedToken.isNotEmpty) {
+    try {
+      final refreshRepo = RefreshTokenRepository();
+      await refreshRepo.refreshToken();
+      debugPrint('🔄 Token refreshed on app start');
+    } catch (e) {
+      debugPrint('Failed to refresh token on start: $e');
+    }
+  }
+
+  // Periodic refresh every 5 minutes
+  Timer.periodic(const Duration(minutes: 5), (timer) async {
+    if (await SharedPreferencesHelper.isLoggedIn()) {
+      try {
+        final refreshRepo = RefreshTokenRepository();
+        await refreshRepo.refreshToken();
+        debugPrint('🔄 Periodic token refresh');
+      } catch (e) {
+        debugPrint('Failed periodic refresh: $e');
+      }
+    }
+  });
 
   runApp(GolfApp(isLoggedIn: isLoggedIn, storedToken: storedToken));
 }

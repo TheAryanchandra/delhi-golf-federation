@@ -7,6 +7,7 @@ import 'package:delhi_golf_federation/model/logout_model.dart';
 import 'package:delhi_golf_federation/model/refresh_token_model.dart';
 import 'package:delhi_golf_federation/model/registermodel.dart';
 import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 // register repository
 class RegistrationRepository {
@@ -166,21 +167,27 @@ class IndustryRepository {
 
 class RefreshTokenRepository {
   final String _url = 'https://admin.delhigolf.org/api/account/refresh-token';
+  final Dio _dio = Dio(BaseOptions(
+    connectTimeout: const Duration(seconds: 10),
+    receiveTimeout: const Duration(seconds: 10),
+  ));
 
   Future<RefreshTokenModel> refreshToken() async {
     try {
       final oldToken = await SharedPreferencesHelper.getUserToken();
 
-      final response = await http.post(
-        Uri.parse(_url),
-        headers: {
-          'Authorization': 'Bearer $oldToken',
-          'Connection': 'keep-alive',
-        },
+      final response = await _dio.post(
+        _url,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $oldToken',
+            'Connection': 'keep-alive',
+          },
+        ),
       );
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        final Map<String, dynamic> jsonResponse = response.data;
 
         final data = RefreshTokenModel.fromJson(jsonResponse);
 

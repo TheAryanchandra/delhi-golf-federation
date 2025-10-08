@@ -1,4 +1,3 @@
-
 import 'package:delhi_golf_federation/bloc/event/bloc/event_bloc.dart';
 import 'package:delhi_golf_federation/bloc/event/bloc/event_event.dart';
 import 'package:delhi_golf_federation/bloc/event/bloc/event_state.dart';
@@ -6,7 +5,6 @@ import 'package:delhi_golf_federation/components/custombutton.dart';
 import 'package:delhi_golf_federation/model/eventmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({super.key});
@@ -18,7 +16,7 @@ class EventsScreen extends StatefulWidget {
 class _EventsScreenState extends State<EventsScreen> {
   bool showUpcoming = true;
   int currentPage = 1;
-  final int itemsPerPage = 5; // PageSize is fixed as 5
+  final int itemsPerPage = 5;
 
   @override
   void initState() {
@@ -28,8 +26,8 @@ class _EventsScreenState extends State<EventsScreen> {
 
   void _fetchEvents() {
     context.read<EventsBloc>().add(
-          FetchEvents(upcoming: showUpcoming, page: currentPage),
-        );
+      FetchEvents(upcoming: showUpcoming, page: currentPage),
+    );
   }
 
   void _switchTab(bool upcoming) {
@@ -97,10 +95,12 @@ class _EventsScreenState extends State<EventsScreen> {
                   child: CustomButton(
                     text: "Upcoming Events",
                     onPressed: () => _switchTab(true),
-                    backgroundColor:
-                        showUpcoming ? const Color(0xFF0B592A) : Colors.white,
-                    textColor:
-                        showUpcoming ? Colors.white : const Color(0xFF0B592A),
+                    backgroundColor: showUpcoming
+                        ? const Color(0xFF0B592A)
+                        : Colors.white,
+                    textColor: showUpcoming
+                        ? Colors.white
+                        : const Color(0xFF0B592A),
                     borderRadius: 12,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -110,10 +110,12 @@ class _EventsScreenState extends State<EventsScreen> {
                   child: CustomButton(
                     text: "Past Events",
                     onPressed: () => _switchTab(false),
-                    backgroundColor:
-                        !showUpcoming ? const Color(0xFF0B592A) : Colors.white,
-                    textColor:
-                        !showUpcoming ? Colors.white : const Color(0xFF0B592A),
+                    backgroundColor: !showUpcoming
+                        ? const Color(0xFF0B592A)
+                        : Colors.white,
+                    textColor: !showUpcoming
+                        ? Colors.white
+                        : const Color(0xFF0B592A),
                     borderRadius: 12,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -169,10 +171,13 @@ class _EventsScreenState extends State<EventsScreen> {
                               return GestureDetector(
                                 onTap: () => _changePage(page),
                                 child: Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(horizontal: 4),
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 4,
+                                  ),
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 6),
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: isActive
                                         ? const Color(0xFF0B592A)
@@ -192,8 +197,10 @@ class _EventsScreenState extends State<EventsScreen> {
                               );
                             }),
                             IconButton(
-                              icon:
-                                  const Icon(Icons.arrow_forward_ios, size: 16),
+                              icon: const Icon(
+                                Icons.arrow_forward_ios,
+                                size: 16,
+                              ),
                               onPressed: currentPage < totalPages
                                   ? () => _changePage(currentPage + 1)
                                   : null,
@@ -205,7 +212,8 @@ class _EventsScreenState extends State<EventsScreen> {
                   );
                 } else if (state is EventsError) {
                   return Center(
-                      child: Text(state.message ?? "Failed to load events"));
+                    child: Text(state.message ?? "Failed to load events"),
+                  );
                 } else {
                   return const SizedBox();
                 }
@@ -221,10 +229,10 @@ class _EventsScreenState extends State<EventsScreen> {
   Widget _buildEventCard(EventModel event) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.shade300),
         boxShadow: [
           BoxShadow(
@@ -235,114 +243,139 @@ class _EventsScreenState extends State<EventsScreen> {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Image
-          if (event.image != null && event.image!.isNotEmpty)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                'https://delhigolf.org${event.image}',
-                height: 150,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  height: 150,
-                  color: Colors.grey.shade200,
-                  child: const Center(child: Icon(Icons.image_not_supported)),
-                ),
-              ),
-            ),
-          const SizedBox(height: 8),
-          // Event Name
+          /// Event Name
           Text(
             event.eventName ?? 'No Name',
+            textAlign: TextAlign.center,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 18,
+              fontSize: 20,
+              color: Color(0xFF0B592A),
             ),
           ),
-          const SizedBox(height: 4),
-          // Event Type
+          const SizedBox(height: 8),
+
+          /// Event Type
           if (event.eventType != null)
             Text(
               'Type: ${event.eventType}',
-              style: const TextStyle(fontSize: 14, color: Colors.grey),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 15, color: Colors.grey),
             ),
-          const SizedBox(height: 4),
-          // Dates
+
+          const SizedBox(height: 12),
+
+          /// Date Row
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.calendar_today, size: 16, color: Color(0xFF0B592A)),
-              const SizedBox(width: 4),
+              const Icon(
+                Icons.calendar_today,
+                size: 18,
+                color: Color(0xFF0B592A),
+              ),
+              const SizedBox(width: 6),
               Text(
-                '${event.startDate ?? ''} - ${event.endDate ?? ''}',
-                style: const TextStyle(fontSize: 14),
+                '${event.startDate ?? ''}  -  ${event.endDate ?? ''}',
+                style: const TextStyle(fontSize: 15),
               ),
             ],
           ),
-          const SizedBox(height: 4),
-          // Venue
+          const SizedBox(height: 10),
+
+          /// Venue Row
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.location_on, size: 16, color: Color(0xFF0B592A)),
-              const SizedBox(width: 4),
-              Expanded(
+              const Icon(Icons.location_on, size: 18, color: Color(0xFF0B592A)),
+              const SizedBox(width: 6),
+              Flexible(
                 child: Text(
                   event.venue ?? 'No Venue',
-                  style: const TextStyle(fontSize: 14),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 15),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 4),
-          // Price Money
+
+          const SizedBox(height: 10),
+
+          /// Prize Money Row
           if (event.priceMoney != null)
-            Text(
-              'Prize Money: ${event.priceMoney}',
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-          const SizedBox(height: 4),
-          // Year
-          if (event.year != null)
-            Text(
-              'Year: ${event.year}',
-              style: const TextStyle(fontSize: 14),
-            ),
-          const SizedBox(height: 4),
-          // Ref No
-          if (event.refNo != null)
-          //   Text(
-          //     'Ref No: ${event.refNo}',
-          //     style: const TextStyle(fontSize: 14),
-          //   ),
-          // const SizedBox(height: 4),
-          // Page Url
-          // if (event.pageUrl != null)
-          //   Text(
-          //     'Page: ${event.pageUrl}',
-          //     style: const TextStyle(fontSize: 14),
-          //   ),
-          // const SizedBox(height: 4),
-          // Entry Date
-          // if (event.entryDate != null)
-          //   Text(
-          //     'Entry Date: ${event.entryDate}',
-          //     style: const TextStyle(fontSize: 14),
-          //   ),
-          // const SizedBox(height: 8),
-          // Content
-          if (event.content != null && event.content!.isNotEmpty)
-            Html(
-              data: event.content,
-              style: {
-                "body": Style(
-                  fontSize: FontSize(14),
-                  margin: Margins.zero,
-                  padding: HtmlPaddings.zero,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.attach_money,
+                  size: 18,
+                  color: Color(0xFF0B592A),
                 ),
-              },
+                const SizedBox(width: 6),
+                Text(
+                  'Prize Money: ${event.priceMoney}',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
+
+          const SizedBox(height: 20),
+
+          /// Buttons Centered
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // View Button
+              CustomButton(
+                text: "View",
+                onPressed: () {
+                  // Handle view logic here
+                },
+                backgroundColor: const Color(0xFF0B592A),
+                textColor: Colors.white,
+                borderRadius: 10,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+              ),
+              const SizedBox(width: 12),
+
+              // Register Button (only for upcoming)
+              if (showUpcoming)
+                OutlinedButton(
+                  onPressed: () {
+                    // Handle register logic here
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(
+                      color: Color(0xFF0B592A),
+                      width: 1.5,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                  ),
+                  child: const Text(
+                    "Register",
+                    style: TextStyle(
+                      color: Color(0xFF0B592A),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ],
       ),
     );

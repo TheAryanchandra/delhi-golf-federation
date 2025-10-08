@@ -1,5 +1,5 @@
-- [x] Add timeouts to Dio client (connectTimeout, receiveTimeout, sendTimeout: 30 seconds)
-- [x] Change RoleId from 0 to null in request data
-- [x] Add 'Accept': 'application/json' header
-- [x] Simplify request data to only essential fields: EntryType, Page, PageSize
-- [ ] Test the app to verify the 408 error is resolved
+- [x] Initialize DioClient in main.dart with baseUrl
+- [x] Add periodic token refresh every 5 minutes in main.dart
+- [x] Add token refresh on app start in main.dart
+- [x] Modify RefreshTokenRepository to use plain Dio
+- [x] Modify EventsRepository to use DioClient.dio
