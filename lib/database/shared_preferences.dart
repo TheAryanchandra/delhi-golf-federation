@@ -6,7 +6,7 @@ class SharedPreferencesHelper {
 
   static const String userTokenKey = 'userToken';
   // static const String savedOtpKey = 'savedOtp';
-  // static const String userEmailKey = 'userEmail';
+  static const String userEmailKey = 'userEmail';
   // static const String userMobileKey = 'userMobile';
 
   // Save login status
@@ -90,17 +90,17 @@ class SharedPreferencesHelper {
   //   return prefs.getString(savedOtpKey);
   // }
 
-  // // Save user email
-  // static Future<bool> setUserEmail(String email) async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   return prefs.setString(userEmailKey, email);
-  // }
+  // Save user email
+  static Future<bool> setUserEmail(String email) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString(userEmailKey, email);
+  }
 
   // Get user email
-  // static Future<String?> getUserEmail() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   return prefs.getString(userEmailKey);
-  // }
+  static Future<String?> getUserEmail() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(userEmailKey);
+  }
 
   // Save user mobile
   // static Future<bool> setUserMobile(String mobile) async {

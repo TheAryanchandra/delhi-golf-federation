@@ -70,7 +70,9 @@ class LoginRepository {
         if (token != null && token.isNotEmpty) {
           await SharedPreferencesHelper.setUserToken(token);
           await SharedPreferencesHelper.setLoggedIn(true);
+          await SharedPreferencesHelper.setUserEmail(email);
           print("✅ Token saved in SharedPreferences: $token");
+          print("✅ Email saved in SharedPreferences: $email");
         }
         return LoginResponse.fromJson(jsonResponse);
       } else {

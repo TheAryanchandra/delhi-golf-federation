@@ -1,5 +1,5 @@
-- [x] Initialize DioClient in main.dart with baseUrl
-- [x] Add periodic token refresh every 5 minutes in main.dart
-- [x] Add token refresh on app start in main.dart
-- [x] Modify RefreshTokenRepository to use plain Dio
-- [x] Modify EventsRepository to use DioClient.dio
+- [ ] Initialize DioClient in main.dart with baseUrl
+- [ ] Add periodic token refresh every 5 minutes in main.dart
+- [ ] Add token refresh on app start in main.dart
+- [ ] Modify RefreshTokenRepository to use plain Dio
+- [ ] Modify EventsRepository to use DioClient.dio
