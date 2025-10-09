@@ -1,5 +1,6 @@
-# TODO: Move Token Refresh to DioClient
-
-- [ ] Add manual refreshToken method in DioClient
-- [ ] Remove manual token refresh calls from main.dart
-- [ ] Test the app to ensure token refresh works via DioClient interceptor
+- [ ] Override initState in _EventRegisterPopupState and add print statement for widget initialization.
+- [ ] Add print statement in build method to log when widget is rebuilt.
+- [ ] Add print statement in BlocListener listener to log state changes.
+- [ ] Add print statement in _fillForm method to log when form is filled.
+- [ ] Add print statement in _calculateAge method to log calculated age.
+- [ ] Add print statement in dispose method to log widget disposal.
