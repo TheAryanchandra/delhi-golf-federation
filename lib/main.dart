@@ -33,29 +33,12 @@ Future<void> main() async {
 
   debugPrint('🔐 Stored auth token: $storedToken');
 
-  // Refresh token on app start if logged in
-  if (isLoggedIn && storedToken != null && storedToken.isNotEmpty) {
-    try {
-      final refreshRepo = RefreshTokenRepository();
-      await refreshRepo.refreshToken();
-      debugPrint('🔄 Token refreshed on app start');
-    } catch (e) {
-      debugPrint('Failed to refresh token on start: $e');
-    }
-  }
+  // Token refresh is now handled automatically by DioClient interceptor
+  // when a 401/403 response is received
 
-  // Periodic refresh every 5 minutes
-  Timer.periodic(const Duration(minutes: 5), (timer) async {
-    if (await SharedPreferencesHelper.isLoggedIn()) {
-      try {
-        final refreshRepo = RefreshTokenRepository();
-        await refreshRepo.refreshToken();
-        debugPrint('🔄 Periodic token refresh');
-      } catch (e) {
-        debugPrint('Failed periodic refresh: $e');
-      }
-    }
-  });
+  // 🧪 UNCOMMENT TO TEST TOKEN REFRESH:
+  // await DioClient().testTokenRefresh();
+  // debugPrint('🧪 Token corrupted for testing. Next API call will trigger refresh.');
 
   runApp(GolfApp(isLoggedIn: isLoggedIn, storedToken: storedToken));
 }
