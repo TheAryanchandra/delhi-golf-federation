@@ -1,5 +1,5 @@
-- [ ] Initialize DioClient in main.dart with baseUrl
-- [ ] Add periodic token refresh every 5 minutes in main.dart
-- [ ] Add token refresh on app start in main.dart
-- [ ] Modify RefreshTokenRepository to use plain Dio
-- [ ] Modify EventsRepository to use DioClient.dio
+# TODO: Move Token Refresh to DioClient
+
+- [ ] Add manual refreshToken method in DioClient
+- [ ] Remove manual token refresh calls from main.dart
+- [ ] Test the app to ensure token refresh works via DioClient interceptor

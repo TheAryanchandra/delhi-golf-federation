@@ -1,8 +1,10 @@
 import 'package:delhi_golf_federation/bloc/event/bloc/event_bloc.dart';
 import 'package:delhi_golf_federation/bloc/event/bloc/event_event.dart';
 import 'package:delhi_golf_federation/bloc/event/bloc/event_state.dart';
+import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/components/custombutton.dart';
 import 'package:delhi_golf_federation/model/eventmodel.dart';
+import 'package:delhi_golf_federation/widgets/eventwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -257,7 +259,6 @@ class _EventsScreenState extends State<EventsScreen> {
           ),
           const SizedBox(height: 8),
 
-
           /// Date Row
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -341,11 +342,14 @@ class _EventsScreenState extends State<EventsScreen> {
               if (showUpcoming)
                 OutlinedButton(
                   onPressed: () {
-                    // Handle register logic here
+                    showDialog(
+                      context: context,
+                      builder: (context) => const EventRegisterPopup(),
+                    );
                   },
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(
-                      color: Color(0xFF0B592A),
+                      color: ColorConstants.buttonColor,
                       width: 1.5,
                     ),
                     shape: RoundedRectangleBorder(
@@ -359,7 +363,7 @@ class _EventsScreenState extends State<EventsScreen> {
                   child: const Text(
                     "Register",
                     style: TextStyle(
-                      color: Color(0xFF0B592A),
+                      color: ColorConstants.buttonColor,
                       fontWeight: FontWeight.w600,
                       fontSize: 15,
                     ),

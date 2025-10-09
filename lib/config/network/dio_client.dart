@@ -62,7 +62,7 @@ class DioClient {
             await _refreshLock.synchronized(() async {
               // if this is the first waiter → actually refresh
               if (_queue.length == 1) {
-              try {
+                try {
                   final newTokenModel = await _auth.refreshToken();
                   if (newTokenModel.status && newTokenModel.response.isNotEmpty) {
                     await SharedPreferencesHelper.setUserToken(newTokenModel.response);
@@ -146,6 +146,28 @@ class DioClient {
       extra: {...original.extra, 'retried': true},
     );
     return dio.fetch(cloned);
+  }
+
+  // ───────────────── PUBLIC GET HELPER ────────────────────
+  Future<Response> get(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
+    try {
+      final response = await dio.get(
+        path,
+        queryParameters: queryParameters,
+        options: options,
+      );
+      return response;
+    } on DioException catch (e) {
+      throw Exception(
+        'Dio error: ${e.response?.statusCode ?? 'unknown'} - ${e.message}',
+      );
+    } catch (e) {
+      throw Exception('Unexpected error: $e');
+    }
   }
 }
 
