@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:delhi_golf_federation/config/network/web_constant.dart';
 import 'package:dio/dio.dart';
 import 'package:delhi_golf_federation/config/network/dio_client.dart';
@@ -51,11 +52,13 @@ class EventsRepository {
       );
 
       print("✅ Status: ${response.statusCode}");
-      print("🟢 Response: ${response.data}");
+      debugPrint("🟢 Response: ${jsonEncode(response.data)}");
 
       if (response.statusCode == 200) {
         final data = response.data;
-        return EventsResponse.fromJson(data);
+        final eventsResponse = EventsResponse.fromJson(data);
+        print("RefNo: ${eventsResponse.response?.dt?.first?.refNo}");
+        return eventsResponse;
       } else {
         throw Exception('Failed to load events: ${response.statusCode}');
       }

@@ -347,7 +347,7 @@ class _EventsScreenState extends State<EventsScreen> {
                     context.read<UserDataBloc>().add(FetchUserDataEvent());
                     showDialog(
                       context: context,
-                      builder: (context) => const EventRegisterPopup(),
+                      builder: (context) => EventRegisterPopup(eventRefNo: event.refNo ?? ''),
                     );
                   },
                   style: OutlinedButton.styleFrom(

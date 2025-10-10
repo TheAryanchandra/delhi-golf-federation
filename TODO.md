@@ -1,2 +1,1 @@
-- [x] Add imports for UserDataBloc and FetchUserDataEvent in lib/screens/event_screen.dart
-- [x] Update Register button onPressed to dispatch FetchUserDataEvent and open the dialog
+- [x] Add print statements in eventwidget.dart to log the data being sent during event registration submission

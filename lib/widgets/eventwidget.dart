@@ -10,7 +10,8 @@ import 'package:delhi_golf_federation/model/getdatamodel.dart';
 import 'package:delhi_golf_federation/model/eventregistermodel.dart';
 
 class EventRegisterPopup extends StatefulWidget {
-  const EventRegisterPopup({super.key});
+  final String eventRefNo;
+  const EventRegisterPopup({super.key, required this.eventRefNo});
 
   @override
   State<EventRegisterPopup> createState() => _EventRegisterPopupState();
@@ -265,10 +266,21 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                                         ghinNo: _ghinController.text.trim(),
                                         cmpCode: null,
                                         roleId: null,
-                                        eventRefNo:
-                                            "Ref_54feaf31-dda5-4893-850c-8f0cde5088e1",
+                                        eventRefNo: widget.eventRefNo,
                                         source: "APP",
                                       );
+                                      print("Sending EventRegistrationRequest: $request");
+                                      print("Event Ref No: ${widget.eventRefNo}");
+                                      print("Name: ${request.name}");
+                                      print("Email: ${request.email}");
+                                      print("Phone: ${request.phonumber}");
+                                      print("Gender: ${request.gender}");
+                                      print("DOB: ${request.dob}");
+                                      print("Age: ${request.age}");
+                                      print("Home Club: ${request.homeClub}");
+                                      print("Handicap: ${request.usgaHandicapIndex}");
+                                      print("GHIN: ${request.ghinNo}");
+                                      print("Source: ${request.source}");
                                       context.read<EventRegistrationBloc>().add(
                                         SubmitEventRegistration(request),
                                       );
