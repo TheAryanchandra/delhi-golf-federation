@@ -206,10 +206,33 @@ class DioClient {
 
             case DioExceptionType.badResponse:
               print('📛 [DioClient] Bad response error');
+              String message;
+              switch (status) {
+                case 408:
+                  message = 'Request Timeout: The server took too long to respond.';
+                  break;
+                case 400:
+                  message = 'Bad Request: The request was malformed.';
+                  break;
+                case 401:
+                  message = 'Unauthorized: Authentication is required.';
+                  break;
+                case 403:
+                  message = 'Forbidden: Access is denied.';
+                  break;
+                case 404:
+                  message = 'Not Found: The requested resource was not found.';
+                  break;
+                case 500:
+                  message = 'Internal Server Error: Something went wrong on the server.';
+                  break;
+                default:
+                  message = 'Bad response: $status';
+              }
               return handler.reject(
                 DioException(
                   requestOptions: error.requestOptions,
-                  error: Exception('Bad response: $status'),
+                  error: Exception(message),
                   type: DioExceptionType.unknown,
                 ),
               );
@@ -247,35 +270,48 @@ class DioClient {
   }
 
   Future<void> _performTokenRefresh() async {
-    try {
-      final isLoggedIn = await SharedPreferencesHelper.isLoggedIn();
-      final token = await SharedPreferencesHelper.getUserToken();
+    final isLoggedIn = await SharedPreferencesHelper.isLoggedIn();
+    final token = await SharedPreferencesHelper.getUserToken();
 
-      if (!isLoggedIn || token == null || token.isEmpty) {
-        print(
-          '⏭️ [DioClient] Skipping refresh - user not logged in or no token',
-        );
-        return;
-      }
-
-      print('🔄 [DioClient] Performing periodic token refresh...');
-      final newTokenModel = await _auth.refreshToken();
-
+    if (!isLoggedIn || token == null || token.isEmpty) {
       print(
-        '📦 [DioClient] Periodic refresh result: status=${newTokenModel.status}, token=${newTokenModel.response}',
+        '⏭️ [DioClient] Skipping refresh - user not logged in or no token',
       );
+      return;
+    }
 
-      if (newTokenModel.status && newTokenModel.response.isNotEmpty) {
+    int retryCount = 0;
+    const int maxRetries = 3;
+
+    while (retryCount < maxRetries) {
+      try {
+        print('🔄 [DioClient] Performing periodic token refresh... (attempt ${retryCount + 1})');
+        final newTokenModel = await _auth.refreshToken();
+
         print(
-          '🔄 [DioClient] Token refresh completed successfully in dio_client',
+          '📦 [DioClient] Periodic refresh result: status=${newTokenModel.status}, token=${newTokenModel.response}',
         );
-      } else {
-        print(
-          '⚠️ [DioClient] Periodic refresh returned false status or empty token',
-        );
+
+        if (newTokenModel.status && newTokenModel.response.isNotEmpty) {
+          print(
+            '🔄 [DioClient] Token refresh completed successfully in dio_client',
+          );
+        } else {
+          print(
+            '⚠️ [DioClient] Periodic refresh returned false status or empty token',
+          );
+        }
+        return; // success, exit
+      } catch (e) {
+        retryCount++;
+        if (retryCount < maxRetries) {
+          final delay = Duration(seconds: 2 * retryCount); // exponential backoff
+          print('⏳ [DioClient] Token refresh failed, retrying in ${delay.inSeconds} seconds... (attempt $retryCount)');
+          await Future.delayed(delay);
+        } else {
+          print('❌ [DioClient] Periodic token refresh failed after $maxRetries attempts: $e');
+        }
       }
-    } catch (e) {
-      print('❌ [DioClient] Periodic token refresh failed: $e');
     }
   }
 
