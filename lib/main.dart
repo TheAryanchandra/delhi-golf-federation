@@ -26,7 +26,19 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize DioClient
-  await DioClient().init(baseUrl: baseUrl);
+  final dioClient = DioClient();
+  await dioClient.init(baseUrl: baseUrl);
+
+  // Listen for auth failures
+  dioClient.authFailureController.stream.listen((failed) {
+    if (failed) {
+      // Navigate to login screen using navigator key
+      navigatorKey.currentState?.pushNamedAndRemoveUntil(
+        RoutesName.loginScreen,
+        (route) => false,
+      );
+    }
+  });
 
   final bool isLoggedIn = await SharedPreferencesHelper.isLoggedIn();
   final String? storedToken = await SharedPreferencesHelper.getUserToken();
@@ -42,6 +54,9 @@ Future<void> main() async {
 
   runApp(GolfApp(isLoggedIn: isLoggedIn, storedToken: storedToken));
 }
+
+// Add global navigator key
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class GolfApp extends StatelessWidget {
   const GolfApp({super.key, required this.isLoggedIn, this.storedToken});
@@ -66,9 +81,13 @@ class GolfApp extends StatelessWidget {
           create: (_) => EventsBloc(EventsRepository()), // positional argument
         ),
         BlocProvider(
-         create: (_) => UserDataBloc(authRepository: AuthRepository())..add(FetchUserDataEvent()),
+          create: (_) =>
+              UserDataBloc(authRepository: AuthRepository())
+                ..add(FetchUserDataEvent()),
         ),
-        BlocProvider(create: (_) => EventRegistrationBloc(EventRegistrationRepository())),
+        BlocProvider(
+          create: (_) => EventRegistrationBloc(EventRegistrationRepository()),
+        ),
       ],
       child: SafeArea(
         bottom: true,
