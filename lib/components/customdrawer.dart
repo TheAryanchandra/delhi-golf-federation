@@ -77,7 +77,7 @@ class CustomDrawer extends StatelessWidget {
                 //   "/bookTee",
                 // ),
                 _buildDrawerItem(context, Icons.book, "Booking", "/booking"),
-                _buildDrawerItem(context, Icons.sports_golf, "Event Report", "/eventreport"),
+                _buildDrawerItem(context, Icons.sports_golf, "ScoreCard", "/eventreport"),
                 _buildDrawerItem(
                   context,
                   Icons.emoji_events,
@@ -328,7 +328,7 @@ class _ScreenWithNavigationState extends State<_ScreenWithNavigation> {
             //   icon: Icon(Icons.golf_course),
             //   label: "Book Tee Time",
             // ),
-             BottomNavigationBarItem(icon: Icon(Icons.sports_golf), label: 'MyScorecard'),
+             BottomNavigationBarItem(icon: Icon(Icons.sports_golf), label: 'Scorecard'),
             BottomNavigationBarItem(icon: Icon(Icons.info), label: "About"),
             
           ],
