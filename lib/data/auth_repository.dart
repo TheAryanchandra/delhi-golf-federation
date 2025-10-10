@@ -123,10 +123,8 @@ class LogoutRepository {
       final data = json.decode(response.body);
       final logoutModel = LogoutModel.fromJson(data);
 
-      // Clear user data when status == false (successful logout)
-      if (logoutModel.status == false) {
-        await SharedPreferencesHelper.clearUserData();
-      }
+      // Clear user data on successful logout (statusCode 200)
+      await SharedPreferencesHelper.clearUserData();
 
       return logoutModel;
     } else {

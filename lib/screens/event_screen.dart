@@ -1,6 +1,8 @@
 import 'package:delhi_golf_federation/bloc/event/bloc/event_bloc.dart';
 import 'package:delhi_golf_federation/bloc/event/bloc/event_event.dart';
 import 'package:delhi_golf_federation/bloc/event/bloc/event_state.dart';
+import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_bloc.dart';
+import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_event.dart';
 import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/components/custombutton.dart';
 import 'package:delhi_golf_federation/model/eventmodel.dart';
@@ -342,6 +344,7 @@ class _EventsScreenState extends State<EventsScreen> {
               if (showUpcoming)
                 OutlinedButton(
                   onPressed: () {
+                    context.read<UserDataBloc>().add(FetchUserDataEvent());
                     showDialog(
                       context: context,
                       builder: (context) => const EventRegisterPopup(),

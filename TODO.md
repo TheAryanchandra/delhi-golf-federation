@@ -1,6 +1,2 @@
-- [ ] Override initState in _EventRegisterPopupState and add print statement for widget initialization.
-- [ ] Add print statement in build method to log when widget is rebuilt.
-- [ ] Add print statement in BlocListener listener to log state changes.
-- [ ] Add print statement in _fillForm method to log when form is filled.
-- [ ] Add print statement in _calculateAge method to log calculated age.
-- [ ] Add print statement in dispose method to log widget disposal.
+- [x] Add imports for UserDataBloc and FetchUserDataEvent in lib/screens/event_screen.dart
+- [x] Update Register button onPressed to dispatch FetchUserDataEvent and open the dialog

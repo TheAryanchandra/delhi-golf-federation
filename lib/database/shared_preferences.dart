@@ -121,6 +121,12 @@ class SharedPreferencesHelper {
     return true;
   }
 
+  // Remove user email (for logout)
+  static Future<bool> removeUserEmail() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.remove(userEmailKey);
+  }
+
   // Get login status
   static Future<bool> getLoggedInStatus() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
