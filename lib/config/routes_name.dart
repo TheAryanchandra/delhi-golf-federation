@@ -14,6 +14,6 @@ class RoutesName {
 
   // Profile Screen
   static const String profileScreen = '/profile';
-
- static const String eventReportScreen = '/eventreport';
+  static const String eventReportScreen = '/eventreport';
+  static const String finalScorecard = '/finalscorecard';
 }

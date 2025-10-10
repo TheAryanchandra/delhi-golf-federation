@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:delhi_golf_federation/components/bottomnavigation.dart';
+import '../screens/finalscorecard.dart'; // Add this import
 
 // Screens
 import '../screens/login_screen.dart';
@@ -30,4 +31,7 @@ final Map<String, WidgetBuilder> appRoutes = {
   // RoutesName.registerScreen: (context) => const RegisterScreen(),
   // RoutesName.bookingScreen: (context) => const BookingScreen(),
   // RoutesName.profileScreen: (context) => const ProfileScreen(),
+  RoutesName.finalScorecard: (context) => ConfirmUploadScoreScreen(
+    holes: ModalRoute.of(context)!.settings.arguments as List<Map<String, dynamic>>,
+  ),
 };

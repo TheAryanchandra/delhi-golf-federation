@@ -1,1 +1,2 @@
-- [ ] Add print statements in eventwidget.dart to log the data being sent during event registration submission
+- [x] Update lib/config/routes.dart to handle arguments for finalScorecard route
+- [x] Modify lib/screens/eventscorecard.dart to navigate to finalScorecard on submit button press
