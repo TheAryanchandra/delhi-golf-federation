@@ -34,32 +34,29 @@ class EventRegistrationRequest {
   });
 
   Map<String, dynamic> toJson() => {
-        "Id": id,
-        "Name": name,
-        "Phonumber": phonumber,
-        "Email": email,
-        "Gender": gender,
-        "Password": password,
-        "DOB": dob,
-        "Age": age,
-        "HomeClub": homeClub,
-        "USGA_handicap_index": usgaHandicapIndex,
-        "GHIN_No": ghinNo,
-        "Cmp_Code": cmpCode,
-        "RoleId": roleId,
-        "EventRefNo": eventRefNo,
-        "Source": source,
-      };
+    "Id": id,
+    "Name": name,
+    "Phonumber": phonumber,
+    "Email": email,
+    "Gender": gender,
+    "Password": password,
+    "DOB": dob,
+    "Age": age,
+    "HomeClub": homeClub,
+    "USGA_handicap_index": usgaHandicapIndex,
+    "GHIN_No": ghinNo,
+    "Cmp_Code": cmpCode,
+    "RoleId": roleId,
+    "EventRefNo": eventRefNo,
+    "Source": source,
+  };
 }
 
 class EventRegistrationResponse {
   final bool success;
   final String message;
 
-  EventRegistrationResponse({
-    required this.success,
-    required this.message,
-  });
+  EventRegistrationResponse({required this.success, required this.message});
 
   factory EventRegistrationResponse.fromJson(Map<String, dynamic> json) {
     return EventRegistrationResponse(

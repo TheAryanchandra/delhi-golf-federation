@@ -1,1 +1,1 @@
-- [x] Add print statements in eventwidget.dart to log the data being sent during event registration submission
+- [ ] Add print statements in eventwidget.dart to log the data being sent during event registration submission

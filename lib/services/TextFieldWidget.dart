@@ -64,6 +64,7 @@ class GlobalTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final String? Function(String?)? validator;
   final List<TextInputFormatter>? inputFormatters;
+  final bool enabled;
 
   const GlobalTextField({
     Key? key,
@@ -81,6 +82,7 @@ class GlobalTextField extends StatelessWidget {
     this.validator,
     this.suffixIcon,
     this.inputFormatters,
+    this.enabled = true,
   }) : super(key: key);
 
   @override
@@ -120,6 +122,7 @@ class GlobalTextField extends StatelessWidget {
         maxLines: maxLine ?? 1,
         validator: validator,
         inputFormatters: appliedInputFormatters,
+        enabled: enabled,
         onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
         style: const TextStyle(
           fontWeight: FontWeight.w600,

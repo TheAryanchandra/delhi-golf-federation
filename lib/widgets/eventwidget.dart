@@ -1,13 +1,19 @@
+import 'package:delhi_golf_federation/bloc/auth/auth_bloc.dart';
+import 'package:delhi_golf_federation/bloc/auth/auth_event.dart';
+import 'package:delhi_golf_federation/bloc/auth/auth_state.dart';
+import 'package:delhi_golf_federation/bloc/eventregister/bloc/eventregister_bloc.dart';
 import 'package:delhi_golf_federation/bloc/eventregister/bloc/eventregister_event.dart';
 import 'package:delhi_golf_federation/bloc/eventregister/bloc/eventregister_state.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../components/color_constants.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_bloc.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_state.dart';
-import 'package:delhi_golf_federation/bloc/eventregister/bloc/eventregister_bloc.dart';
-import 'package:delhi_golf_federation/model/getdatamodel.dart';
+
+import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/model/eventregistermodel.dart';
+import 'package:delhi_golf_federation/model/getdatamodel.dart';
+import 'package:delhi_golf_federation/model/industrymodel.dart';
+import 'package:delhi_golf_federation/services/TextFieldWidget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EventRegisterPopup extends StatefulWidget {
   final String eventRefNo;
@@ -29,40 +35,21 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
   final TextEditingController _ghinController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  bool _isProgressVisible = false;
+  bool _prefilled = false;
+
   String? _selectedGender;
   String? _selectedIndustry;
 
   final List<String> _genderOptions = ["Male", "Female", "Other"];
-  final List<String> _industryOptions = [
-    "IT",
-    "Finance",
-    "Education",
-    "Sports",
-    "Other",
-  ];
 
   @override
   void initState() {
     super.initState();
-    print("EventRegisterPopup initialized");
-  }
-
-  @override
-  void dispose() {
-    print("EventRegisterPopup disposed");
-    _nameController.dispose();
-    _clubController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _dobController.dispose();
-    _handicapController.dispose();
-    _ghinController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+    context.read<IndustryBloc>().add(FetchIndustriesEvent());
   }
 
   void _fillForm(UserDataModel userData) {
-    print("Filling form with user data: ${userData.name}, ${userData.email}");
     _nameController.text = userData.name;
     _clubController.text = userData.homeClub;
     _emailController.text = userData.email;
@@ -71,17 +58,13 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
     _handicapController.text = userData.usgaHandicapIndex.toString();
     _ghinController.text = userData.ghinNo;
     _passwordController.text = userData.password;
-
     _selectedGender = _genderOptions.contains(userData.gender)
         ? userData.gender
         : null;
-    _selectedIndustry = _industryOptions.contains(userData.industryRefNo)
-        ? userData.industryRefNo
-        : null;
+    _selectedIndustry = userData.industryRefNo;
   }
 
   int _calculateAge(String dob) {
-    print("Calculating age for DOB: $dob");
     try {
       final parts = dob.split('/');
       if (parts.length == 3) {
@@ -95,7 +78,6 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
             (today.month == birthDate.month && today.day < birthDate.day)) {
           age--;
         }
-        print("Calculated age: $age");
         return age;
       }
     } catch (_) {}
@@ -104,7 +86,6 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
 
   @override
   Widget build(BuildContext context) {
-    print("Building EventRegisterPopup widget");
     return BlocBuilder<UserDataBloc, UserDataState>(
       builder: (context, state) {
         if (state is UserDataLoading) {
@@ -121,13 +102,16 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
             ],
           );
         } else if (state is UserDataLoaded) {
-          _fillForm(state.userData);
+          if (!_prefilled) {
+            _fillForm(state.userData);
+            _prefilled = true;
+          }
         }
 
         return BlocListener<EventRegistrationBloc, EventRegistrationState>(
           listener: (context, state) {
-            print("EventRegistrationBloc state changed: $state");
             if (state is EventRegistrationLoading) {
+              _isProgressVisible = true;
               showDialog(
                 context: context,
                 barrierDismissible: false,
@@ -135,18 +119,24 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                     const Center(child: CircularProgressIndicator()),
               );
             } else {
-              Navigator.of(context, rootNavigator: true).pop(); // close loading
+              if (_isProgressVisible) {
+                final nav = Navigator.of(context, rootNavigator: true);
+                if (nav.canPop()) {
+                  nav.pop();
+                }
+                _isProgressVisible = false;
+              }
             }
 
             if (state is EventRegistrationSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("✅ ${state.response.message}")),
               );
-              Navigator.pop(context); // close popup
+              Navigator.pop(context);
             } else if (state is EventRegistrationFailure) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text("❌ ${state.error}")));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("❌ ${state.error}")),
+              );
             }
           },
           child: Dialog(
@@ -176,28 +166,34 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      _buildTextField(
-                        _nameController,
-                        Icons.person,
-                        "Enter your full name",
+
+                      /// ✅ Using GlobalTextField everywhere
+                      GlobalTextField(
+                        controller: _nameController,
+                        prefixIcon: Icons.person,
+                        validator: (v) =>
+                            v == null || v.isEmpty ? "Required field" : null,
                       ),
-                      _buildTextField(
-                        _clubController,
-                        Icons.groups_3_outlined,
-                        "Enter your home club",
+                      GlobalTextField(
+                        controller: _clubController,
+                        prefixIcon: Icons.groups_3_outlined,
+                        validator: (v) =>
+                            v == null || v.isEmpty ? "Required field" : null,
                       ),
-                      _buildTextField(
-                        _emailController,
-                        Icons.email_outlined,
-                        "Email",
+                      GlobalTextField(
+                        controller: _emailController,
+                        prefixIcon: Icons.email_outlined,
                         enabled: false,
                       ),
-                      _buildTextField(
-                        _phoneController,
-                        Icons.phone,
-                        "Enter your phone number",
+                      GlobalTextField(
+                        controller: _phoneController,
+                        prefixIcon: Icons.phone,
                         keyboardType: TextInputType.phone,
+                        validator: (v) =>
+                            v == null || v.isEmpty ? "Required field" : null,
                       ),
+
+                      /// ✅ Gender Dropdown
                       _buildDropdown(
                         icon: Icons.person_outline,
                         hint: "Select your gender",
@@ -206,44 +202,78 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                         onChanged: (val) =>
                             setState(() => _selectedGender = val),
                       ),
-                      _buildDropdown(
-                        icon: Icons.business_outlined,
-                        hint: "Select your industry",
-                        value: _selectedIndustry,
-                        items: _industryOptions,
-                        onChanged: (val) =>
-                            setState(() => _selectedIndustry = val),
+
+                      /// ✅ Industry Dropdown via Bloc
+                      BlocBuilder<IndustryBloc, IndustryState>(
+                        builder: (context, state) {
+                          if (state is IndustryLoading) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (state is IndustryLoaded) {
+                            final industryNames =
+                                state.industries.map((e) => e.name).toList();
+
+                            // Map stored refNo to name once industries are loaded
+                            if (_selectedIndustry != null &&
+                                !industryNames.contains(_selectedIndustry)) {
+                              final match = state.industries.firstWhere(
+                                (e) => e.refNo.toString() == _selectedIndustry,
+                                orElse: () => IndustryModel(id: 0, name: '', refNo: ''),
+                              );
+                              if (match.name.isNotEmpty) {
+                                _selectedIndustry = match.name;
+                              } else {
+                                _selectedIndustry = null;
+                              }
+                            }
+
+                            return _buildDropdown(
+                              icon: Icons.business_outlined,
+                              hint: "Select your industry",
+                              value: _selectedIndustry,
+                              items: industryNames,
+                              onChanged: (val) =>
+                                  setState(() => _selectedIndustry = val),
+                            );
+                          } else if (state is IndustryError) {
+                            return Text(
+                              "Failed to load industries: ${state.message}",
+                              style: const TextStyle(color: Colors.red),
+                            );
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        },
                       ),
+
                       _buildDatePicker(context),
-                      _buildTextField(
-                        _handicapController,
-                        Icons.sports_golf,
-                        "Enter your handicap index",
+
+                      GlobalTextField(
+                        controller: _handicapController,
+                        prefixIcon: Icons.sports_golf,
                       ),
-                      _buildTextField(
-                        _ghinController,
-                        Icons.confirmation_number_outlined,
-                        "Enter your GHIN number",
+                      GlobalTextField(
+                        controller: _ghinController,
+                        prefixIcon: Icons.confirmation_number_outlined,
                       ),
-                      _buildTextField(
-                        _passwordController,
-                        Icons.lock_outline,
-                        "Enter your password",
+                      GlobalTextField(
+                        controller: _passwordController,
+                        prefixIcon: Icons.lock_outline,
                         obscureText: true,
+                        validator: (v) =>
+                            v == null || v.isEmpty ? "Required field" : null,
                       ),
+
                       const SizedBox(height: 20),
-                      BlocBuilder<
-                        EventRegistrationBloc,
-                        EventRegistrationState
-                      >(
+
+                      BlocBuilder<EventRegistrationBloc,
+                          EventRegistrationState>(
                         builder: (context, state) {
                           final isLoading = state is EventRegistrationLoading;
                           return ElevatedButton(
                             onPressed: isLoading
                                 ? null
                                 : () {
-                                    print("Submitting form");
-                                    print("Selected Gender: $_selectedGender");
                                     if (_formKey.currentState!.validate()) {
                                       final request = EventRegistrationRequest(
                                         id: 0,
@@ -251,15 +281,13 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                                         phonumber: _phoneController.text.trim(),
                                         email: _emailController.text.trim(),
                                         gender: _selectedGender ?? "",
-                                        password: _passwordController.text
-                                            .trim(),
+                                        password:
+                                            _passwordController.text.trim(),
                                         dob: _dobController.text.trim(),
                                         age: _calculateAge(
-                                          _dobController.text.trim(),
-                                        ),
+                                            _dobController.text.trim()),
                                         homeClub: _clubController.text.trim(),
-                                        usgaHandicapIndex:
-                                            double.tryParse(
+                                        usgaHandicapIndex: double.tryParse(
                                               _handicapController.text.trim(),
                                             ) ??
                                             0.0,
@@ -269,7 +297,10 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                                         eventRefNo: widget.eventRefNo,
                                         source: "APP",
                                       );
-                                      print("Sending EventRegistrationRequest: $request");
+                                      print(request.toJson());
+                                      print('Submitting registration...');
+                                      print(request);
+                                       print("Sending EventRegistrationRequest: $request");
                                       print("Event Ref No: ${widget.eventRefNo}");
                                       print("Name: ${request.name}");
                                       print("Email: ${request.email}");
@@ -281,14 +312,15 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                                       print("Handicap: ${request.usgaHandicapIndex}");
                                       print("GHIN: ${request.ghinNo}");
                                       print("Source: ${request.source}");
-                                      context.read<EventRegistrationBloc>().add(
-                                        SubmitEventRegistration(request),
-                                      );
+                                      context
+                                          .read<EventRegistrationBloc>()
+                                          .add(SubmitEventRegistration(request));
                                     }
                                   },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: ColorConstants.buttonColor,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
                               ),
@@ -321,45 +353,6 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildTextField(
-    TextEditingController controller,
-    IconData icon,
-    String hint, {
-    TextInputType keyboardType = TextInputType.text,
-    bool obscureText = false,
-    bool enabled = true,
-  }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      decoration: BoxDecoration(
-        color: enabled ? Colors.white : Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.grey.shade300),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: TextFormField(
-        controller: controller,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        enabled: enabled,
-        decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: ColorConstants.buttonColor),
-          hintText: hint,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 14),
-        ),
-        validator: (value) =>
-            value == null || value.isEmpty ? "Required field" : null,
-      ),
     );
   }
 
@@ -426,10 +419,11 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
         }
       },
       child: AbsorbPointer(
-        child: _buildTextField(
-          _dobController,
-          Icons.calendar_today_outlined,
-          "Date of Birth",
+        child: GlobalTextField(
+          controller: _dobController,
+          prefixIcon: Icons.calendar_today_outlined,
+          validator: (v) =>
+              v == null || v.isEmpty ? "Please select your DOB" : null,
         ),
       ),
     );
