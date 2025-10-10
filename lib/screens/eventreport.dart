@@ -9,7 +9,7 @@ class EventReportScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Dummy data for events
+    // Static event data
     final List<Map<String, String>> events = [
       {
         "sr": "1",
@@ -29,9 +29,10 @@ class EventReportScreen extends StatelessWidget {
     ];
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       body: Column(
         children: [
-          // Header with background image + title
+          // Header section
           ClipRRect(
             borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(20),
@@ -64,74 +65,116 @@ class EventReportScreen extends StatelessWidget {
             ),
           ),
 
-          // Event Table
+          // Event cards
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Scrollbar(
-                thumbVisibility: true,
-                trackVisibility: true,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Scrollbar(
-                    thumbVisibility: true,
-                    trackVisibility: true,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: DataTable(
-                        headingRowColor: MaterialStateProperty.all(
-                          const Color(0xFF12563C), // your theme color
-                        ),
-                        headingTextStyle: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        border: TableBorder.all(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        columns: const [
-                          DataColumn(label: Text("Sr.No")),
-                          DataColumn(label: Text("Event Name")),
-                          DataColumn(label: Text("Event Date")),
-                          DataColumn(label: Text("Action")),
-                        ],
-                        rows: events.map((event) {
-                          return DataRow(
-                            cells: [
-                              DataCell(Text(event["sr"]!)),
-                              DataCell(Text(event["eventname"]!)),
-                              DataCell(Text(event["eventdate"]!)),
-                              DataCell(
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: ColorConstants.buttonColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const EventScorecardScreen(),
-                                      ),
-                                    );
-                                  },
-                                  child: const Text(
-                                    "Add Score",
-                                    style: TextStyle(color: Colors.white),
+              child: ListView.builder(
+                itemCount: events.length,
+                itemBuilder: (context, index) {
+                  final event = events[index];
+                  return Card(
+                    elevation: 6,
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    shadowColor: Colors.black26,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CircleAvatar(
+                                radius: 22,
+                                backgroundColor: const Color(0xFF12563C),
+                                child: Text(
+                                  event["sr"]!,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
+                              const SizedBox(width: 16),
+
+                              // Expanded makes text wrap properly
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      event["eventname"]!,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF12563C),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.calendar_today,
+                                            size: 16, color: Color.fromARGB(255, 249, 247, 247)),
+                                        const SizedBox(width: 6),
+                                        Flexible(
+                                          child: Text(
+                                            event["eventdate"]!,
+                                            style: TextStyle(
+                                              color: Colors.grey.shade700,
+                                              fontSize: 15,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ],
-                          );
-                        }).toList(),
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: ColorConstants.buttonColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 10),
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const EventScorecardScreen(),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                "Add Score",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
           ),
