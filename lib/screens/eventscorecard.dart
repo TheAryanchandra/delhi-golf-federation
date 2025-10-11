@@ -216,7 +216,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -226,6 +226,10 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                 ),
                                 Text(
                                   "Index: ${hole['index']}",
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                                Text(
+                                  "Score: ${hole['score']}",
                                   style: const TextStyle(fontSize: 16),
                                 ),
                               ],
