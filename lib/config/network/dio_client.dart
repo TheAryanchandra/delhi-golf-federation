@@ -274,16 +274,18 @@ class DioClient {
 
   // ────────────────�� PERIODIC REFRESH ─────────────────────
   void _startPeriodicRefresh() {
-    print('⏰ [DioClient] Starting periodic token refresh (every 5 minutes)');
-
-    // Refresh immediately on init if logged in
-    _performTokenRefresh(); 
-
-    // Then refresh every 5 minutes
-    _refreshTimer = Timer.periodic(const Duration(minutes: 5), (timer) {
-      _performTokenRefresh();
-    });
+  if (_refreshTimer?.isActive ?? false) {
+    print('⏭️ [DioClient] Periodic refresh already running, skipping new timer');
+    return;
   }
+
+  print('⏰ [DioClient] Starting periodic token refresh (every 5 minutes)');
+  _performTokenRefresh();
+  _refreshTimer = Timer.periodic(const Duration(minutes: 5), (timer) {
+    _performTokenRefresh();
+  });
+}
+
 
   Future<void> _performTokenRefresh() async {
     final isLoggedIn = await SharedPreferencesHelper.isLoggedIn();
@@ -442,11 +444,12 @@ class DioClient {
 
   // Add new method for global logout
   Future<void> handleAuthFailure() async {
-    print('🔐 [DioClient] Handling auth failure - logging out user');
-    await SharedPreferencesHelper.clearUserData();
-    // Notify auth state listeners
-    authFailureController.add(true);
-  }
+  print('🔐 [DioClient] Handling auth failure - logging out user');
+  dispose(); // 🛑 Stop periodic refresh timer
+  await SharedPreferencesHelper.clearUserData();
+  authFailureController.add(true);
+}
+
 
   // Add stream controller for auth failures
   final StreamController<bool> authFailureController =

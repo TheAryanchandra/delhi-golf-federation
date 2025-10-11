@@ -63,7 +63,12 @@ class EventsRepository {
         throw Exception('Failed to load events: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Error fetching events: $e');
+      debugPrint('⚠️ No data available: $e');
+      return EventsResponse(
+        status: false,
+        message: 'No data available',
+        response: null,
+      );
     }
   }
 }
