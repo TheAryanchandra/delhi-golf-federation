@@ -16,11 +16,11 @@ class LeaderboardScreen extends StatefulWidget {
 
 class _LeaderboardScreenState extends State<LeaderboardScreen> {
   final List<Map<String, dynamic>> leaderboardData = [
-    {"pos": "01", "state": "🇮🇳", "name": "Player One", "today": "-5", "hole": "13", "score": "-17", "r1": "62", "r2": "72", "r3": "63", "r4": "61", "gross": "258", "net": "04"},
-    {"pos": "02", "state": "🇮🇳", "name": "Player Two", "today": "-4", "hole": "13", "score": "-15", "r1": "67", "r2": "65", "r3": "71", "r4": "62", "gross": "265", "net": "04"},
-    {"pos": "03", "state": "🇮🇳", "name": "Player Three", "today": "+2", "hole": "13", "score": "-13", "r1": "68", "r2": "62", "r3": "64", "r4": "77", "gross": "271", "net": "04"},
-    {"pos": "04", "state": "🇮🇳", "name": "Player Four", "today": "+6", "hole": "13", "score": "-12", "r1": "72", "r2": "66", "r3": "61", "r4": "65", "gross": "264", "net": "04"},
-    {"pos": "05", "state": "🇮🇳", "name": "Player Five", "today": "-8", "hole": "13", "score": "-10", "r1": "65", "r2": "73", "r3": "66", "r4": "69", "gross": "273", "net": "04"},
+    {"pos": "01", "state": "🇮🇳", "name": "Aryan Chandra", "today": "-5", "hole": "13", "score": "-17", "r1": "62", "r2": "72", "r3": "63", "r4": "61", "gross": "258", "net": "04"},
+    {"pos": "02", "state": "🇮🇳", "name": "Aryan Chandra", "today": "-4", "hole": "13", "score": "-15", "r1": "67", "r2": "65", "r3": "71", "r4": "62", "gross": "265", "net": "04"},
+    {"pos": "03", "state": "🇮🇳", "name": "Aryan Chandra", "today": "+2", "hole": "13", "score": "-13", "r1": "68", "r2": "62", "r3": "64", "r4": "77", "gross": "271", "net": "04"},
+    {"pos": "04", "state": "🇮🇳", "name": "Aryan Chandra", "today": "+6", "hole": "13", "score": "-12", "r1": "72", "r2": "66", "r3": "61", "r4": "65", "gross": "264", "net": "04"},
+    {"pos": "05", "state": "🇮🇳", "name": "Aryan Chandra", "today": "-8", "hole": "13", "score": "-10", "r1": "65", "r2": "73", "r3": "66", "r4": "69", "gross": "273", "net": "04"},
   ];
 
   // Add a ScrollController
@@ -92,13 +92,14 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                               DataColumn(label: Text("POS")),
                               DataColumn(label: Text("STATE")),
                               DataColumn(label: Text("PLAYER NAME")),
-                              DataColumn(label: Text("TODAY")),
-                              DataColumn(label: Text("HOLE")),
                               DataColumn(label: Text("SCORE")),
+                              DataColumn(label: Text("TODAY")),
+                              
                               DataColumn(label: Text("R1")),
                               DataColumn(label: Text("R2")),
                               DataColumn(label: Text("R3")),
                               DataColumn(label: Text("R4")),
+                              DataColumn(label: Text("THRU")),
                               DataColumn(label: Text("TOTAL GROSS")),
                               DataColumn(label: Text("TOTAL NET*")),
                             ],

@@ -277,7 +277,7 @@ class DioClient {
     print('⏰ [DioClient] Starting periodic token refresh (every 5 minutes)');
 
     // Refresh immediately on init if logged in
-    _performTokenRefresh();
+    _performTokenRefresh(); 
 
     // Then refresh every 5 minutes
     _refreshTimer = Timer.periodic(const Duration(minutes: 5), (timer) {
