@@ -12,11 +12,7 @@ class SharedPreferencesHelper {
   // Save login status
   static Future<void> setLoggedIn(bool value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final bool isSaved = await prefs.setBool(isLoggedInKey, value);
-
-    if (!isSaved) {
-      throw Exception('Failed to persist login status.');
-    }
+    await prefs.setBool(isLoggedInKey, value);
   }
 
   // Get login status
@@ -65,11 +61,7 @@ class SharedPreferencesHelper {
   // Save user token
   static Future<void> setUserToken(String token) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final bool isSaved = await prefs.setString(userTokenKey, token);
-
-    if (!isSaved) {
-      throw Exception('Failed to persist user token.');
-    }
+    await prefs.setString(userTokenKey, token);
   }
 
   // Get user token
