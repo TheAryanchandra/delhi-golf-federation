@@ -3,12 +3,14 @@ import 'package:delhi_golf_federation/bloc/event/bloc/event_event.dart';
 import 'package:delhi_golf_federation/bloc/event/bloc/event_state.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_bloc.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_event.dart';
+import 'package:delhi_golf_federation/components/bottomnavigation.dart';
 import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/components/custombutton.dart';
 import 'package:delhi_golf_federation/model/eventmodel.dart';
 import 'package:delhi_golf_federation/widgets/eventwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({super.key});
@@ -30,8 +32,8 @@ class _EventsScreenState extends State<EventsScreen> {
 
   void _fetchEvents() {
     context.read<EventsBloc>().add(
-      FetchEvents(upcoming: showUpcoming, page: currentPage),
-    );
+          FetchEvents(upcoming: showUpcoming, page: currentPage),
+        );
   }
 
   void _switchTab(bool upcoming) {
@@ -99,12 +101,10 @@ class _EventsScreenState extends State<EventsScreen> {
                   child: CustomButton(
                     text: "Upcoming Events",
                     onPressed: () => _switchTab(true),
-                    backgroundColor: showUpcoming
-                        ? const Color(0xFF0B592A)
-                        : Colors.white,
-                    textColor: showUpcoming
-                        ? Colors.white
-                        : const Color(0xFF0B592A),
+                    backgroundColor:
+                        showUpcoming ? const Color(0xFF0B592A) : Colors.white,
+                    textColor:
+                        showUpcoming ? Colors.white : const Color(0xFF0B592A),
                     borderRadius: 12,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -114,12 +114,10 @@ class _EventsScreenState extends State<EventsScreen> {
                   child: CustomButton(
                     text: "Past Events",
                     onPressed: () => _switchTab(false),
-                    backgroundColor: !showUpcoming
-                        ? const Color(0xFF0B592A)
-                        : Colors.white,
-                    textColor: !showUpcoming
-                        ? Colors.white
-                        : const Color(0xFF0B592A),
+                    backgroundColor:
+                        !showUpcoming ? const Color(0xFF0B592A) : Colors.white,
+                    textColor:
+                        !showUpcoming ? Colors.white : const Color(0xFF0B592A),
                     borderRadius: 12,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -175,9 +173,8 @@ class _EventsScreenState extends State<EventsScreen> {
                               return GestureDetector(
                                 onTap: () => _changePage(page),
                                 child: Container(
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 4,
-                                  ),
+                                  margin:
+                                      const EdgeInsets.symmetric(horizontal: 4),
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 12,
                                     vertical: 6,
@@ -201,10 +198,8 @@ class _EventsScreenState extends State<EventsScreen> {
                               );
                             }),
                             IconButton(
-                              icon: const Icon(
-                                Icons.arrow_forward_ios,
-                                size: 16,
-                              ),
+                              icon:
+                                  const Icon(Icons.arrow_forward_ios, size: 16),
                               onPressed: currentPage < totalPages
                                   ? () => _changePage(currentPage + 1)
                                   : null,
@@ -231,6 +226,10 @@ class _EventsScreenState extends State<EventsScreen> {
 
   /// Event Card Widget
   Widget _buildEventCard(EventModel event) {
+    final bool isRegistrationActive =
+        event.isRegistrationActive?.toLowerCase() == "true";
+    final bool isEventActive = event.eventActive?.toLowerCase() == "true";
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
@@ -259,31 +258,43 @@ class _EventsScreenState extends State<EventsScreen> {
               color: Color(0xFF0B592A),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
 
-          /// Date Row
+          /// Event Dates
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.calendar_today,
-                size: 18,
-                color: Color(0xFF0B592A),
-              ),
+              const Icon(Icons.event, size: 18, color: Color(0xFF0B592A)),
               const SizedBox(width: 6),
               Text(
-                '${event.startDate ?? ''}  -  ${event.endDate ?? ''}',
+                'Event: ${event.startDate ?? ''} - ${event.endDate ?? ''}',
+                style: const TextStyle(fontSize: 15),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+
+          /// Registration Dates
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.app_registration,
+                  size: 18, color: Color(0xFF0B592A)),
+              const SizedBox(width: 6),
+              Text(
+                'Registration: ${event.regStartDate ?? ''} - ${event.regEndDate ?? ''}',
                 style: const TextStyle(fontSize: 15),
               ),
             ],
           ),
           const SizedBox(height: 10),
 
-          /// Venue Row
+          /// Venue
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.location_on, size: 18, color: Color(0xFF0B592A)),
+              const Icon(Icons.location_on,
+                  size: 18, color: Color(0xFF0B592A)),
               const SizedBox(width: 6),
               Flexible(
                 child: Text(
@@ -297,16 +308,13 @@ class _EventsScreenState extends State<EventsScreen> {
 
           const SizedBox(height: 10),
 
-          /// Prize Money Row
+          /// Prize Money
           if (event.priceMoney != null)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.attach_money,
-                  size: 18,
-                  color: Color(0xFF0B592A),
-                ),
+                const Icon(Icons.attach_money,
+                    size: 18, color: Color(0xFF0B592A)),
                 const SizedBox(width: 6),
                 Text(
                   'Prize Money: ${event.priceMoney}',
@@ -320,7 +328,7 @@ class _EventsScreenState extends State<EventsScreen> {
 
           const SizedBox(height: 20),
 
-          /// Buttons Centered
+          /// Buttons Section
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -328,49 +336,97 @@ class _EventsScreenState extends State<EventsScreen> {
               CustomButton(
                 text: "View",
                 onPressed: () {
-                  // Handle view logic here
+                  // Handle view logic
                 },
                 backgroundColor: const Color(0xFF0B592A),
                 textColor: Colors.white,
                 borderRadius: 10,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
-                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
               const SizedBox(width: 12),
 
-              // Register Button (only for upcoming)
               if (showUpcoming)
-                OutlinedButton(
+                Builder(
+                  builder: (context) {
+                    if (isRegistrationActive) {
+                      // ✅ Registration Active → Register button
+                      return OutlinedButton(
+                        onPressed: () {
+                          context
+                              .read<UserDataBloc>()
+                              .add(FetchUserDataEvent());
+                          showDialog(
+                            context: context,
+                            builder: (context) => EventRegisterPopup(
+                              eventRefNo: event.refNo ?? '',
+                            ),
+                          );
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(
+                            color: ColorConstants.buttonColor,
+                            width: 1.5,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                        ),
+                        child: const Text(
+                          "Register",
+                          style: TextStyle(
+                            color: ColorConstants.buttonColor,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                          ),
+                        ),
+                      );
+                    } else {
+                      // ✅ Either Event Active OR Registration Closed → Leaderboard button
+                      return CustomButton(
+                        text: "Leaderboard",
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const CustomBottomNav(initialIndex: 1),
+                            ),
+                            (route) => false,
+                          );
+                        },
+                        backgroundColor: const Color(0xFF0B592A),
+                        textColor: Colors.white,
+                        borderRadius: 10,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                      );
+                    }
+                  },
+                )
+              else
+                // ✅ For Past Events → Always show Leaderboard
+                CustomButton(
+                  text: "Leaderboard",
                   onPressed: () {
-                    context.read<UserDataBloc>().add(FetchUserDataEvent());
-                    showDialog(
-                      context: context,
-                      builder: (context) => EventRegisterPopup(eventRefNo: event.refNo ?? ''),
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const CustomBottomNav(initialIndex: 1),
+                      ),
+                      (route) => false,
                     );
                   },
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(
-                      color: ColorConstants.buttonColor,
-                      width: 1.5,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                  ),
-                  child: const Text(
-                    "Register",
-                    style: TextStyle(
-                      color: ColorConstants.buttonColor,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15,
-                    ),
-                  ),
+                  backgroundColor: const Color(0xFF0B592A),
+                  textColor: Colors.white,
+                  borderRadius: 10,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
             ],
           ),

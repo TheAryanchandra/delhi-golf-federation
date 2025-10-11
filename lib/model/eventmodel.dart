@@ -3,6 +3,10 @@ class EventModel {
   final String? eventName;
   final String? startDate;
   final String? endDate;
+  final String? regStartDate;
+  final String? regEndDate;
+  final String? isRegistrationActive;
+  final String? eventActive;
   final String? venue;
   final String? priceMoney;
   final String? content;
@@ -17,6 +21,10 @@ class EventModel {
     this.eventName,
     this.startDate,
     this.endDate,
+    this.regStartDate,
+    this.regEndDate,
+    this.isRegistrationActive,
+    this.eventActive,
     this.venue,
     this.priceMoney,
     this.content,
@@ -33,6 +41,10 @@ class EventModel {
       eventName: json['EventName'] as String?,
       startDate: json['StartDate'] as String?,
       endDate: json['EndDate'] as String?,
+      regStartDate: json['RegStartDate'] as String?,
+      regEndDate: json['RegEndDate'] as String?,
+      isRegistrationActive: json['IsRegistrationActive'] as String?,
+      eventActive: json['EventActive'] as String?,
       venue: json['Venue'] as String?,
       priceMoney: json['PriceMoney'] as String?,
       content: json['Content'] as String?,
@@ -49,6 +61,10 @@ class EventModel {
         'EventName': eventName,
         'StartDate': startDate,
         'EndDate': endDate,
+        'RegStartDate': regStartDate,
+        'RegEndDate': regEndDate,
+        'IsRegistrationActive': isRegistrationActive,
+        'EventActive': eventActive,
         'Venue': venue,
         'PriceMoney': priceMoney,
         'Content': content,
@@ -59,6 +75,7 @@ class EventModel {
         'EntryDate': entryDate,
       };
 }
+
 
 // ─────────────────────────────────────────────
 // NESTED RESPONSE OBJECT
