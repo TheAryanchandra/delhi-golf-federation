@@ -1,1 +1,1 @@
-- [x] Add print statement in lib/data/auth_repository.dart after token storage: print('Updated token stored in shared preferences');
+- [ ] Add print statement in lib/data/auth_repository.dart after token storage: print('Updated token stored in shared preferences');

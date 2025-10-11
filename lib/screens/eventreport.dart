@@ -18,18 +18,18 @@ class EventReportScreen extends StatelessWidget {
       },
       {
         "sr": "2",
-        "eventname": "Banglore Open 2025",
+        "eventname": "Bangalore Open 2025",
         "eventdate": "10 Oct 2025 - 12 Oct 2025",
       },
       {
         "sr": "3",
-        "eventname": "Gurgoan Open 2025",
+        "eventname": "Gurgaon Open 2025",
         "eventdate": "15 Oct 2025 - 17 Oct 2025",
       },
     ];
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: Colors.white, // Pure white background
       body: Column(
         children: [
           // Header section
@@ -74,6 +74,7 @@ class EventReportScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final event = events[index];
                   return Card(
+                    color: Colors.white, // ✅ Make each card pure white
                     elevation: 6,
                     margin: const EdgeInsets.symmetric(vertical: 10),
                     shape: RoundedRectangleBorder(
@@ -102,7 +103,7 @@ class EventReportScreen extends StatelessWidget {
                               ),
                               const SizedBox(width: 16),
 
-                              // Expanded makes text wrap properly
+                              // Event name and date
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,8 +119,11 @@ class EventReportScreen extends StatelessWidget {
                                     const SizedBox(height: 6),
                                     Row(
                                       children: [
-                                        const Icon(Icons.calendar_today,
-                                            size: 16, color: Color.fromARGB(255, 249, 247, 247)),
+                                        const Icon(
+                                          Icons.calendar_today,
+                                          size: 16,
+                                          color: Color(0xFF12563C),
+                                        ),
                                         const SizedBox(width: 6),
                                         Flexible(
                                           child: Text(
@@ -150,7 +154,9 @@ class EventReportScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 10),
+                                  horizontal: 16,
+                                  vertical: 10,
+                                ),
                               ),
                               onPressed: () {
                                 Navigator.push(

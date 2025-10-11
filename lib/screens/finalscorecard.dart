@@ -93,24 +93,39 @@ class ConfirmUploadScoreScreen extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Text("Hole",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)),
-                        Text("Par",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)),
-                        Text("Index",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)),
-                        Text("Score",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)),
+                        Expanded(
+                          child: Center(
+                            child: Text("Hole",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Text("Par",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Text("Index",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Text("Score",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -131,22 +146,29 @@ class ConfirmUploadScoreScreen extends StatelessWidget {
                         ),
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Text("${hole['hole']}",
-                              style: const TextStyle(fontSize: 15)),
-                          Text("${hole['par']}",
-                              style: const TextStyle(fontSize: 15)),
-                          Text("${hole['index']}",
-                              style: const TextStyle(fontSize: 15)),
-                          Text(
+                          Expanded(
+                              child: Center(
+                                  child: Text("${hole['hole']}",
+                                      style: const TextStyle(fontSize: 15)))),
+                          Expanded(
+                              child: Center(
+                                  child: Text("${hole['par']}",
+                                      style: const TextStyle(fontSize: 15)))),
+                          Expanded(
+                              child: Center(
+                                  child: Text("${hole['index']}",
+                                      style: const TextStyle(fontSize: 15)))),
+                          Expanded(
+                              child: Center(
+                                  child: Text(
                             "${hole['score']}",
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                               color: mainColor,
                             ),
-                          ),
+                          ))),
                         ],
                       ),
                     );
@@ -216,7 +238,8 @@ class ConfirmUploadScoreScreen extends StatelessWidget {
                     context: context,
                     builder: (_) => AlertDialog(
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       title: const Text(
                         "Confirm Upload",
                         style: TextStyle(
@@ -229,26 +252,36 @@ class ConfirmUploadScoreScreen extends StatelessWidget {
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          child: const Text("Cancel",
-                              style: TextStyle(color: Colors.black54)),
+                          child: const Text(
+                            "Cancel",
+                            style: TextStyle(color: Colors.black54),
+                          ),
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: mainColor,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                           onPressed: () {
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("Score uploaded successfully!"),
+                                content:
+                                    Text("Score uploaded successfully!"),
                                 behavior: SnackBarBehavior.floating,
                               ),
                             );
                             Navigator.pop(context);
                           },
-                          child: const Text("Upload"),
+                          child: const Text(
+                            "Upload",
+                            style: TextStyle(
+                              color: Colors.white, // ✅ White text on green button
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ],
                     ),
