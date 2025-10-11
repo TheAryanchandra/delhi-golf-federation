@@ -1,4 +1,5 @@
 import 'package:delhi_golf_federation/components/custombutton.dart';
+import 'package:delhi_golf_federation/components/bottomnavigation.dart';
 import 'package:flutter/material.dart';
 
 class ConfirmUploadScoreScreen extends StatelessWidget {
@@ -273,7 +274,13 @@ class ConfirmUploadScoreScreen extends StatelessWidget {
                                 behavior: SnackBarBehavior.floating,
                               ),
                             );
-                            Navigator.pop(context);
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const CustomBottomNav(initialIndex: 3),
+                              ),
+                              (route) => false,
+                            );
                           },
                           child: const Text(
                             "Upload",

@@ -1,1 +1,3 @@
-- [ ] Add print statement in lib/data/auth_repository.dart after token storage: print('Updated token stored in shared preferences');
+- [x] Modify lib/screens/finalscorecard.dart to navigate to event report screen with bottom bar after upload
+  - [x] Add import for CustomBottomNav
+  - [x] Update the onPressed of the "Upload" button to use Navigator.pushAndRemoveUntil with CustomBottomNav(initialIndex: 3)
