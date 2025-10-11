@@ -31,7 +31,8 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
     super.dispose();
   }
 
-  int get totalScore => holes.fold(0, (sum, hole) => sum + (hole["score"] as int));
+  int get totalScore =>
+      holes.fold(0, (sum, hole) => sum + (hole["score"] as int));
   int get totalPar => holes.fold(0, (sum, hole) => sum + (hole["par"] as int));
 
   @override
@@ -40,6 +41,8 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
+      resizeToAvoidBottomInset:
+          true, // ✅ lets the layout adjust when keyboard appears
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1,
@@ -54,208 +57,247 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 16),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(
+            bottom:
+                MediaQuery.of(context).viewInsets.bottom +
+                16, // ✅ adds space for keyboard
+          ),
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
 
-          // 🏌️‍♂️ Player Info
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: mainColor.withOpacity(0.2)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  "Delhi Golf Championship 2025",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: mainColor,
-                  ),
+              // 🏌️‍♂️ Player Info
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: mainColor.withOpacity(0.2)),
                 ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Player: Aryan Chandra",
-                        style: TextStyle(fontSize: 16, color: Colors.black87)),
-                    Text("Handicap: 12",
-                        style: TextStyle(fontSize: 16, color: Colors.black87)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "Delhi Golf Championship 2025",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: mainColor,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Player: Aryan Chandra",
+                          style: TextStyle(fontSize: 16, color: Colors.black87),
+                        ),
+                        Text(
+                          "Handicap: 12",
+                          style: TextStyle(fontSize: 16, color: Colors.black87),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
-          ),
+              ),
 
-          const SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-          // 🎯 Hole Selector Scroll
-          SizedBox(
-            height: 60,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              itemCount: holes.length,
-              itemBuilder: (context, index) {
-                final isSelected = index == currentHoleIndex;
-                return GestureDetector(
-                  onTap: () {
+              // 🎯 Hole Selector Scroll
+              SizedBox(
+                height: 60,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  itemCount: holes.length,
+                  itemBuilder: (context, index) {
+                    final isSelected = index == currentHoleIndex;
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          currentHoleIndex = index;
+                        });
+                        _pageController.animateToPage(
+                          index,
+                          duration: const Duration(milliseconds: 400),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        margin: const EdgeInsets.symmetric(horizontal: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected ? mainColor : Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isSelected
+                                ? mainColor
+                                : mainColor.withOpacity(0.3),
+                          ),
+                          boxShadow: [
+                            if (isSelected)
+                              BoxShadow(
+                                color: mainColor.withOpacity(0.3),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Hole ${holes[index]['hole']}",
+                            style: TextStyle(
+                              color: isSelected ? Colors.white : mainColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              // 📄 Hole Detail View
+              SizedBox(
+                height:
+                    MediaQuery.of(context).size.height *
+                    0.5, // ✅ fixes overflow by constraining height
+                child: PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: (index) {
                     setState(() {
                       currentHoleIndex = index;
                     });
-                    _pageController.animateToPage(
-                      index,
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.easeInOut,
-                    );
                   },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    margin: const EdgeInsets.symmetric(horizontal: 6),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: isSelected ? mainColor : Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                          color:
-                              isSelected ? mainColor : mainColor.withOpacity(0.3)),
-                      boxShadow: [
-                        if (isSelected)
-                          BoxShadow(
-                            color: mainColor.withOpacity(0.3),
-                            blurRadius: 6,
-                            offset: const Offset(0, 3),
-                          ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Hole ${holes[index]['hole']}",
-                        style: TextStyle(
-                          color: isSelected ? Colors.white : mainColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  itemCount: holes.length,
+                  itemBuilder: (context, index) {
+                    final hole = holes[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
                       ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          // 📄 Hole Detail View
-          Expanded(
-            child: PageView.builder(
-              controller: _pageController,
-              onPageChanged: (index) {
-                setState(() {
-                  currentHoleIndex = index;
-                });
-              },
-              itemCount: holes.length,
-              itemBuilder: (context, index) {
-                final hole = holes[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: mainColor.withOpacity(0.2)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12.withOpacity(0.08),
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: Text(
-                            "Hole ${hole['hole']}",
-                            style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: mainColor,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: mainColor.withOpacity(0.2)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12.withOpacity(0.08),
+                              blurRadius: 6,
+                              offset: const Offset(0, 3),
                             ),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Par: ${hole['par']}",
-                                style: const TextStyle(fontSize: 16)),
-                            Text("Index: ${hole['index']}",
-                                style: const TextStyle(fontSize: 16)),
                           ],
                         ),
-                        const SizedBox(height: 20),
-                        TextFormField(
-                          initialValue: hole["score"].toString(),
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          decoration: InputDecoration(
-                            labelText: "Enter Score",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Center(
+                              child: Text(
+                                "Hole ${hole['hole']}",
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: mainColor,
+                                ),
+                              ),
                             ),
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: mainColor, width: 1.5),
+                            const SizedBox(height: 12),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Par: ${hole['par']}",
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                                Text(
+                                  "Index: ${hole['index']}",
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                              ],
                             ),
-                          ),
-                          onChanged: (val) {
-                            setState(() {
-                              hole["score"] = int.tryParse(val) ?? 0;
-                            });
-                          },
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              initialValue: hole["score"].toString(),
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.center,
+                              decoration: InputDecoration(
+                                labelText: "Enter Score",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: mainColor,
+                                    width: 1.5,
+                                  ),
+                                ),
+                              ),
+                              onChanged: (val) {
+                                setState(() {
+                                  hole["score"] = int.tryParse(val) ?? 0;
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              // 🔘 Next / Submit Button
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
+                child: SafeArea(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: CustomButton(
+                      text: currentHoleIndex == holes.length - 1
+                          ? "Submit"
+                          : "Next Hole",
+                      backgroundColor: mainColor,
+                      onPressed: () {
+                        if (currentHoleIndex < holes.length - 1) {
+                          _pageController.nextPage(
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeInOut,
+                          );
+                        } else {
+                          Navigator.pushNamed(
+                            context,
+                            RoutesName.finalScorecard,
+                            arguments: holes,
+                          );
+                        }
+                      },
                     ),
                   ),
-                );
-              },
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          // 🔘 Next / Submit Button
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: SizedBox(
-              width: double.infinity,
-              child: CustomButton(
-                text: currentHoleIndex == holes.length - 1
-                    ? "Submit"
-                    : "Next Hole",
-                backgroundColor: mainColor,
-                onPressed: () {
-                  if (currentHoleIndex < holes.length - 1) {
-                    _pageController.nextPage(
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.easeInOut,
-                    );
-                  } else {
-                    Navigator.pushNamed(context, RoutesName.finalScorecard, arguments: holes);
-                  }
-                },
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

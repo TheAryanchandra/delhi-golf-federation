@@ -389,24 +389,24 @@ class BottomBanner extends StatelessWidget {
           ),
 
           /// Book Tee Time Button (Bottom Right)
-          Positioned(
-            right: 12,
-            bottom: 12,
-            child: CustomButton(
-              text: "Book Tee Time",
-              onPressed: () {
-                NavigationService.instance.navigateToTab(3);
-              },
-              textColor: const Color.fromARGB(
-                255,
-                249,
-                251,
-                250,
-              ), // ✅ green text
-              borderRadius: 30, // ✅ rounded edges
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            ),
-          ),
+          // Positioned(
+          //   right: 12,
+          //   bottom: 12,
+          //   child: CustomButton(
+          //     text: "Book Tee Time",
+          //     onPressed: () {
+          //       NavigationService.instance.navigateToTab(3);
+          //     },
+          //     textColor: const Color.fromARGB(
+          //       255,
+          //       249,
+          //       251,
+          //       250,
+          //     ), // ✅ green text
+          //     borderRadius: 30, // ✅ rounded edges
+          //     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          //   ),
+          // ),
         ],
       ),
     );
