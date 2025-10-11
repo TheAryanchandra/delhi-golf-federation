@@ -119,8 +119,24 @@ class DioClient {
                   );
                   final newTokenModel = await _auth.refreshToken();
                   print(
-                    '📦 [DioClient] Refresh result: status=${newTokenModel.status}, token=${newTokenModel.response}',
+                    '📦 [DioClient] Refresh result: status=${newTokenModel.status}, message=${newTokenModel.message}, token=${newTokenModel.response}',
                   );
+                  if (newTokenModel.message == "Time out re-login") {
+                    print(
+                      '⚠️ [DioClient] Session expired, logging out user',
+                    );
+                    await handleAuthFailure();
+                    // Reject all queued requests since session is expired
+                    while (_queue.isNotEmpty) {
+                      final queued = _queue.removeFirst();
+                      queued.completer.completeError(DioException(
+                        requestOptions: queued.options,
+                        error: Exception('Session expired'),
+                        type: DioExceptionType.unknown,
+                      ));
+                    }
+                    return; // Don't replay requests
+                  }
                   if (newTokenModel.status &&
                       newTokenModel.response.isNotEmpty) {
                     // Token persistence is handled inside RefreshTokenRepository
@@ -289,8 +305,16 @@ class DioClient {
         final newTokenModel = await _auth.refreshToken();
 
         print(
-          '📦 [DioClient] Periodic refresh result: status=${newTokenModel.status}, token=${newTokenModel.response}',
+          '📦 [DioClient] Periodic refresh result: status=${newTokenModel.status}, message=${newTokenModel.message}, token=${newTokenModel.response}',
         );
+
+        if (newTokenModel.message == "Time out re-login") {
+          print(
+            '⚠️ [DioClient] Session expired during periodic refresh, logging out user',
+          );
+          await handleAuthFailure();
+          return; // Don't retry
+        }
 
         if (newTokenModel.status && newTokenModel.response.isNotEmpty) {
           print(

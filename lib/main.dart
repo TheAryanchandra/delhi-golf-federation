@@ -95,6 +95,7 @@ class GolfApp extends StatelessWidget {
         right: false,
         top: false,
         child: MaterialApp(
+          navigatorKey: navigatorKey,
           debugShowCheckedModeBanner: false,
           title: "Delhi Golf Federation",
           initialRoute: isLoggedIn && hasToken

@@ -140,27 +140,25 @@ class IndustryRepository {
     try {
       final response = await http.get(
         Uri.parse(industryEndpoint),
-        headers: {
-          "Content-Type": headersJson,
-          "api-key": apiKey,
-        },
+        headers: {"Content-Type": headersJson, "api-key": apiKey},
       );
 
       print("🟢 API Response Status Code: ${response.statusCode}");
       print("🟢 API Response Body: ${response.body}");
-      
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         return IndustryResponse.fromJson(jsonResponse);
       } else {
-        throw Exception("Failed to load industries (status: ${response.statusCode})");
+        throw Exception(
+          "Failed to load industries (status: ${response.statusCode})",
+        );
       }
     } catch (e) {
       throw Exception("Error fetching industries: $e");
     }
   }
 }
-
 
 // refresh token
 
@@ -173,9 +171,9 @@ class RefreshTokenRepository {
   );
 
   Future<RefreshTokenModel> refreshToken() async {
-    try {
-      final oldToken = await SharedPreferencesHelper.getUserToken();
+    final oldToken = await SharedPreferencesHelper.getUserToken();
 
+    try {
       final response = await _dio.post(
         refreshTokenEndpoint,
         options: Options(
@@ -191,19 +189,28 @@ class RefreshTokenRepository {
       print("🟢 Refresh Token API Status Code: ${response.statusCode}");
       print("🟢 Refresh Token API Response: ${response.data}");
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonResponse = response.data;
-        final data = RefreshTokenModel.fromJson(jsonResponse);
+      final Map<String, dynamic> jsonResponse = response.data;
+      final data = RefreshTokenModel.fromJson(jsonResponse);
 
-        if (data.status && data.response.isNotEmpty) {
-          await SharedPreferencesHelper.setUserToken(data.response);
-          print('🔄 Token refreshed successfully: ${data.response}');
-        }
-
-        return data;
-      } else {
-        throw Exception('Failed to refresh token (status: ${response.statusCode})');
+      if (response.statusCode == 200 &&
+          data.status &&
+          data.response.isNotEmpty) {
+        await SharedPreferencesHelper.setUserToken(data.response);
+        print('🔄 Token refreshed successfully: ${data.response}');
       }
+
+      return data;
+    } on DioException catch (e) {
+      print(
+        "🔴 Refresh Token API Error: ${e.response?.statusCode} - ${e.message}",
+      );
+      if (e.response != null && e.response!.data != null) {
+        final Map<String, dynamic> jsonResponse = e.response!.data;
+        final data = RefreshTokenModel.fromJson(jsonResponse);
+        print("🟢 Parsed error response: ${data.message}");
+        return data;
+      }
+      throw Exception('Token refresh failed: ${e.message}');
     } catch (e) {
       throw Exception('Token refresh failed: $e');
     }

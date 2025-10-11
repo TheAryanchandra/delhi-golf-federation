@@ -1,7 +1,5 @@
-# TODO: Fix DioException 408 in Periodic Token Refresh
+# TODO: Handle "Time out re-login" message and navigate to login screen
 
 ## Tasks
-- [x] Increase timeouts in RefreshTokenRepository from 10s to 30s
-- [x] Add retry logic with exponential backoff to _performTokenRefresh in DioClient
-- [ ] Improve error message in DioClient onError interceptor for badResponse cases
-- [ ] Test the changes to ensure 408 errors are resolved
+- [x] Modify `RefreshTokenRepository.refreshToken()` in `lib/data/auth_repository.dart` to parse response data even on DioException (e.g., 408 status), allowing the message to be checked.
+- [x] Update `main.dart` to assign `navigatorKey` to the `MaterialApp` for proper navigation handling.
