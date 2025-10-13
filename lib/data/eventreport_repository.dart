@@ -1,11 +1,11 @@
 import 'dart:convert';
+import 'package:delhi_golf_federation/config/network/web_constant.dart';
 import 'package:delhi_golf_federation/database/shared_preferences.dart';
 import 'package:delhi_golf_federation/model/eventreportmodel.dart';
+// <-- import here
 import 'package:http/http.dart' as http;
 
 class EventReportRepository {
-  final String baseUrl = "https://admin.delhigolf.org/api/account/score-events";
-
   /// Fetch Current or Past Scorecards based on action
   Future<EventReportResponse> fetchEvents({
     required EventReportRequest request,
@@ -14,7 +14,7 @@ class EventReportRepository {
     try {
       final token = await SharedPreferencesHelper.getUserToken();
       final action = isCurrent ? "GetUpcomingEvents" : "getpastevents";
-      final uri = Uri.parse("$baseUrl?Action=$action");
+      final uri = Uri.parse("$eventReportEndpoint?Action=$action");
 
       print("🔹 [EventReportRepository] Fetching events...");
       print("➡️ Endpoint: $uri");

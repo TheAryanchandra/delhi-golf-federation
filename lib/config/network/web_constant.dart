@@ -16,6 +16,10 @@ const String refreshTokenEndpoint = "$baseUrl/account/refresh-token";
 
 const String eventsEndpoint = "$baseUrl/account/events";
 
+const String eventReportEndpoint = "$baseUrl/account/score-events";
+
+
 
 /// Master APIs
 const String industryEndpoint = "$baseUrl/master/industry";
+
