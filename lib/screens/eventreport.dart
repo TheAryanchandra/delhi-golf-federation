@@ -1,3 +1,4 @@
+import 'package:delhi_golf_federation/components/bottomnavigation.dart';
 import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/screens/eventscorecard.dart';
 import 'package:flutter/material.dart';
@@ -89,10 +90,12 @@ class _EventReportScreenState extends State<EventReportScreen> {
                   child: CustomButton(
                     text: "Current Scorecards",
                     onPressed: () => _switchTab(true),
-                    backgroundColor:
-                        showCurrent ? const Color(0xFF0B592A) : Colors.white,
-                    textColor:
-                        showCurrent ? Colors.white : const Color(0xFF0B592A),
+                    backgroundColor: showCurrent
+                        ? const Color(0xFF0B592A)
+                        : Colors.white,
+                    textColor: showCurrent
+                        ? Colors.white
+                        : const Color(0xFF0B592A),
                     borderRadius: 12,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -102,10 +105,12 @@ class _EventReportScreenState extends State<EventReportScreen> {
                   child: CustomButton(
                     text: "Past Scorecards",
                     onPressed: () => _switchTab(false),
-                    backgroundColor:
-                        !showCurrent ? const Color(0xFF0B592A) : Colors.white,
-                    textColor:
-                        !showCurrent ? Colors.white : const Color(0xFF0B592A),
+                    backgroundColor: !showCurrent
+                        ? const Color(0xFF0B592A)
+                        : Colors.white,
+                    textColor: !showCurrent
+                        ? Colors.white
+                        : const Color(0xFF0B592A),
                     borderRadius: 12,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -117,14 +122,18 @@ class _EventReportScreenState extends State<EventReportScreen> {
           // Event List
           Expanded(
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8,
+              ),
               child: ListView.builder(
-                itemCount:
-                    showCurrent ? currentEvents.length : pastEvents.length,
+                itemCount: showCurrent
+                    ? currentEvents.length
+                    : pastEvents.length,
                 itemBuilder: (context, index) {
-                  final event =
-                      showCurrent ? currentEvents[index] : pastEvents[index];
+                  final event = showCurrent
+                      ? currentEvents[index]
+                      : pastEvents[index];
 
                   return Container(
                     margin: const EdgeInsets.only(bottom: 16),
@@ -157,8 +166,11 @@ class _EventReportScreenState extends State<EventReportScreen> {
                         const SizedBox(height: 12),
                         Row(
                           children: [
-                            const Icon(Icons.calendar_today,
-                                color: Color(0xFF12563C), size: 18),
+                            const Icon(
+                              Icons.calendar_today,
+                              color: Color(0xFF12563C),
+                              size: 18,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               "Event: ${event["eventdate"]}",
@@ -169,8 +181,11 @@ class _EventReportScreenState extends State<EventReportScreen> {
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            const Icon(Icons.event_available,
-                                color: Color(0xFF12563C), size: 18),
+                            const Icon(
+                              Icons.event_available,
+                              color: Color(0xFF12563C),
+                              size: 18,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               "Registration: ${event["registration"]}",
@@ -181,8 +196,11 @@ class _EventReportScreenState extends State<EventReportScreen> {
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            const Icon(Icons.location_on,
-                                color: Color(0xFF12563C), size: 18),
+                            const Icon(
+                              Icons.location_on,
+                              color: Color(0xFF12563C),
+                              size: 18,
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
@@ -195,8 +213,11 @@ class _EventReportScreenState extends State<EventReportScreen> {
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            const Icon(Icons.attach_money,
-                                color: Color(0xFF12563C), size: 18),
+                            const Icon(
+                              Icons.attach_money,
+                              color: Color(0xFF12563C),
+                              size: 18,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               "Prize Money: ${event["prize"]!}",
@@ -222,13 +243,13 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        ColorConstants.buttonColor,
+                                    backgroundColor: ColorConstants.buttonColor,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
+                                      vertical: 10,
+                                    ),
                                   ),
                                   child: const Text(
                                     "Add Score",
@@ -252,13 +273,13 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        ColorConstants.buttonColor,
+                                    backgroundColor: ColorConstants.buttonColor,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
+                                      vertical: 10,
+                                    ),
                                   ),
                                   child: const Text(
                                     "Update Score",
@@ -273,22 +294,25 @@ class _EventReportScreenState extends State<EventReportScreen> {
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    // TODO: Replace with your leaderboard screen
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //     builder: (context) => const LeaderboardScreen(),
-                                    //   ),
-                                    // );
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const CustomBottomNav(
+                                              initialIndex: 1,
+                                            ),
+                                      ),
+                                      (route) => false,
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        ColorConstants.buttonColor,
+                                    backgroundColor: ColorConstants.buttonColor,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
+                                      vertical: 10,
+                                    ),
                                   ),
                                   child: const Text(
                                     "Leaderboard",
