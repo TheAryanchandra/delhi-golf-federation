@@ -4,6 +4,7 @@ import 'package:delhi_golf_federation/bloc/eventregister/bloc/eventregister_bloc
 import 'package:delhi_golf_federation/bloc/eventreport/bloc/eventreport_bloc.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_bloc.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_event.dart';
+import 'package:delhi_golf_federation/bloc/scorecard/bloc/scorecard_bloc.dart';
 import 'package:delhi_golf_federation/config/network/dio_client.dart';
 import 'package:delhi_golf_federation/config/network/web_constant.dart';
 import 'package:delhi_golf_federation/data/auth_repository.dart';
@@ -11,6 +12,7 @@ import 'package:delhi_golf_federation/data/eventregister_repository.dart';
 import 'package:delhi_golf_federation/data/eventreport_repository.dart';
 import 'package:delhi_golf_federation/data/events_repository.dart';
 import 'package:delhi_golf_federation/data/getdatarepository.dart';
+import 'package:delhi_golf_federation/data/scorecard_repository.dart';
 import 'package:delhi_golf_federation/database/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -92,6 +94,9 @@ class GolfApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => EventReportBloc(EventReportRepository()),
+        ),
+        BlocProvider(
+          create: (_) => EventScoreBloc(EventScoreRepository()),
         ),
       ],
       child: SafeArea(

@@ -14,7 +14,6 @@ import 'package:delhi_golf_federation/bloc/eventreport/bloc/eventreport_bloc.dar
 import 'package:delhi_golf_federation/bloc/eventreport/bloc/eventreport_event.dart';
 import 'package:delhi_golf_federation/bloc/eventreport/bloc/eventreport_state.dart';
 
-
 class EventReportScreen extends StatefulWidget {
   const EventReportScreen({super.key});
 
@@ -39,8 +38,8 @@ class _EventReportScreenState extends State<EventReportScreen> {
 
     // dispatch the correct event class (FetchEventReport)
     context.read<EventReportBloc>().add(
-          FetchEventReport(request: request, isCurrent: showCurrent),
-        );
+      FetchEventReport(request: request, isCurrent: showCurrent),
+    );
   }
 
   void _switchTab(bool current) {
@@ -101,10 +100,12 @@ class _EventReportScreenState extends State<EventReportScreen> {
                   child: CustomButton(
                     text: "Current Scorecards",
                     onPressed: () => _switchTab(true),
-                    backgroundColor:
-                        showCurrent ? const Color(0xFF0B592A) : Colors.white,
-                    textColor:
-                        showCurrent ? Colors.white : const Color(0xFF0B592A),
+                    backgroundColor: showCurrent
+                        ? const Color(0xFF0B592A)
+                        : Colors.white,
+                    textColor: showCurrent
+                        ? Colors.white
+                        : const Color(0xFF0B592A),
                     borderRadius: 12,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -114,10 +115,12 @@ class _EventReportScreenState extends State<EventReportScreen> {
                   child: CustomButton(
                     text: "Past Scorecards",
                     onPressed: () => _switchTab(false),
-                    backgroundColor:
-                        !showCurrent ? const Color(0xFF0B592A) : Colors.white,
-                    textColor:
-                        !showCurrent ? Colors.white : const Color(0xFF0B592A),
+                    backgroundColor: !showCurrent
+                        ? const Color(0xFF0B592A)
+                        : Colors.white,
+                    textColor: !showCurrent
+                        ? Colors.white
+                        : const Color(0xFF0B592A),
                     borderRadius: 12,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -146,7 +149,10 @@ class _EventReportScreenState extends State<EventReportScreen> {
 
                   if (events.isEmpty) {
                     return const Center(
-                      child: Text("No events found.", style: TextStyle(fontSize: 16)),
+                      child: Text(
+                        "No events found.",
+                        style: TextStyle(fontSize: 16),
+                      ),
                     );
                   }
 
@@ -154,7 +160,10 @@ class _EventReportScreenState extends State<EventReportScreen> {
                     children: [
                       Expanded(
                         child: ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 8,
+                          ),
                           itemCount: events.length,
                           itemBuilder: (context, index) {
                             final event = events[index];
@@ -196,9 +205,14 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                     Icons.event_available,
                                     "Registration: ${_formatDateRange(event.regStartDate, event.regEndDate)}",
                                   ),
-                                  _buildInfoRow(Icons.location_on, event.venue ?? "Venue not available"),
-                                  _buildInfoRow(Icons.attach_money,
-                                      "Prize Money: ${event.priceMoney?.isEmpty ?? true ? 'N/A' : event.priceMoney}"),
+                                  _buildInfoRow(
+                                    Icons.location_on,
+                                    event.venue ?? "Venue not available",
+                                  ),
+                                  _buildInfoRow(
+                                    Icons.attach_money,
+                                    "Prize Money: ${event.priceMoney?.isEmpty ?? true ? 'N/A' : event.priceMoney}",
+                                  ),
                                   const SizedBox(height: 16),
 
                                   // Buttons
@@ -211,43 +225,64 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) => const EventScorecardScreen(),
+                                                  builder: (context) =>
+                                                      EventScorecardScreen(
+                                                        regRefNo:
+                                                            event.regRefNo ??
+                                                            "",
+                                                        courseRefNo:
+                                                            event.courseRefNo ??
+                                                            "",
+                                                        eventRefNo:
+                                                            event.refNo ?? "",
+                                                      ),
                                                 ),
                                               );
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: ColorConstants.buttonColor,
+                                              backgroundColor:
+                                                  ColorConstants.buttonColor,
                                               shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
                                               ),
-                                              padding: const EdgeInsets.symmetric(vertical: 10),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                  ),
                                             ),
-                                            child: const Text("Add Score",
-                                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+                                            child: const Text(
+                                              "Add Score",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
                                           ),
                                         ),
+
                                         const SizedBox(width: 12),
-                                        Expanded(
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => const EventScorecardScreen(),
-                                                ),
-                                              );
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: ColorConstants.buttonColor,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),
-                                              padding: const EdgeInsets.symmetric(vertical: 10),
-                                            ),
-                                            child: const Text("Update Score",
-                                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
-                                          ),
-                                        ),
+                                        // Expanded(
+                                        //   child: ElevatedButton(
+                                        //     onPressed: () {
+                                        //       Navigator.push(
+                                        //         context,
+                                        //         MaterialPageRoute(
+                                        //           builder: (context) => const EventScorecardScreen(),
+                                        //         ),
+                                        //       );
+                                        //     },
+                                        //     style: ElevatedButton.styleFrom(
+                                        //       backgroundColor: ColorConstants.buttonColor,
+                                        //       shape: RoundedRectangleBorder(
+                                        //         borderRadius: BorderRadius.circular(10),
+                                        //       ),
+                                        //       padding: const EdgeInsets.symmetric(vertical: 10),
+                                        //     ),
+                                        //     child: const Text("Update Score",
+                                        //         style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+                                        //   ),
+                                        // ),
                                       ] else ...[
                                         Expanded(
                                           child: ElevatedButton(
@@ -255,20 +290,33 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                               Navigator.pushAndRemoveUntil(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) => const CustomBottomNav(initialIndex: 1),
+                                                  builder: (context) =>
+                                                      const CustomBottomNav(
+                                                        initialIndex: 1,
+                                                      ),
                                                 ),
                                                 (route) => false,
                                               );
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: ColorConstants.buttonColor,
+                                              backgroundColor:
+                                                  ColorConstants.buttonColor,
                                               shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
                                               ),
-                                              padding: const EdgeInsets.symmetric(vertical: 10),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                  ),
                                             ),
-                                            child: const Text("Leaderboard",
-                                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+                                            child: const Text(
+                                              "Leaderboard",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -283,7 +331,10 @@ class _EventReportScreenState extends State<EventReportScreen> {
 
                       // Pagination controls
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8,
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -298,9 +349,15 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
                               ),
-                              child: const Text("Previous", style: TextStyle(color: Colors.white)),
+                              child: const Text(
+                                "Previous",
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
                             Text("Page $currentPage of $totalPages"),
                             ElevatedButton(
@@ -314,9 +371,15 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
                               ),
-                              child: const Text("Next", style: TextStyle(color: Colors.white)),
+                              child: const Text(
+                                "Next",
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
                           ],
                         ),
@@ -362,8 +425,18 @@ class _EventReportScreenState extends State<EventReportScreen> {
 
   String _monthName(int month) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return months[month - 1];
   }
