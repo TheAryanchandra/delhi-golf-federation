@@ -69,7 +69,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
       score: hole.score ?? 0,
       today: hole.score ?? 0,
       extraPoint: 0,
-      dayScore: hole.score ?? 0,
+      dayScore: hole.par ?? 0,
       holeThru: hole.hole ?? 0,
       par: hole.par ?? 0, // <-- added
       indexs: hole.indexNo ?? 0, // <-- added
