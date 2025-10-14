@@ -7,14 +7,21 @@ import '../bloc/auth/auth_bloc.dart';
 import '../bloc/auth/auth_event.dart';
 import '../bloc/auth/auth_state.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
+  State<LoginScreen> createState() => _LoginScreenState();
+}
 
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  bool _obscurePassword = true; // 👁️ controls password visibility
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
@@ -60,6 +67,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 25),
 
+                            /// Email Field
                             GlobalTextField(
                               controller: emailController,
                               hint: "Enter your email",
@@ -74,11 +82,27 @@ class LoginScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
 
+                            /// Password Field with eye toggle 👁️
                             GlobalTextField(
                               controller: passwordController,
                               hint: "Enter your password",
                               prefixIcon: Icons.lock_outline,
-                              obscureText: true,
+                              obscureText: _obscurePassword,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: _obscurePassword
+                                      ? Colors.grey
+                                      : Colors.blueAccent,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
+                              ),
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return "Password is required";
@@ -88,6 +112,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 10),
 
+                            /// Submit button with BLoC
                             BlocConsumer<LoginBloc, LoginState>(
                               listener: (context, state) {
                                 if (state is LoginSuccess) {
@@ -168,6 +193,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
 
+                      /// Logo Positioned on top
                       Positioned(
                         top: -50,
                         left: 0,

@@ -71,6 +71,7 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
         },
       ),
       appBar: TopNavigationBar(
+        showBackButton: false,
         onMenuTap: () {
           _scaffoldKey.currentState?.openDrawer();
         },
@@ -114,7 +115,10 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
               label: "Leaderboard",
             ),
             BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
-            BottomNavigationBarItem(icon: Icon(Icons.sports_golf), label: 'Scorecard'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.sports_golf),
+              label: 'Scorecard',
+            ),
             BottomNavigationBarItem(icon: Icon(Icons.info), label: "About"),
           ],
         ),
@@ -158,6 +162,7 @@ class _ProfileWithNavigationState extends State<_ProfileWithNavigation> {
         },
       ),
       appBar: TopNavigationBar(
+        showBackButton: false,
         onMenuTap: () {
           _scaffoldKey.currentState?.openDrawer();
         },
@@ -190,7 +195,10 @@ class _ProfileWithNavigationState extends State<_ProfileWithNavigation> {
               label: "Leaderboard",
             ),
             BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
-            BottomNavigationBarItem(icon: Icon(Icons.sports_golf), label: 'Scorecard'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.sports_golf),
+              label: 'Scorecard',
+            ),
 
             // BottomNavigationBarItem(
             //   icon: Icon(Icons.golf_course),
