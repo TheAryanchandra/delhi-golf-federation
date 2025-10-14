@@ -2,4 +2,5 @@
 - [x] Add confirmUploadScore constant to routes_name.dart
 - [x] Update routes.dart: remove static route for finalScorecard, add onGenerateRoute function
 - [x] Update main.dart: add onGenerateRoute to MaterialApp
-- [ ] Update EventScorecardScreen: modify submit button onPressed to convert holes to JSON and navigate to confirmUploadScore
+- [x] Update EventScorecardScreen: modify submit button onPressed to convert holes to JSON and navigate to confirmUploadScore
+- [ ] Add debug prints for regRefNo, courseRefNo, eventRefNo in EventScorecardScreen initState

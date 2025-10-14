@@ -19,6 +19,7 @@ class EventScorecardScreen extends StatefulWidget {
     required this.courseRefNo,
     required this.eventRefNo,
   });
+  
 
   @override
   State<EventScorecardScreen> createState() => _EventScorecardScreenState();
@@ -33,6 +34,9 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
   @override
   void initState() {
     super.initState();
+    print('regRefNo: ${widget.regRefNo}');
+    print('courseRefNo: ${widget.courseRefNo}');
+    print('eventRefNo: ${widget.eventRefNo}');
     // Fetch event scores via Bloc
     context.read<EventScoreBloc>().add(
           FetchEventScore(
