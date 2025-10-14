@@ -1,6 +1,6 @@
-- [x] Add toJson method to HoleInfo class in scorecard_model.dart
-- [x] Add confirmUploadScore constant to routes_name.dart
-- [x] Update routes.dart: remove static route for finalScorecard, add onGenerateRoute function
-- [x] Update main.dart: add onGenerateRoute to MaterialApp
-- [x] Update EventScorecardScreen: modify submit button onPressed to convert holes to JSON and navigate to confirmUploadScore
-- [ ] Add debug prints for regRefNo, courseRefNo, eventRefNo in EventScorecardScreen initState
+# TODO: Add Debug Prints to Event Scorecard
+
+- [ ] Add debugPrint in CustomButton onPressed for "Pressed Next Hole button, submitting current hole."
+- [ ] Add debugPrint in _submitCurrentHole for "Sending LeaderboardRequest: $request"
+- [ ] Add debugPrint in BlocListener LeaderboardSuccess for "Received response: ${state.response}"
+- [ ] Add debugPrint in BlocListener LeaderboardError for "Error: ${state.message}"
