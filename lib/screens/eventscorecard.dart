@@ -16,12 +16,16 @@ class EventScorecardScreen extends StatefulWidget {
   final String regRefNo;
   final String courseRefNo;
   final String eventRefNo;
+  final String eventStartDate; // "yyyy-MM-dd" or format your API returns
+  final String eventEndDate;
 
   const EventScorecardScreen({
     super.key,
     required this.regRefNo,
     required this.courseRefNo,
     required this.eventRefNo,
+    required this.eventStartDate,
+    required this.eventEndDate,
   });
 
   @override
@@ -35,9 +39,25 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
   int currentHoleIndex = 0;
   DateTime selectedDate = DateTime.now(); // default current date
 
+  late DateTime regStartDateTime;
+  late DateTime regEndDateTime;
+
   @override
   void initState() {
     super.initState();
+
+    regStartDateTime = DateTime.tryParse(widget.eventStartDate) ?? DateTime.now();
+    regEndDateTime = DateTime.tryParse(widget.eventEndDate) ?? DateTime.now();
+
+
+    // Ensure selectedDate is within the interval
+  selectedDate = DateTime.now().isBefore(regStartDateTime)
+      ? regStartDateTime
+      : DateTime.now().isAfter(regEndDateTime)
+          ? regEndDateTime
+          : DateTime.now();
+
+
     context.read<EventScoreBloc>().add(
       FetchEventScore(
         request: EventScoreRequest(
@@ -222,13 +242,14 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                       context: context,
                                       initialDate:
                                           selectedDate, // use single selectedDate
-                                      firstDate: DateTime(2020),
-                                      lastDate: DateTime(2030),
+                                      firstDate: regStartDateTime,
+                                      lastDate: regEndDateTime,
                                     );
-                                    if (picked != null) {
+                                    if (picked != null &&
+                                        picked != selectedDate) {
                                       setState(() {
-                                        selectedDate =
-                                            picked; // update the shared date
+                                        selectedDate = picked;
+
                                         // Apply picked date to all holes
                                         for (var hole in holes) {
                                           hole.playedDate = picked;
@@ -257,7 +278,9 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
-                                          DateFormat('dd/MM/yyyy').format(selectedDate)
+                                          DateFormat(
+                                            'dd/MM/yyyy',
+                                          ).format(selectedDate),
 
                                           // style: TextStyle(
                                           //   color:

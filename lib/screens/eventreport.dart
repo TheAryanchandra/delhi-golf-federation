@@ -235,6 +235,11 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                                             "",
                                                         eventRefNo:
                                                             event.refNo ?? "",
+                                                        eventStartDate:
+                                                            event.startDate ??
+                                                            "", // <-- start date
+                                                        eventEndDate:
+                                                            event.endDate ?? "",
                                                       ),
                                                 ),
                                               );
