@@ -33,6 +33,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
   PlayerInfo? playerInfo;
   final PageController _pageController = PageController();
   int currentHoleIndex = 0;
+  DateTime selectedDate = DateTime.now(); // default current date
 
   @override
   void initState() {
@@ -74,7 +75,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
       par: hole.par ?? 0, // <-- added
       indexs: hole.indexNo ?? 0, // <-- added
       totalGross: 0,
-      totalNet:  0,
+      totalNet: 0,
       courseRefNo: widget.courseRefNo,
       eventRefNo: widget.eventRefNo,
       eventRegNo: widget.regRefNo,
@@ -152,6 +153,11 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                 if (holes.isEmpty) {
                   holes = state.response.ds?.table2 ?? [];
                   playerInfo = state.response.ds?.table1?.first;
+
+                  // Initialize all holes with the selectedDate
+                  for (var hole in holes) {
+                    hole.playedDate = selectedDate;
+                  }
                 }
 
                 return SingleChildScrollView(
@@ -202,6 +208,75 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                 ),
                               ],
                             ),
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "Playing Date:",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    final picked = await showDatePicker(
+                                      context: context,
+                                      initialDate:
+                                          selectedDate, // use single selectedDate
+                                      firstDate: DateTime(2020),
+                                      lastDate: DateTime(2030),
+                                    );
+                                    if (picked != null) {
+                                      setState(() {
+                                        selectedDate =
+                                            picked; // update the shared date
+                                        // Apply picked date to all holes
+                                        for (var hole in holes) {
+                                          hole.playedDate = picked;
+                                        }
+                                      });
+                                    }
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade100,
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                        color: mainColor.withOpacity(0.4),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.calendar_today,
+                                          color: mainColor,
+                                          size: 18,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          DateFormat('dd/MM/yyyy').format(selectedDate)
+
+                                          // style: TextStyle(
+                                          //   color:
+                                          //       holes.isNotEmpty &&
+                                          //           holes[currentHoleIndex]
+                                          //                   .playedDate !=
+                                          //               null
+                                          //       ? Colors.black
+                                          //       : Colors.grey.shade600,
+                                          //   fontSize: 15,
+                                          // ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
                           ],
                         ),
                       ),
@@ -317,75 +392,75 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                       ),
                                     ),
                                     const SizedBox(height: 20),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text(
-                                          "Playing Date:",
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                        InkWell(
-                                          onTap: () async {
-                                            final picked = await showDatePicker(
-                                              context: context,
-                                              initialDate:
-                                                  hole.playedDate ??
-                                                  DateTime.now(),
-                                              firstDate: DateTime(2020),
-                                              lastDate: DateTime(2030),
-                                            );
-                                            if (picked != null) {
-                                              setState(() {
-                                                hole.playedDate = picked;
-                                              });
-                                            }
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 12,
-                                              vertical: 8,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey.shade100,
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              border: Border.all(
-                                                color: mainColor.withOpacity(
-                                                  0.4,
-                                                ),
-                                              ),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                const Icon(
-                                                  Icons.calendar_today,
-                                                  color: mainColor,
-                                                  size: 18,
-                                                ),
-                                                const SizedBox(width: 8),
-                                                Text(
-                                                  hole.playedDate != null
-                                                      ? DateFormat(
-                                                          'dd/MM/yyyy',
-                                                        ).format(
-                                                          hole.playedDate!,
-                                                        )
-                                                      : "Select Date",
-                                                  style: TextStyle(
-                                                    color:
-                                                        hole.playedDate != null
-                                                        ? Colors.black
-                                                        : Colors.grey.shade600,
-                                                    fontSize: 15,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                    // Row(
+                                    //   mainAxisAlignment:
+                                    //       MainAxisAlignment.spaceBetween,
+                                    //   children: [
+                                    //     const Text(
+                                    //       "Playing Date:",
+                                    //       style: TextStyle(fontSize: 16),
+                                    //     ),
+                                    //     InkWell(
+                                    //       onTap: () async {
+                                    //         final picked = await showDatePicker(
+                                    //           context: context,
+                                    //           initialDate:
+                                    //               hole.playedDate ??
+                                    //               DateTime.now(),
+                                    //           firstDate: DateTime(2020),
+                                    //           lastDate: DateTime(2030),
+                                    //         );
+                                    //         if (picked != null) {
+                                    //           setState(() {
+                                    //             hole.playedDate = picked;
+                                    //           });
+                                    //         }
+                                    //       },
+                                    //       child: Container(
+                                    //         padding: const EdgeInsets.symmetric(
+                                    //           horizontal: 12,
+                                    //           vertical: 8,
+                                    //         ),
+                                    //         decoration: BoxDecoration(
+                                    //           color: Colors.grey.shade100,
+                                    //           borderRadius:
+                                    //               BorderRadius.circular(8),
+                                    //           border: Border.all(
+                                    //             color: mainColor.withOpacity(
+                                    //               0.4,
+                                    //             ),
+                                    //           ),
+                                    //         ),
+                                    //         child: Row(
+                                    //           children: [
+                                    //             const Icon(
+                                    //               Icons.calendar_today,
+                                    //               color: mainColor,
+                                    //               size: 18,
+                                    //             ),
+                                    //             const SizedBox(width: 8),
+                                    //             Text(
+                                    //               hole.playedDate != null
+                                    //                   ? DateFormat(
+                                    //                       'dd/MM/yyyy',
+                                    //                     ).format(
+                                    //                       hole.playedDate!,
+                                    //                     )
+                                    //                   : "Select Date",
+                                    //               style: TextStyle(
+                                    //                 color:
+                                    //                     hole.playedDate != null
+                                    //                     ? Colors.black
+                                    //                     : Colors.grey.shade600,
+                                    //                 fontSize: 15,
+                                    //               ),
+                                    //             ),
+                                    //           ],
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //   ],
+                                    // ),
                                     const SizedBox(height: 20),
                                     Row(
                                       mainAxisAlignment:
