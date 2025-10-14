@@ -31,7 +31,19 @@ final Map<String, WidgetBuilder> appRoutes = {
   // RoutesName.registerScreen: (context) => const RegisterScreen(),
   // RoutesName.bookingScreen: (context) => const BookingScreen(),
   // RoutesName.profileScreen: (context) => const ProfileScreen(),
-  RoutesName.finalScorecard: (context) => ConfirmUploadScoreScreen(
-    holes: ModalRoute.of(context)!.settings.arguments as List<Map<String, dynamic>>,
-  ),
 };
+
+Route<dynamic>? onGenerateRoute(RouteSettings settings) {
+  switch (settings.name) {
+    case RoutesName.confirmUploadScore:
+      final args = settings.arguments as List<Map<String, dynamic>>;
+      return MaterialPageRoute(
+        builder: (_) => ConfirmUploadScoreScreen(holes: args),
+      );
+
+    default:
+      return MaterialPageRoute(
+        builder: (_) => const CustomBottomNav(),
+      );
+  }
+}

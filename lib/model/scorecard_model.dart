@@ -109,4 +109,13 @@ class HoleInfo {
     indexNo: json['IndexNo'],
     score: json['Score'],
   );
+
+  Map<String, dynamic> toJson() {
+    return {
+      'hole': hole,
+      'par': par,
+      'index': indexNo,
+      'score': score,
+    };
+  }
 }

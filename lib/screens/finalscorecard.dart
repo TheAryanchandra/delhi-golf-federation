@@ -6,8 +6,8 @@ class ConfirmUploadScoreScreen extends StatelessWidget {
   final List<Map<String, dynamic>> holes;
   const ConfirmUploadScoreScreen({super.key, required this.holes});
 
-  int get totalScore => holes.fold(0, (sum, hole) => sum + (hole["score"] as int));
-  int get totalPar => holes.fold(0, (sum, hole) => sum + (hole["par"] as int));
+  int get totalScore => holes.fold(0, (sum, hole) => sum + ((hole["score"] as int?) ?? 0));
+  int get totalPar => holes.fold(0, (sum, hole) => sum + ((hole["par"] as int?) ?? 0));
 
   @override
   Widget build(BuildContext context) {

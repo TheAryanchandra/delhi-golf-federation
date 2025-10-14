@@ -316,10 +316,13 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                   curve: Curves.easeInOut,
                                 );
                               } else {
+                                // ✅ Convert holes to JSON maps before navigating
+                                final holeData = holes.map((hole) => hole.toJson()).toList();
+
                                 Navigator.pushNamed(
                                   context,
-                                  RoutesName.finalScorecard,
-                                  arguments: holes,
+                                  RoutesName.confirmUploadScore, // 👈 use your correct route name
+                                  arguments: holeData,
                                 );
                               }
                             },

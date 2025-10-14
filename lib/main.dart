@@ -112,6 +112,7 @@ class GolfApp extends StatelessWidget {
               ? RoutesName.homeScreen
               : RoutesName.loginScreen,
           routes: appRoutes,
+          onGenerateRoute: onGenerateRoute,
           theme: ThemeData(
             textTheme:
                 GoogleFonts.urbanistTextTheme(

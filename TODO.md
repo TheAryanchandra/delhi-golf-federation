@@ -1,3 +1,5 @@
-- [x] Modify lib/screens/finalscorecard.dart to navigate to event report screen with bottom bar after upload
-  - [x] Add import for CustomBottomNav
-  - [x] Update the onPressed of the "Upload" button to use Navigator.pushAndRemoveUntil with CustomBottomNav(initialIndex: 3)
+- [x] Add toJson method to HoleInfo class in scorecard_model.dart
+- [x] Add confirmUploadScore constant to routes_name.dart
+- [x] Update routes.dart: remove static route for finalScorecard, add onGenerateRoute function
+- [x] Update main.dart: add onGenerateRoute to MaterialApp
+- [ ] Update EventScorecardScreen: modify submit button onPressed to convert holes to JSON and navigate to confirmUploadScore
