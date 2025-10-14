@@ -100,14 +100,16 @@ class HoleInfo {
   int? par;
   int? indexNo;
   int? score;
+  DateTime? playedDate;
 
-  HoleInfo({this.hole, this.par, this.indexNo, this.score});
+  HoleInfo({this.hole, this.par, this.indexNo, this.score, this.playedDate});
 
   factory HoleInfo.fromJson(Map<String, dynamic> json) => HoleInfo(
     hole: json['Hole'],
     par: json['Par'],
     indexNo: json['IndexNo'],
     score: json['Score'],
+    playedDate: json['PlayedDate'] != null ? DateTime.parse(json['PlayedDate']) : null,
   );
 
   Map<String, dynamic> toJson() {
@@ -116,6 +118,7 @@ class HoleInfo {
       'par': par,
       'index': indexNo,
       'score': score,
+      'playedDate': playedDate?.toIso8601String(),
     };
   }
 }

@@ -1,4 +1,3 @@
-
 import 'package:delhi_golf_federation/bloc/scorecard/bloc/scorecard_bloc.dart';
 import 'package:delhi_golf_federation/bloc/scorecard/bloc/scorecard_event.dart';
 import 'package:delhi_golf_federation/bloc/scorecard/bloc/scorecard_state.dart';
@@ -7,6 +6,8 @@ import 'package:delhi_golf_federation/config/routes_name.dart';
 import 'package:delhi_golf_federation/model/scorecard_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+
 
 class EventScorecardScreen extends StatefulWidget {
   final String regRefNo;
@@ -19,7 +20,6 @@ class EventScorecardScreen extends StatefulWidget {
     required this.courseRefNo,
     required this.eventRefNo,
   });
-  
 
   @override
   State<EventScorecardScreen> createState() => _EventScorecardScreenState();
@@ -37,7 +37,6 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
     print('regRefNo: ${widget.regRefNo}');
     print('courseRefNo: ${widget.courseRefNo}');
     print('eventRefNo: ${widget.eventRefNo}');
-    // Fetch event scores via Bloc
     context.read<EventScoreBloc>().add(
           FetchEventScore(
             request: EventScoreRequest(
@@ -87,7 +86,6 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
             } else if (state is EventScoreError) {
               return Center(child: Text("Error: ${state.message}"));
             } else if (state is EventScoreLoaded) {
-              // Populate data from API
               if (holes.isEmpty) {
                 holes = state.response.ds?.table2 ?? [];
                 playerInfo = state.response.ds?.table1?.first;
@@ -205,7 +203,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                     const SizedBox(height: 10),
                     // 📄 Hole Detail View
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.5,
+                      height: MediaQuery.of(context).size.height * 0.55,
                       child: PageView.builder(
                         controller: _pageController,
                         onPageChanged: (index) {
@@ -249,6 +247,68 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                       ),
                                     ),
                                   ),
+                                  const SizedBox(height: 20),
+
+                                  // 🗓️ Date Selector
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        "Playing Date:",
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                      InkWell(
+                                        onTap: () async {
+                                          final picked = await showDatePicker(
+                                            context: context,
+                                            initialDate:
+                                                hole.playedDate ?? DateTime.now(),
+                                            firstDate: DateTime(2020),
+                                            lastDate: DateTime(2030),
+                                          );
+                                          if (picked != null) {
+                                            setState(() {
+                                              hole.playedDate = picked;
+                                            });
+                                          }
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade100,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            border: Border.all(
+                                                color:
+                                                    mainColor.withOpacity(0.4)),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              const Icon(Icons.calendar_today,
+                                                  color: mainColor, size: 18),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                hole.playedDate != null
+                                                    ? DateFormat('dd/MM/yyyy')
+                                                        .format(
+                                                            hole.playedDate!)
+                                                    : "Select Date",
+                                                style: TextStyle(
+                                                  color: hole.playedDate != null
+                                                      ? Colors.black
+                                                      : Colors.grey.shade600,
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
                                   const SizedBox(height: 20),
                                   Row(
                                     mainAxisAlignment:
@@ -320,12 +380,12 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                   curve: Curves.easeInOut,
                                 );
                               } else {
-                                // ✅ Convert holes to JSON maps before navigating
-                                final holeData = holes.map((hole) => hole.toJson()).toList();
+                                final holeData =
+                                    holes.map((hole) => hole.toJson()).toList();
 
                                 Navigator.pushNamed(
                                   context,
-                                  RoutesName.confirmUploadScore, // 👈 use your correct route name
+                                  RoutesName.confirmUploadScore,
                                   arguments: holeData,
                                 );
                               }
