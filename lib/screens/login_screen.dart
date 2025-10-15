@@ -160,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           );
                                     },
                                     child: const Text(
-                                      "Submit",
+                                      "Login",
                                       style: TextStyle(
                                         fontSize: 16,
                                         color: Colors.white,
