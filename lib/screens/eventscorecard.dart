@@ -124,10 +124,9 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
     int sum = 0;
     for (int i = 0; i <= upToHoleIndex; i++) {
       final hole = holes[i];
-      if (hole.score == null) {
-        return -1; // use -1 to indicate score not entered
+      if (hole.score != null) {
+        sum += calculateAdjustedScore(hole);
       }
-      sum += calculateAdjustedScore(hole);
     }
     return sum;
   }
@@ -561,7 +560,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                           style: const TextStyle(fontSize: 16),
                                         ),
                                         Text(
-                                          cumulativeScore(index) == -1
+                                          cumulativeScore(index) == 0
                                               ? "Enter score"
                                               : "Score: ${cumulativeScore(index)}",
                                           style: const TextStyle(fontSize: 16),
