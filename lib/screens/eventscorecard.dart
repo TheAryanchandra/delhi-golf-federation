@@ -36,6 +36,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
   List<HoleInfo> holes = [];
   PlayerInfo? playerInfo;
   final PageController _pageController = PageController();
+  final Map<int, TextEditingController> _scoreControllers = {};
   int currentHoleIndex = 0;
   DateTime selectedDate = DateTime.now(); // default current date
 
@@ -46,17 +47,16 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
   void initState() {
     super.initState();
 
-    regStartDateTime = DateTime.tryParse(widget.eventStartDate) ?? DateTime.now();
+    regStartDateTime =
+        DateTime.tryParse(widget.eventStartDate) ?? DateTime.now();
     regEndDateTime = DateTime.tryParse(widget.eventEndDate) ?? DateTime.now();
 
-
     // Ensure selectedDate is within the interval
-  selectedDate = DateTime.now().isBefore(regStartDateTime)
-      ? regStartDateTime
-      : DateTime.now().isAfter(regEndDateTime)
-          ? regEndDateTime
-          : DateTime.now();
-
+    selectedDate = DateTime.now().isBefore(regStartDateTime)
+        ? regStartDateTime
+        : DateTime.now().isAfter(regEndDateTime)
+        ? regEndDateTime
+        : DateTime.now();
 
     context.read<EventScoreBloc>().add(
       FetchEventScore(
@@ -105,6 +105,65 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
     debugPrint("Sending LeaderboardRequest: $request");
 
     context.read<LeaderboardBloc>().add(SubmitLeaderboard(request: request));
+  }
+
+  // Add new method to calculate adjusted score
+  int calculateAdjustedScore(HoleInfo hole) {
+    final handicap = playerInfo?.usgaHandicapIndex?.toInt() ?? 0;
+    final holeIndex = hole.indexNo ?? 0;
+    final inputScore = hole.score ?? 0;
+    final par = hole.par ?? 0;
+
+    if (holeIndex <= handicap) {
+      return inputScore - (par + 1);
+    }
+    return inputScore - par;
+  }
+
+  int cumulativeScore(int upToHoleIndex) {
+    int sum = 0;
+    for (int i = 0; i <= upToHoleIndex; i++) {
+      final hole = holes[i];
+      if (hole.score == null) {
+        return -1; // use -1 to indicate score not entered
+      }
+      sum += calculateAdjustedScore(hole);
+    }
+    return sum;
+  }
+
+  // Modify date picker to reset scores
+  void _updatePlayingDate(DateTime picked) {
+    setState(() {
+      selectedDate = picked;
+      // Reset all scores when date changes
+      for (var hole in holes) {
+        hole.playedDate = picked;
+        hole.score = null;
+      }
+      // Reset to first hole
+      currentHoleIndex = 0;
+      _pageController.animateToPage(
+        0,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  // Add validation method
+  bool _validateCurrentHole() {
+    final currentHole = holes[currentHoleIndex];
+    if (currentHole.score == null || currentHole.score == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter score for Hole ${currentHole.hole}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false;
+    }
+    return true;
   }
 
   @override
@@ -247,14 +306,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                     );
                                     if (picked != null &&
                                         picked != selectedDate) {
-                                      setState(() {
-                                        selectedDate = picked;
-
-                                        // Apply picked date to all holes
-                                        for (var hole in holes) {
-                                          hole.playedDate = picked;
-                                        }
-                                      });
+                                      _updatePlayingDate(picked);
                                     }
                                   },
                                   child: Container(
@@ -315,15 +367,24 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                             final isSelected = index == currentHoleIndex;
                             return GestureDetector(
                               onTap: () {
-                                setState(() {
-                                  currentHoleIndex = index;
-                                });
-                                _pageController.animateToPage(
-                                  index,
-                                  duration: const Duration(milliseconds: 400),
-                                  curve: Curves.easeInOut,
-                                );
+                                if (index > currentHoleIndex &&
+                                    !_validateCurrentHole()) {
+                                  // Trying to go forward without entering score
+                                  return;
+                                }
+                                if (index <= currentHoleIndex) {
+                                  // Can go to previous hole freely
+                                  setState(() {
+                                    currentHoleIndex = index;
+                                  });
+                                  _pageController.animateToPage(
+                                    index,
+                                    duration: const Duration(milliseconds: 400),
+                                    curve: Curves.easeInOut,
+                                  );
+                                }
                               },
+
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 250),
                                 margin: const EdgeInsets.symmetric(
@@ -372,6 +433,8 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                         height: MediaQuery.of(context).size.height * 0.40,
                         child: PageView.builder(
                           controller: _pageController,
+                          physics:
+                              const NeverScrollableScrollPhysics(), // Disable swipe
                           onPageChanged: (index) {
                             setState(() {
                               currentHoleIndex = index;
@@ -498,15 +561,21 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                           style: const TextStyle(fontSize: 16),
                                         ),
                                         Text(
-                                          "Score: ${hole.score ?? 0}",
+                                          cumulativeScore(index) == -1
+                                              ? "Enter score"
+                                              : "Score: ${cumulativeScore(index)}",
                                           style: const TextStyle(fontSize: 16),
                                         ),
                                       ],
                                     ),
                                     const SizedBox(height: 20),
                                     TextFormField(
-                                      initialValue: (hole.score ?? 0)
-                                          .toString(),
+                                      controller: _scoreControllers.putIfAbsent(
+                                        index,
+                                        () => TextEditingController(
+                                          text: hole.score?.toString() ?? '',
+                                        ),
+                                      ),
                                       keyboardType: TextInputType.number,
                                       textAlign: TextAlign.center,
                                       decoration: InputDecoration(
@@ -525,7 +594,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                       ),
                                       onChanged: (val) {
                                         setState(() {
-                                          hole.score = int.tryParse(val) ?? 0;
+                                          hole.score = int.tryParse(val);
                                         });
                                       },
                                     ),
@@ -552,13 +621,19 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                   : "Next Hole",
                               backgroundColor: mainColor,
                               onPressed: () {
+                                if (!_validateCurrentHole()) return;
+
                                 final currentHole = holes[currentHoleIndex];
 
-                                debugPrint(
-                                  "Pressed Next Hole button, submitting current hole.",
+                                // Calculate adjusted score before submitting
+                                final adjustedScore = calculateAdjustedScore(
+                                  currentHole,
                                 );
 
-                                // Submit current hole
+                                debugPrint(
+                                  "Submitting hole ${currentHole.hole} with adjusted score: $adjustedScore",
+                                );
+
                                 _submitCurrentHole(
                                   currentHole,
                                   finalSubmit:
