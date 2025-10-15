@@ -135,11 +135,18 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
   void _updatePlayingDate(DateTime picked) {
     setState(() {
       selectedDate = picked;
-      // Reset all scores when date changes
-      for (var hole in holes) {
-        hole.playedDate = picked;
-        hole.score = null;
+
+      // Reset all scores and update playedDate
+      for (var i = 0; i < holes.length; i++) {
+        holes[i].playedDate = picked;
+        holes[i].score = null;
+
+        // Also clear the corresponding TextEditingController
+        if (_scoreControllers.containsKey(i)) {
+          _scoreControllers[i]!.text = '';
+        }
       }
+
       // Reset to first hole
       currentHoleIndex = 0;
       _pageController.animateToPage(
