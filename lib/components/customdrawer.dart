@@ -76,7 +76,7 @@ class CustomDrawer extends StatelessWidget {
                 //   "Book Tee Time",
                 //   "/bookTee",
                 // ),
-                _buildDrawerItem(context, Icons.book, "Booking", "/booking"),
+                // _buildDrawerItem(context, Icons.book, "Booking", "/booking"),
                 _buildDrawerItem(
                   context,
                   Icons.sports_golf,
