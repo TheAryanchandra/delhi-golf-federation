@@ -369,7 +369,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                       const SizedBox(height: 10),
                       // Hole Detail PageView
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.55,
+                        height: MediaQuery.of(context).size.height * 0.40,
                         child: PageView.builder(
                           controller: _pageController,
                           onPageChanged: (index) {
