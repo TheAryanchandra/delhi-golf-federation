@@ -5,7 +5,6 @@ import 'package:delhi_golf_federation/bloc/leaderboard/bloc/leaderboardScreen_ev
 import 'package:delhi_golf_federation/bloc/leaderboard/bloc/leaderboardScreen_state.dart';
 import 'package:delhi_golf_federation/data/leaderboardScreen_repository.dart';
 
-
 class ColorConstants {
   static const Color green = Color(0xFF12563C);
   static const Color lightGray = Color(0xFFF5F5F5);
@@ -23,7 +22,7 @@ class LeaderboardScreen extends StatefulWidget {
 class _LeaderboardScreenState extends State<LeaderboardScreen> {
   late LeaderboardScreenBloc _bloc;
   int currentPage = 1;
-  final int pageSize = 5; // Constant as per API
+  final int pageSize = 10; // Constant as per API
 
   @override
   void initState() {
@@ -62,7 +61,9 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
           child: BlocBuilder<LeaderboardScreenBloc, LeaderboardScreenState>(
             builder: (context, state) {
               if (state is LeaderboardScreenLoading) {
-                return const Center(child: CircularProgressIndicator(color: ColorConstants.green));
+                return const Center(
+                  child: CircularProgressIndicator(color: ColorConstants.green),
+                );
               } else if (state is LeaderboardScreenLoaded) {
                 final data = state.leaderboardData;
                 final players = data.response?.players ?? [];
@@ -74,7 +75,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
-                        Icon(Icons.emoji_events, color: ColorConstants.green, size: 28),
+                        Icon(
+                          Icons.emoji_events,
+                          color: ColorConstants.green,
+                          size: 28,
+                        ),
                         SizedBox(width: 10),
                         Text(
                           "LEADERBOARD",
@@ -105,9 +110,13 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                 controller: _scrollController,
                                 scrollDirection: Axis.horizontal,
                                 child: ConstrainedBox(
-                                  constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
+                                  constraints: BoxConstraints(
+                                    minWidth: MediaQuery.of(context).size.width,
+                                  ),
                                   child: DataTable(
-                                    headingRowColor: MaterialStateProperty.all(ColorConstants.green),
+                                    headingRowColor: MaterialStateProperty.all(
+                                      ColorConstants.green,
+                                    ),
                                     headingTextStyle: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -120,7 +129,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                     columnSpacing: 16,
                                     horizontalMargin: 12,
                                     dividerThickness: 1,
-                                    border: TableBorder.all(color: ColorConstants.green, width: 1),
+                                    border: TableBorder.all(
+                                      color: ColorConstants.green,
+                                      width: 1,
+                                    ),
                                     columns: const [
                                       DataColumn(label: Text("POS")),
                                       DataColumn(label: Text("STATE")),
@@ -135,30 +147,92 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                       DataColumn(label: Text("TOTAL GROSS")),
                                       DataColumn(label: Text("TOTAL NET*")),
                                     ],
-                                    rows: List.generate(players.length, (index) {
+                                    rows: List.generate(players.length, (
+                                      index,
+                                    ) {
                                       final player = players[index];
-                                      final todayValue = player.today?.toString() ?? "0";
-                                      final todayColor = todayValue.startsWith('-')
+                                      final todayValue =
+                                          player.today?.toString() ?? "0";
+                                      final todayColor =
+                                          todayValue.startsWith('-')
                                           ? ColorConstants.redAccent
                                           : ColorConstants.darkGray;
 
                                       return DataRow(
                                         color: MaterialStateProperty.all(
-                                          index % 2 == 0 ? ColorConstants.lightGray : Colors.white,
+                                          index % 2 == 0
+                                              ? ColorConstants.lightGray
+                                              : Colors.white,
                                         ),
                                         cells: [
                                           DataCell(Text("${index + 1}")),
-                                          DataCell(Text(player.stateName ?? "", style: const TextStyle(fontSize: 16))),
-                                          DataCell(Text(player.playerName ?? "", style: const TextStyle(fontWeight: FontWeight.bold))),
-                                          DataCell(Text(player.score?.toString() ?? "0", style: const TextStyle(color: ColorConstants.redAccent))),
-                                          DataCell(Text(todayValue, style: TextStyle(color: todayColor, fontWeight: FontWeight.bold))),
-                                          DataCell(Text(player.r1?.toString() ?? "0")),
-                                          DataCell(Text(player.r2?.toString() ?? "0")),
-                                          DataCell(Text(player.r3?.toString() ?? "0")),
-                                          DataCell(Text(player.r4?.toString() ?? "0")),
-                                          DataCell(Text(player.holeThru?.toString() ?? "0")),
-                                          DataCell(Text(player.totalGross?.toString() ?? "0")),
-                                          DataCell(Text(player.totalNet?.toStringAsFixed(2) ?? "0.0")),
+                                          DataCell(
+                                            Text(
+                                              player.stateName ?? "",
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                          DataCell(
+                                            Text(
+                                              player.playerName ?? "",
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          DataCell(
+                                            Text(
+                                              player.score?.toString() ?? "0",
+                                              style: const TextStyle(
+                                                color: ColorConstants.redAccent,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          DataCell(
+                                            Text(
+                                              todayValue,
+                                              style: const TextStyle(
+                                                color: ColorConstants.redAccent,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+
+                                          DataCell(
+                                            Text(player.r1?.toString() ?? "0"),
+                                          ),
+                                          DataCell(
+                                            Text(player.r2?.toString() ?? "0"),
+                                          ),
+                                          DataCell(
+                                            Text(player.r3?.toString() ?? "0"),
+                                          ),
+                                          DataCell(
+                                            Text(player.r4?.toString() ?? "0"),
+                                          ),
+                                          DataCell(
+                                            Text(
+                                              player.holeThru?.toString() ??
+                                                  "0",
+                                            ),
+                                          ),
+                                          DataCell(
+                                            Text(
+                                              player.totalGross?.toString() ??
+                                                  "0",
+                                            ),
+                                          ),
+                                          DataCell(
+                                            Text(
+                                              player.totalNet?.toStringAsFixed(
+                                                    2,
+                                                  ) ??
+                                                  "0.0",
+                                            ),
+                                          ),
                                         ],
                                       );
                                     }),
@@ -178,20 +252,26 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       children: [
                         IconButton(
                           onPressed: currentPage > 1 ? _previousPage : null,
-                          icon: const Icon(Icons.arrow_back_ios, color: ColorConstants.green),
+                          icon: const Icon(
+                            Icons.arrow_back_ios,
+                            color: ColorConstants.green,
+                          ),
                         ),
-                        Text(
-                          "Page $currentPage of $totalPages",
-                          style: const TextStyle(
-                              color: ColorConstants.darkGray,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14),
-                        ),
+                        // Text(
+                        //   "Page $currentPage of $totalPages",
+                        //   style: const TextStyle(
+                        //       color: ColorConstants.darkGray,
+                        //       fontWeight: FontWeight.w600,
+                        //       fontSize: 14),
+                        // ),
                         IconButton(
                           onPressed: currentPage < totalPages
                               ? () => _nextPage(totalPages)
                               : null,
-                          icon: const Icon(Icons.arrow_forward_ios, color: ColorConstants.green),
+                          icon: const Icon(
+                            Icons.arrow_forward_ios,
+                            color: ColorConstants.green,
+                          ),
                         ),
                       ],
                     ),
@@ -200,8 +280,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 );
               } else if (state is LeaderboardScreenError) {
                 return Center(
-                  child: Text("Error: ${state.message}",
-                      style: const TextStyle(color: Colors.red)),
+                  child: Text(
+                    "Error: ${state.message}",
+                    style: const TextStyle(color: Colors.red),
+                  ),
                 );
               } else {
                 return const Center(child: Text("No data available"));
