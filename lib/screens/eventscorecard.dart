@@ -164,15 +164,43 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
   bool _validateCurrentHole() {
     final currentHole = holes[currentHoleIndex];
     if (currentHole.score == null || currentHole.score == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please enter score for Hole ${currentHole.hole}'),
-          backgroundColor: Colors.red,
-        ),
+      _showStatusMessage(
+        'Please enter score for Hole ${currentHole.hole}',
+        isError: true,
       );
       return false;
     }
     return true;
+  }
+
+  void _showStatusMessage(String message, {bool isError = false}) {
+    if (!mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+
+    final mediaQuery = MediaQuery.of(context);
+    final bottomPadding = mediaQuery.viewInsets.bottom;
+
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        ),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: isError ? Colors.redAccent : const Color(0xFF12563C),
+        margin: EdgeInsets.fromLTRB(
+          16,
+          0,
+          16,
+          bottomPadding > 0 ? bottomPadding + 100 : 80,
+        ),
+        duration: const Duration(seconds: 2),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 6,
+      ),
+    );
   }
 
   @override
@@ -219,22 +247,16 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                 debugPrint("Received response: ${state.response}");
 
                 if (state.response.status != true) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        state.response.message ??
-                            'Submission failed. Please try again.',
-                      ),
-                      backgroundColor: Colors.red,
-                    ),
+                  _showStatusMessage(
+                    state.response.message ??
+                        'Submission failed. Please try again.',
+                    isError: true,
                   );
                   return;
                 }
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.response.message ?? 'Score submitted!'),
-                  ),
+                _showStatusMessage(
+                  state.response.message ?? 'Score submitted!',
                 );
 
                 if (currentHoleIndex == holes.length - 1) {
