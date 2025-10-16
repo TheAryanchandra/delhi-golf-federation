@@ -119,11 +119,21 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
     final inputScore = hole.score ?? 0;
     final par = hole.par ?? 0;
 
-    if (holeIndex <= handicap) {
-      return inputScore - (par + 1);
+    if (handicap >= holeIndex) {
+      if (inputScore <= par) {
+        return (inputScore + 1) - par;
+      } else {
+        return par - (inputScore + 1);
+      }
+    } else {
+      if (inputScore <= par) {
+        return inputScore - par;
+      } else {
+        return inputScore - par;
+      }
     }
-    return inputScore - par;
   }
+  // print("Adjusted score: ${calculateAdjustedScore(hole)}");
 
   int cumulativeScore(int upToHoleIndex) {
     int sum = 0;
@@ -263,7 +273,9 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
 
                 if (currentHoleIndex == holes.length - 1) {
                   // Trigger leaderboard update before navigating
-                  context.read<LeaderboardScreenBloc>().add(FetchLeaderboardScreenEvent(1));
+                  context.read<LeaderboardScreenBloc>().add(
+                    FetchLeaderboardScreenEvent(1),
+                  );
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
