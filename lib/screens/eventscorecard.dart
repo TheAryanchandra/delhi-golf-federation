@@ -41,6 +41,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
   final Map<int, TextEditingController> _scoreControllers = {};
   int currentHoleIndex = 0;
   DateTime selectedDate = DateTime.now(); // default current date
+  bool _isLoadingDialogVisible = false;
 
   late DateTime regStartDateTime;
   late DateTime regEndDateTime;
@@ -104,7 +105,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
       finalSubmit: currentHoleIndex == holes.length - 1,
     );
 
-    debugPrint("Sending LeaderboardRequest: $request");
+    debugPrint("Sending LeaderboardRequest: ${request.toJson()}");
 
     context.read<LeaderboardBloc>().add(SubmitLeaderboard(request: request));
   }
@@ -199,17 +200,36 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
         child: BlocListener<LeaderboardBloc, LeaderboardState>(
           listener: (context, state) {
             if (state is LeaderboardLoading) {
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (_) =>
-                    const Center(child: CircularProgressIndicator()),
-              );
+              if (!_isLoadingDialogVisible) {
+                _isLoadingDialogVisible = true;
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) =>
+                      const Center(child: CircularProgressIndicator()),
+                );
+              }
             } else {
-              Navigator.of(context, rootNavigator: true).pop();
+              if (_isLoadingDialogVisible) {
+                _isLoadingDialogVisible = false;
+                Navigator.of(context, rootNavigator: true).pop();
+              }
 
               if (state is LeaderboardSuccess) {
                 debugPrint("Received response: ${state.response}");
+
+                if (state.response.status != true) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        state.response.message ??
+                            'Submission failed. Please try again.',
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -217,9 +237,20 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                   ),
                 );
 
-                // Navigate only if final submit
                 if (currentHoleIndex == holes.length - 1) {
-                  Navigator.pushNamed(context, RoutesName.confirmUploadScore);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          const CustomBottomNav(initialIndex: 1),
+                    ),
+                  );
+                } else {
+                  setState(() => currentHoleIndex++);
+                  _pageController.nextPage(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  );
                 }
               } else if (state is LeaderboardError) {
                 debugPrint("Error: ${state.message}");
@@ -657,25 +688,6 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                   finalSubmit:
                                       currentHoleIndex == holes.length - 1,
                                 );
-
-                                if (currentHoleIndex < holes.length - 1) {
-                                  _pageController.nextPage(
-                                    duration: const Duration(milliseconds: 400),
-                                    curve: Curves.easeInOut,
-                                  );
-                                  setState(() => currentHoleIndex++);
-                                } else {
-                                  // Navigate to CustomBottomNav when submitting the last hole
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const CustomBottomNav(
-                                            initialIndex: 1,
-                                          ),
-                                    ),
-                                  );
-                                }
                               },
                             ),
                           ),
