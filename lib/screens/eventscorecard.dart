@@ -4,7 +4,9 @@ import 'package:delhi_golf_federation/bloc/insertscore/bloc/insertscore_state.da
 import 'package:delhi_golf_federation/bloc/scorecard/bloc/scorecard_bloc.dart';
 import 'package:delhi_golf_federation/bloc/scorecard/bloc/scorecard_event.dart';
 import 'package:delhi_golf_federation/bloc/scorecard/bloc/scorecard_state.dart';
+import 'package:delhi_golf_federation/components/bottomnavigation.dart';
 import 'package:delhi_golf_federation/components/custombutton.dart';
+
 import 'package:delhi_golf_federation/config/routes_name.dart';
 import 'package:delhi_golf_federation/model/insertscore_model.dart';
 import 'package:delhi_golf_federation/model/scorecard_model.dart';
@@ -652,6 +654,17 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                     curve: Curves.easeInOut,
                                   );
                                   setState(() => currentHoleIndex++);
+                                } else {
+                                  // Navigate to CustomBottomNav when submitting the last hole
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const CustomBottomNav(
+                                            initialIndex: 1,
+                                          ),
+                                    ),
+                                  );
                                 }
                               },
                             ),

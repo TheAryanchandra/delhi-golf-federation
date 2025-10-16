@@ -343,49 +343,49 @@ class _EventReportScreenState extends State<EventReportScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            ElevatedButton(
-                              onPressed: currentPage > 1
-                                  ? () {
-                                      _fetchEvents(page: currentPage - 1);
-                                    }
-                                  : null,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: ColorConstants.buttonColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 12,
-                                ),
-                              ),
-                              child: const Text(
-                                "Previous",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            Text("Page $currentPage of $totalPages"),
-                            ElevatedButton(
-                              onPressed: currentPage < totalPages
-                                  ? () {
-                                      _fetchEvents(page: currentPage + 1);
-                                    }
-                                  : null,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: ColorConstants.buttonColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 12,
-                                ),
-                              ),
-                              child: const Text(
-                                "Next",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
+                            // ElevatedButton(
+                            //   onPressed: currentPage > 1
+                            //       ? () {
+                            //           _fetchEvents(page: currentPage - 1);
+                            //         }
+                            //       : null,
+                            //   style: ElevatedButton.styleFrom(
+                            //     backgroundColor: ColorConstants.buttonColor,
+                            //     shape: RoundedRectangleBorder(
+                            //       borderRadius: BorderRadius.circular(8),
+                            //     ),
+                            //     padding: const EdgeInsets.symmetric(
+                            //       horizontal: 16,
+                            //       vertical: 12,
+                            //     ),
+                            //   ),
+                            //   child: const Text(
+                            //     "Previous",
+                            //     style: TextStyle(color: Colors.white),
+                            //   ),
+                            // ),
+                            // Text("Page $currentPage of $totalPages"),
+                            // ElevatedButton(
+                            //   onPressed: currentPage < totalPages
+                            //       ? () {
+                            //           _fetchEvents(page: currentPage + 1);
+                            //         }
+                            //       : null,
+                            //   style: ElevatedButton.styleFrom(
+                            //     backgroundColor: ColorConstants.buttonColor,
+                            //     shape: RoundedRectangleBorder(
+                            //       borderRadius: BorderRadius.circular(8),
+                            //     ),
+                            //     padding: const EdgeInsets.symmetric(
+                            //       horizontal: 16,
+                            //       vertical: 12,
+                            //     ),
+                            //   ),
+                            //   child: const Text(
+                            //     "Next",
+                            //     style: TextStyle(color: Colors.white),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
