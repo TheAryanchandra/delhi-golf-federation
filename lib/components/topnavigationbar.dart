@@ -6,6 +6,7 @@ class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onSettingsTap;
   final VoidCallback? onNotificationTap;
   final bool? showBackButton; // optional, null = auto-detect
+  final VoidCallback? onBackTap; // ✅ new optional back button callback
 
   const TopNavigationBar({
     super.key,
@@ -13,6 +14,7 @@ class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
     this.onSettingsTap,
     this.onNotificationTap,
     this.showBackButton,
+    this.onBackTap, // new
   });
 
   @override
@@ -28,9 +30,10 @@ class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
       leading: displayBackButton
           ? IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black, size: 28),
-              onPressed: () {
-                if (Navigator.canPop(context)) Navigator.pop(context);
-              },
+              onPressed: onBackTap ??
+                  () {
+                    if (Navigator.canPop(context)) Navigator.pop(context);
+                  },
             )
           : IconButton(
               icon: const Icon(Icons.menu, color: Colors.black, size: 28),

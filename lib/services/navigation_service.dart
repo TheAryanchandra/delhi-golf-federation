@@ -10,6 +10,8 @@ class NavigationService {
   Function(String)? _navigateToBookingFlow;
   Function(int)? _navigateToTab;
 
+  // ======== SETTERS ========
+
   void setBookingFlowNavigator(Function(String) navigator) {
     _navigateToBookingFlow = navigator;
   }
@@ -18,6 +20,8 @@ class NavigationService {
     _navigateToTab = navigator;
   }
 
+  // ======== NAVIGATION HELPERS ========
+
   void navigateToBookingFlow(String flow) {
     _navigateToBookingFlow?.call(flow);
   }
@@ -25,6 +29,13 @@ class NavigationService {
   void navigateToTab(int index) {
     _navigateToTab?.call(index);
   }
+
+  // ✅ Added this new method for clean tab change (used from Profile screen)
+  void changeTab(int index) {
+    _navigateToTab?.call(index);
+  }
+
+  // ======== SHORTCUTS ========
 
   void navigateToBooking() => navigateToBookingFlow('booking');
   void navigateToSlotDetails() => navigateToBookingFlow('slot-details');
