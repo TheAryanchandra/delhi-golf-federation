@@ -185,8 +185,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                           DataCell(
                                             Text(
                                               player.score?.toString() ?? "0",
-                                              style: const TextStyle(
-                                                color: ColorConstants.redAccent,
+                                              style: TextStyle(
+                                                color: (player.score ?? 0) < 0
+                                                    ? ColorConstants.redAccent
+                                                    : Colors
+                                                          .black, // 🔥 red if negative, black otherwise
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
@@ -194,8 +197,16 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                           DataCell(
                                             Text(
                                               todayValue,
-                                              style: const TextStyle(
-                                                color: ColorConstants.redAccent,
+                                              style: TextStyle(
+                                                color:
+                                                    (double.tryParse(
+                                                              todayValue,
+                                                            ) ??
+                                                            0) <
+                                                        0
+                                                    ? ColorConstants.redAccent
+                                                    : Colors
+                                                          .black, // 🔥 red if negative, black otherwise
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
