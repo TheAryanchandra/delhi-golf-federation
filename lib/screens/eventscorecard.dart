@@ -121,9 +121,9 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
 
     if (handicap >= holeIndex) {
       if (inputScore <= par) {
-        return (inputScore + 1) - par;
+        return (inputScore) - (par+1);
       } else {
-        return par - (inputScore + 1);
+        return inputScore - (par + 1);
       }
     } else {
       if (inputScore <= par) {
