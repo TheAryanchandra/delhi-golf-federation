@@ -569,9 +569,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                           style: const TextStyle(fontSize: 16),
                                         ),
                                         Text(
-                                          cumulativeScore(index) == 0
-                                              ? "Enter score"
-                                              : "Score: ${cumulativeScore(index)}",
+                                          "Score: ${cumulativeScore(index)}",
                                           style: const TextStyle(fontSize: 16),
                                         ),
                                       ],
@@ -603,6 +601,18 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                       onChanged: (val) {
                                         setState(() {
                                           hole.score = int.tryParse(val);
+
+                                          // Update cumulative/adjusted scores for all holes up to this index
+                                          for (
+                                            int i = 0;
+                                            i < holes.length;
+                                            i++
+                                          ) {
+                                            if (holes[i].score != null) {
+                                              holes[i].score = holes[i]
+                                                  .score; // Keep entered score
+                                            }
+                                          }
                                         });
                                       },
                                     ),
