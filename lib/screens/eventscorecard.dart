@@ -1,6 +1,8 @@
 import 'package:delhi_golf_federation/bloc/insertscore/bloc/insertscore_bloc.dart';
 import 'package:delhi_golf_federation/bloc/insertscore/bloc/insertscore_event.dart';
 import 'package:delhi_golf_federation/bloc/insertscore/bloc/insertscore_state.dart';
+import 'package:delhi_golf_federation/bloc/leaderboard/bloc/leaderboardScreen_bloc.dart';
+import 'package:delhi_golf_federation/bloc/leaderboard/bloc/leaderboardScreen_event.dart';
 import 'package:delhi_golf_federation/bloc/scorecard/bloc/scorecard_bloc.dart';
 import 'package:delhi_golf_federation/bloc/scorecard/bloc/scorecard_event.dart';
 import 'package:delhi_golf_federation/bloc/scorecard/bloc/scorecard_state.dart';
@@ -194,7 +196,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
           16,
           0,
           16,
-          bottomPadding > 0 ? bottomPadding + 100 : 80,
+          bottomPadding > 0 ? bottomPadding + 100 : 150,
         ),
         duration: const Duration(seconds: 2),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -260,6 +262,8 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                 );
 
                 if (currentHoleIndex == holes.length - 1) {
+                  // Trigger leaderboard update before navigating
+                  context.read<LeaderboardScreenBloc>().add(FetchLeaderboardScreenEvent(1));
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
