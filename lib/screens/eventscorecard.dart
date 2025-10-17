@@ -127,14 +127,17 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
 
   // Add new method to calculate adjusted score
   int calculateAdjustedScore(HoleInfo hole) {
-    final handicap = playerInfo?.usgaHandicapIndex?.toInt() ?? 0;
-    final holeIndex = hole.indexNo ?? 0;
-    final inputScore = hole.score ?? 0;
-    final par = hole.par ?? 0;
+  final handicap = playerInfo?.usgaHandicapIndex?.toInt() ?? 0;
+  final holeIndex = hole.indexNo ?? 0;
+  final inputScore = hole.score ?? 0;
+  final par = hole.par ?? 0;
 
+  // ✅ Check Handicap Status
+  if (widget.handicapStatus == "Yes") {
+    // Handicap logic
     if (handicap >= holeIndex) {
       if (inputScore <= par) {
-        return (inputScore) - (par + 1);
+        return inputScore - (par + 1);
       } else {
         return inputScore - (par + 1);
       }
@@ -145,7 +148,16 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
         return inputScore - par;
       }
     }
+  } else {
+    // Non-handicap logic
+    if (inputScore <= par) {
+      return inputScore - par;
+    } else {
+      return inputScore - par;
+    }
   }
+}
+
   // print("Adjusted score: ${calculateAdjustedScore(hole)}");
 
   int cumulativeScore(int upToHoleIndex) {
