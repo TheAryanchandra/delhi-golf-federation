@@ -102,7 +102,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
       dates: hole.playedDate != null
           ? DateFormat('dd/MM/yyyy').format(hole.playedDate!)
           : DateFormat('dd/MM/yyyy').format(DateTime.now()),
-      handicap: playerInfo?.usgaHandicapIndex?.toInt() ?? 0,
+      handicap: playerInfo?.usgaHandicapIndex?.toDouble() ?? 0,
       score: hole.score ?? 0,
       today: hole.score ?? 0,
       extraPoint: 0,
@@ -115,10 +115,12 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
       courseRefNo: widget.courseRefNo,
       eventRefNo: widget.eventRefNo,
       eventRegNo: widget.regRefNo,
+      handicapStatus: widget.handicapStatus,
       finalSubmit: currentHoleIndex == holes.length - 1,
     );
 
     debugPrint("Sending LeaderboardRequest: ${request.toJson()}");
+    print("handicapStatus: ${widget.handicapStatus}");
 
     context.read<LeaderboardBloc>().add(SubmitLeaderboard(request: request));
   }
@@ -387,7 +389,32 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                 ),
                               ],
                             ),
+                            const SizedBox(height: 15),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "Handicap Status:",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                Text(
+                                  widget.handicapStatus.isNotEmpty
+                                      ? widget.handicapStatus
+                                      : 'N/A',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: mainColor,
+                                  ),
+                                ),
+                              ],
+                            ),
                             const SizedBox(height: 10),
+
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [

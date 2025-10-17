@@ -1,42 +1,44 @@
 class LeaderboardRequest {
-  final int id;
-  final String stateName;
-  final String playerName;
-  final String dates;
-  final int handicap;
-  final int score;
-  final int today;
-  final int extraPoint;
-  final int dayScore;
-  final int holeThru;
-  final int par;       // <-- added
-  final int indexs;    // <-- added
-  final int totalGross;
-  final int totalNet;
-  final String courseRefNo;
-  final String eventRefNo;
-  final String eventRegNo;
-  final bool finalSubmit;
+  int? id;
+  String? stateName;
+  String? playerName;
+  String? dates;
+  double? handicap;
+  int? score;
+  int? today;
+  int? extraPoint;
+  int? dayScore;
+  int? holeThru;
+  int? par;
+  int? indexs;
+  int? totalGross;
+  int? totalNet;
+  String? courseRefNo;
+  String? eventRefNo;
+  String? eventRegNo;
+  String? handicapStatus; // ✅ Added field
+  bool? finalSubmit;
 
   LeaderboardRequest({
-    required this.id,
-    required this.stateName,
-    required this.playerName,
-    required this.dates,
-    required this.handicap,
-    required this.score,
-    required this.today,
-    required this.extraPoint,
-    required this.dayScore,
-    required this.holeThru,
-    required this.par,
-    required this.indexs,
-    required this.totalGross,
-    required this.totalNet,
-    required this.courseRefNo,
-    required this.eventRefNo,
-    required this.eventRegNo,
-    required this.finalSubmit,
+    this.id,
+    this.stateName,
+    this.playerName,
+    this.dates,
+    this.handicap,
+    this.score,
+    this.today,
+    this.extraPoint,
+    this.dayScore,
+    this.holeThru,
+    this.par,
+    this.indexs,
+    this.totalGross,
+    this.totalNet,
+    this.courseRefNo,
+    this.eventRefNo,
+    this.eventRegNo,
+    this.handicapStatus, // ✅ Added in constructor
+    this.finalSubmit,
   });
 
   Map<String, dynamic> toJson() => {
@@ -50,16 +52,18 @@ class LeaderboardRequest {
         "ExtraPoint": extraPoint,
         "DayScore": dayScore,
         "Hole_Thru": holeThru,
-        "Par": par,         // <-- added
-        "Indexs": indexs,   // <-- added
+        "Par": par,
+        "Indexs": indexs,
         "TotalGross": totalGross,
         "TotalNet": totalNet,
         "CourseRefNo": courseRefNo,
         "EventRefNo": eventRefNo,
         "EventRegNo": eventRegNo,
+        "HandicapStatus": handicapStatus, // ✅ Added in payload
         "FinalSubmit": finalSubmit,
       };
 }
+
 
 
 class LeaderboardResponse {
