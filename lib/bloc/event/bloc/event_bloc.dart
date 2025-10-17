@@ -5,6 +5,7 @@ import 'package:delhi_golf_federation/data/events_repository.dart';
 
 class EventsBloc extends Bloc<EventsEvent, EventsState> {
   final EventsRepository repository;
+  final int itemsPerPage = 5;
 
   EventsBloc(this.repository) : super(EventsInitial()) {
     on<FetchEvents>(_onFetchEvents);
@@ -17,10 +18,18 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
       final page = event.page ?? 1;
 
       final response = await repository.fetchEvents(action: action, page: page);
-      final events = response.response?.dt ?? [];
-      final totalPages = response.response?.totalPage ;
 
-      emit(EventsLoaded(events: events, totalPages: totalPages ?? 1, currentPage: page));
+      // Use exact field names from your model
+      final events = response.response?.dt ?? [];
+      final totalRecords = response.response?.totalPage ?? events.length;
+
+      final totalPages = events.isEmpty ? 1 : (totalRecords / itemsPerPage).ceil();
+
+      emit(EventsLoaded(
+        events: events,
+        totalPages: totalPages,
+        currentPage: page,
+      ));
     } catch (e) {
       emit(EventsError(message: e.toString()));
     }
