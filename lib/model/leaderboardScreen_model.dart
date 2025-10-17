@@ -99,7 +99,7 @@ class LeaderboardScreenResponse {
 class LeaderboardScreenPlayer {
   final String? playerName;
   final String? stateName;
-  final int? handicap;
+  final double? handicap;
   final int? score;
   final int? today;
   final int? r1;
