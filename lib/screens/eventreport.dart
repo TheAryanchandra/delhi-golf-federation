@@ -240,6 +240,8 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                                             "", // <-- start date
                                                         eventEndDate:
                                                             event.endDate ?? "",
+                                                        handicapStatus:
+                                                            event.handicap??"",    
                                                       ),
                                                 ),
                                               );

@@ -178,6 +178,7 @@ class EventData {
   String? image;
   String? pageUrl;
   String? entryDate;
+  String? handicap;
 
   EventData({
     this.eventType,
@@ -196,6 +197,7 @@ class EventData {
     this.image,
     this.pageUrl,
     this.entryDate,
+    this.handicap,
   });
 
   factory EventData.fromJson(Map<String, dynamic> json) {
@@ -216,6 +218,7 @@ class EventData {
       image: json['Image'],
       pageUrl: json['PageUrl'],
       entryDate: json['EntryDate'],
+      handicap: json['Handicap'],
     );
   }
 }

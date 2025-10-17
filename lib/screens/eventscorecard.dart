@@ -22,6 +22,7 @@ class EventScorecardScreen extends StatefulWidget {
   final String eventRefNo;
   final String eventStartDate; // "yyyy-MM-dd" or format your API returns
   final String eventEndDate;
+  final String handicapStatus;
 
   const EventScorecardScreen({
     super.key,
@@ -30,6 +31,7 @@ class EventScorecardScreen extends StatefulWidget {
     required this.eventRefNo,
     required this.eventStartDate,
     required this.eventEndDate,
+    required this.handicapStatus,
   });
 
   @override
