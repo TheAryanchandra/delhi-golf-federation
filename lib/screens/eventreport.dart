@@ -277,7 +277,9 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                               Navigator.pushNamed(
                                                 context,
                                                 RoutesName.viewScoreScreen,
-                                               
+                                                arguments: {
+                                                  'eventRefNo': event.refNo ?? '',
+                                                },
                                               );
                                             },
                                             style: ElevatedButton.styleFrom(

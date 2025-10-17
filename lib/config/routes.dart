@@ -26,7 +26,6 @@ final Map<String, WidgetBuilder> appRoutes = {
 
   /// Other Screens
   '/about': (context) => const AboutScreen(),
-  RoutesName.viewScoreScreen: (context) => const EventScoreViewScreen(),
 
   /// Add when ready
   // RoutesName.splashScreen: (context) => const SplashScreen(),
@@ -42,14 +41,14 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (_) => ConfirmUploadScoreScreen(holes: args),
       );
-    // case RoutesName.viewScoreScreen:
-    //   // Check if arguments are passed
-    //   final args = settings.arguments as List<Map<String, dynamic>>?;
-    //   return MaterialPageRoute(
-    //     builder: (_) => EventScoreViewScreen(
-    //        // If null, pass empty list
-    //     ),
-      // );
+    case RoutesName.viewScoreScreen:
+      // Check if arguments are passed
+      final args = settings.arguments as Map<String, dynamic>?;
+      return MaterialPageRoute(
+        builder: (_) => EventScoreViewScreen(
+          eventRefNo: args?['eventRefNo'] ?? '',
+        ),
+      );
 
     default:
       return MaterialPageRoute(builder: (_) => const CustomBottomNav());
