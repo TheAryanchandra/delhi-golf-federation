@@ -41,6 +41,8 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
   PlayerInfo? playerInfo;
   final PageController _pageController = PageController();
   final Map<int, TextEditingController> _scoreControllers = {};
+  // Added: FocusNodes per hole to control cursor focus
+  final Map<int, FocusNode> _focusNodes = {};
   int currentHoleIndex = 0;
   DateTime selectedDate = DateTime.now(); // default current date
   bool _isLoadingDialogVisible = false;
@@ -76,7 +78,14 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
 
   @override
   void dispose() {
+    // Dispose controllers and focus nodes to avoid leaks
     _pageController.dispose();
+    for (final controller in _scoreControllers.values) {
+      controller.dispose();
+    }
+    for (final node in _focusNodes.values) {
+      node.dispose();
+    }
     super.dispose();
   }
 
@@ -121,7 +130,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
 
     if (handicap >= holeIndex) {
       if (inputScore <= par) {
-        return (inputScore) - (par+1);
+        return (inputScore) - (par + 1);
       } else {
         return inputScore - (par + 1);
       }
@@ -284,11 +293,23 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                     ),
                   );
                 } else {
+                  // Advance to next hole and then focus its input
                   setState(() => currentHoleIndex++);
                   _pageController.nextPage(
                     duration: const Duration(milliseconds: 400),
                     curve: Curves.easeInOut,
                   );
+
+                  // wait for animation and then request focus on the next hole's field
+                  final nextIndex = currentHoleIndex;
+                  Future.delayed(const Duration(milliseconds: 500), () {
+                    if (!mounted) return;
+                    if (_focusNodes.containsKey(nextIndex)) {
+                      FocusScope.of(
+                        context,
+                      ).requestFocus(_focusNodes[nextIndex]);
+                    }
+                  });
                 }
               } else if (state is LeaderboardError) {
                 debugPrint("Error: ${state.message}");
@@ -650,6 +671,11 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                         () => TextEditingController(
                                           text: hole.score?.toString() ?? '',
                                         ),
+                                      ),
+                                      // Attach/initialize FocusNode for this index
+                                      focusNode: _focusNodes.putIfAbsent(
+                                        index,
+                                        () => FocusNode(),
                                       ),
                                       keyboardType: TextInputType.number,
                                       textAlign: TextAlign.center,
