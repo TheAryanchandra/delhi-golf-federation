@@ -9,6 +9,7 @@ import '../screens/slot_details.dart'; // Add this import
 import '../screens/payment_screen.dart'; // Add this import
 import '../screens/bookingscreen.dart'; // Add this import
 import '../screens/registerscreen.dart'; // Update this import path
+import '../screens/viewscore.dart'; // Add this import
 // import '../screens/splash_screen.dart';
 // import '../screens/register_screen.dart';
 // import '../screens/profile_screen.dart';
@@ -25,6 +26,7 @@ final Map<String, WidgetBuilder> appRoutes = {
 
   /// Other Screens
   '/about': (context) => const AboutScreen(),
+  RoutesName.viewScoreScreen: (context) => const EventScoreViewScreen(),
 
   /// Add when ready
   // RoutesName.splashScreen: (context) => const SplashScreen(),
@@ -40,10 +42,16 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (_) => ConfirmUploadScoreScreen(holes: args),
       );
+    // case RoutesName.viewScoreScreen:
+    //   // Check if arguments are passed
+    //   final args = settings.arguments as List<Map<String, dynamic>>?;
+    //   return MaterialPageRoute(
+    //     builder: (_) => EventScoreViewScreen(
+    //        // If null, pass empty list
+    //     ),
+      // );
 
     default:
-      return MaterialPageRoute(
-        builder: (_) => const CustomBottomNav(),
-      );
+      return MaterialPageRoute(builder: (_) => const CustomBottomNav());
   }
 }

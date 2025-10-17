@@ -1,4 +1,8 @@
-- [x] Add CheckLogoutStatus event to auth_event.dart
-- [x] Add LogoutStatusChecked state to auth_state.dart
-- [x] Update LogoutBloc to handle CheckLogoutStatus and emit status after logout
-- [x] Modify CustomDrawer to be StatefulWidget, fetch status on init, and conditionally show login/logout button based on status
+# TODO: Add Navigation from "View Score" Button to ViewScore Screen
+
+## Steps to Complete
+
+- [ ] Add new route name 'viewScoreScreen' in lib/config/routes_name.dart
+- [ ] Add route in lib/config/routes.dart using onGenerateRoute to handle scoreData arguments
+- [ ] Update onPressed callback in lib/screens/eventreport.dart to navigate to viewscore screen with empty scoreData list
+- [ ] Test navigation to ensure it works correctly

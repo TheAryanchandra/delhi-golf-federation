@@ -17,4 +17,5 @@ class RoutesName {
   static const String eventReportScreen = '/eventreport';
   static const String finalScorecard = '/finalscorecard';
   static const String confirmUploadScore = '/confirm-upload-score';
+  static const String viewScoreScreen = '/viewscore';
 }

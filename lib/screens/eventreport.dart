@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:delhi_golf_federation/components/bottomnavigation.dart';
 import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/components/custombutton.dart';
+import 'package:delhi_golf_federation/config/routes_name.dart';
 import 'package:delhi_golf_federation/screens/eventscorecard.dart';
 
 // BLoC & model imports — adjust paths if your project uses different folders:
@@ -241,7 +242,8 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                                         eventEndDate:
                                                             event.endDate ?? "",
                                                         handicapStatus:
-                                                            event.handicap??"",    
+                                                            event.handicap ??
+                                                            "",
                                                       ),
                                                 ),
                                               );
@@ -269,27 +271,36 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                         ),
 
                                         const SizedBox(width: 12),
-                                        // Expanded(
-                                        //   child: ElevatedButton(
-                                        //     onPressed: () {
-                                        //       Navigator.push(
-                                        //         context,
-                                        //         MaterialPageRoute(
-                                        //           builder: (context) => const EventScorecardScreen(),
-                                        //         ),
-                                        //       );
-                                        //     },
-                                        //     style: ElevatedButton.styleFrom(
-                                        //       backgroundColor: ColorConstants.buttonColor,
-                                        //       shape: RoundedRectangleBorder(
-                                        //         borderRadius: BorderRadius.circular(10),
-                                        //       ),
-                                        //       padding: const EdgeInsets.symmetric(vertical: 10),
-                                        //     ),
-                                        //     child: const Text("Update Score",
-                                        //         style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
-                                        //   ),
-                                        // ),
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pushNamed(
+                                                context,
+                                                RoutesName.viewScoreScreen,
+                                               
+                                              );
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  ColorConstants.buttonColor,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                  ),
+                                            ),
+                                            child: const Text(
+                                              "View Score",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       ] else ...[
                                         Expanded(
                                           child: ElevatedButton(
