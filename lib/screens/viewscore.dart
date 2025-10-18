@@ -231,7 +231,7 @@ class _EventScoreViewScreenState extends State<EventScoreViewScreen> {
                                         ),
                                       ),
                                     ),
-                                      Expanded(
+                                    Expanded(
                                       child: Text(
                                         "Score",
                                         textAlign: TextAlign.center,
@@ -304,14 +304,32 @@ class _EventScoreViewScreenState extends State<EventScoreViewScreen> {
                                         //   ),
                                         // ),
                                         Expanded(
-                                          child: Text(
-                                            "${item.holeThru}",
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                              color: mainColor,
-                                            ),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              if (item.extraNo == 1)
+                                                const Padding(
+                                                  padding: EdgeInsets.only(
+                                                    bottom: 2,
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.circle,
+                                                    size: 6,
+                                                    color:
+                                                        Color.fromARGB(255, 16, 16, 16), // dot color
+                                                  ),
+                                                ),
+                                              Text(
+                                                "${item.holeThru}",
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  color: mainColor,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
+
                                         Expanded(
                                           child: Text(
                                             "${item.par}",
