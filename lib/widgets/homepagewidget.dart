@@ -237,7 +237,7 @@ class UpcomingEventsSection extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 12),
           child: Text(
-            "Team",
+            "Board of Members",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,

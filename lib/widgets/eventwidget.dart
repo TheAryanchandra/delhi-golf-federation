@@ -256,13 +256,13 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                         controller: _ghinController,
                         prefixIcon: Icons.confirmation_number_outlined,
                       ),
-                      GlobalTextField(
-                        controller: _passwordController,
-                        prefixIcon: Icons.lock_outline,
-                        obscureText: true,
-                        validator: (v) =>
-                            v == null || v.isEmpty ? "Required field" : null,
-                      ),
+                      // GlobalTextField(
+                      //   controller: _passwordController,
+                      //   prefixIcon: Icons.lock_outline,
+                      //   obscureText: true,
+                      //   validator: (v) =>
+                      //       v == null || v.isEmpty ? "Required field" : null,
+                      // ),
 
                       const SizedBox(height: 20),
 

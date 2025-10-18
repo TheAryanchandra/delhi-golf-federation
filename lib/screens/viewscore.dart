@@ -226,10 +226,10 @@ class _EventScoreViewScreenState extends State<EventScoreViewScreen> {
                                   final points = item.points ?? 0;
 
                                   Color pointsColor = points < 0
-                                      ? Colors.redAccent
+                                      ? const Color.fromARGB(255, 246, 1, 1)
                                       : (points > 0
-                                          ? Colors.green.shade700
-                                          : Colors.orangeAccent);
+                                          ? const Color.fromARGB(255, 13, 13, 13)
+                                          : const Color.fromARGB(255, 7, 7, 7));
 
                                   Color rowColor = index % 2 == 0
                                       ? Colors.grey.shade100
