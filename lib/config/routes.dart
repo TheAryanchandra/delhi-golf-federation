@@ -49,14 +49,14 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       // Check if arguments are passed
       final args = settings.arguments as Map<String, dynamic>?;
       return MaterialPageRoute(
-        builder: (_) => EventScoreViewScreen(
-          eventRefNo: args?['eventRefNo'] ?? '',
-        ),
+        builder: (_) =>
+            EventScoreViewScreen(eventRefNo: args?['eventRefNo'] ?? ''),
       );
     case RoutesName.eventDetailsScreen:
-      final event = settings.arguments as EventModel;
+      final args = settings.arguments as Map<String, String>?;
+      final refNo = args?['refNo'] ?? '';
       return MaterialPageRoute(
-        builder: (_) => EventDetailsScreen(event: event),
+        builder: (_) => EventDetailsScreen(refNo: refNo),
       );
 
     default:

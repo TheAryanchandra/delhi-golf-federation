@@ -351,7 +351,7 @@ class _EventsScreenState extends State<EventsScreen> {
                   Navigator.pushNamed(
                     context,
                     RoutesName.eventDetailsScreen,
-                    arguments: event,
+                    arguments: {'refNo': event.refNo ?? ''},
                   );
                 },
                 backgroundColor: const Color(0xFF0B592A),
@@ -362,6 +362,7 @@ class _EventsScreenState extends State<EventsScreen> {
                   vertical: 12,
                 ),
               ),
+
               const SizedBox(width: 12),
 
               if (showUpcoming)
