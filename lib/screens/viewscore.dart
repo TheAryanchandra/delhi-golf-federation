@@ -75,7 +75,10 @@ class _EventScoreViewScreenState extends State<EventScoreViewScreen> {
                 // Date Picker
                 Container(
                   color: mainColor.withOpacity(0.1),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -105,10 +108,17 @@ class _EventScoreViewScreenState extends State<EventScoreViewScreen> {
                             color: mainColor,
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
                           child: Row(
                             children: [
-                              const Icon(Icons.calendar_month, color: Colors.white, size: 18),
+                              const Icon(
+                                Icons.calendar_month,
+                                color: Colors.white,
+                                size: 18,
+                              ),
                               const SizedBox(width: 6),
                               Text(
                                 DateFormat('dd MMM yyyy').format(selectedDate),
@@ -148,21 +158,42 @@ class _EventScoreViewScreenState extends State<EventScoreViewScreen> {
                         }
 
                         items.sort(
-                          (a, b) => (a.holeThru ?? 0).compareTo(b.holeThru ?? 0),
+                          (a, b) =>
+                              (a.holeThru ?? 0).compareTo(b.holeThru ?? 0),
                         );
 
                         return SingleChildScrollView(
                           child: Column(
                             children: [
+                              Container(
+                                width: double.infinity,
+                                color: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 16,
+                                ),
+                                child: Text(
+                                  items.first.eventName ??
+                                      "-", // using first item's eventName
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: mainColor,
+                                  ),
+                                ),
+                              ),
                               // Table Header
                               Container(
                                 color: mainColor,
-                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                ),
                                 child: Row(
                                   children: const [
                                     // Expanded(
                                     //   child: Text(
-                                    //     "Date",
+                                    //     "Score",
                                     //     textAlign: TextAlign.center,
                                     //     style: TextStyle(
                                     //       color: Colors.white,
@@ -200,6 +231,16 @@ class _EventScoreViewScreenState extends State<EventScoreViewScreen> {
                                         ),
                                       ),
                                     ),
+                                      Expanded(
+                                      child: Text(
+                                        "Score",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
                                     Expanded(
                                       child: Text(
                                         "Points",
@@ -228,8 +269,18 @@ class _EventScoreViewScreenState extends State<EventScoreViewScreen> {
                                   Color pointsColor = points < 0
                                       ? const Color.fromARGB(255, 246, 1, 1)
                                       : (points > 0
-                                          ? const Color.fromARGB(255, 13, 13, 13)
-                                          : const Color.fromARGB(255, 7, 7, 7));
+                                            ? const Color.fromARGB(
+                                                255,
+                                                13,
+                                                13,
+                                                13,
+                                              )
+                                            : const Color.fromARGB(
+                                                255,
+                                                7,
+                                                7,
+                                                7,
+                                              ));
 
                                   Color rowColor = index % 2 == 0
                                       ? Colors.grey.shade100
@@ -243,35 +294,49 @@ class _EventScoreViewScreenState extends State<EventScoreViewScreen> {
                                     ),
                                     child: Row(
                                       children: [
-                                        // Expanded(
+                                        //  Expanded(
                                         //   child: Text(
-                                        //     item.dates != null
-                                        //         ? DateFormat('dd MMM yyyy')
-                                        //             .format(DateTime.parse(item.dates!))
-                                        //         : "-",
+                                        //     "${item.score}",
                                         //     textAlign: TextAlign.center,
-                                        //     style: const TextStyle(color: mainColor),
+                                        //     style: const TextStyle(
+                                        //       color: mainColor,
+                                        //     ),
                                         //   ),
                                         // ),
                                         Expanded(
                                           child: Text(
                                             "${item.holeThru}",
                                             textAlign: TextAlign.center,
-                                            style: const TextStyle(color: mainColor),
+                                            style: const TextStyle(
+                                              color: mainColor,
+                                            ),
                                           ),
                                         ),
                                         Expanded(
                                           child: Text(
                                             "${item.par}",
                                             textAlign: TextAlign.center,
-                                            style: const TextStyle(color: mainColor),
+                                            style: const TextStyle(
+                                              color: mainColor,
+                                            ),
                                           ),
                                         ),
                                         Expanded(
                                           child: Text(
                                             "${item.indexs}",
                                             textAlign: TextAlign.center,
-                                            style: const TextStyle(color: mainColor),
+                                            style: const TextStyle(
+                                              color: mainColor,
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            "${item.score}",
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                              color: mainColor,
+                                            ),
                                           ),
                                         ),
                                         Expanded(

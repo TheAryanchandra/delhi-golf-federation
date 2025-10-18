@@ -142,6 +142,7 @@ class ViewScoreItem {
   int? holeThru;
   int? par;
   int? indexs;
+  int? score;
   int? points;
   String? handicapStatus;
   int? extraNo;
@@ -152,6 +153,7 @@ class ViewScoreItem {
     this.holeThru,
     this.par,
     this.indexs,
+    this.score,
     this.points,
     this.handicapStatus,
     this.extraNo,
@@ -164,6 +166,7 @@ class ViewScoreItem {
       holeThru: json['Hole_Thru'],
       par: json['Par'],
       indexs: json['Indexs'],
+       score: json['Score'],
       points: json['Points'],
       handicapStatus: json['HandicapStatus'],
       extraNo: json['ExtraNo'],
