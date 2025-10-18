@@ -6,11 +6,11 @@ import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_event.dart';
 import 'package:delhi_golf_federation/components/bottomnavigation.dart';
 import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/components/custombutton.dart';
+import 'package:delhi_golf_federation/config/routes_name.dart';
 import 'package:delhi_golf_federation/model/eventmodel.dart';
 import 'package:delhi_golf_federation/widgets/eventwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({super.key});
@@ -32,8 +32,8 @@ class _EventsScreenState extends State<EventsScreen> {
 
   void _fetchEvents() {
     context.read<EventsBloc>().add(
-          FetchEvents(upcoming: showUpcoming, page: currentPage),
-        );
+      FetchEvents(upcoming: showUpcoming, page: currentPage),
+    );
   }
 
   void _switchTab(bool upcoming) {
@@ -101,10 +101,12 @@ class _EventsScreenState extends State<EventsScreen> {
                   child: CustomButton(
                     text: "Upcoming Events",
                     onPressed: () => _switchTab(true),
-                    backgroundColor:
-                        showUpcoming ? const Color(0xFF0B592A) : Colors.white,
-                    textColor:
-                        showUpcoming ? Colors.white : const Color(0xFF0B592A),
+                    backgroundColor: showUpcoming
+                        ? const Color(0xFF0B592A)
+                        : Colors.white,
+                    textColor: showUpcoming
+                        ? Colors.white
+                        : const Color(0xFF0B592A),
                     borderRadius: 12,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -114,10 +116,12 @@ class _EventsScreenState extends State<EventsScreen> {
                   child: CustomButton(
                     text: "Past Events",
                     onPressed: () => _switchTab(false),
-                    backgroundColor:
-                        !showUpcoming ? const Color(0xFF0B592A) : Colors.white,
-                    textColor:
-                        !showUpcoming ? Colors.white : const Color(0xFF0B592A),
+                    backgroundColor: !showUpcoming
+                        ? const Color(0xFF0B592A)
+                        : Colors.white,
+                    textColor: !showUpcoming
+                        ? Colors.white
+                        : const Color(0xFF0B592A),
                     borderRadius: 12,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -173,8 +177,9 @@ class _EventsScreenState extends State<EventsScreen> {
                               return GestureDetector(
                                 onTap: () => _changePage(page),
                                 child: Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(horizontal: 4),
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 4,
+                                  ),
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 12,
                                     vertical: 6,
@@ -198,8 +203,10 @@ class _EventsScreenState extends State<EventsScreen> {
                               );
                             }),
                             IconButton(
-                              icon:
-                                  const Icon(Icons.arrow_forward_ios, size: 16),
+                              icon: const Icon(
+                                Icons.arrow_forward_ios,
+                                size: 16,
+                              ),
                               onPressed: currentPage < totalPages
                                   ? () => _changePage(currentPage + 1)
                                   : null,
@@ -278,8 +285,11 @@ class _EventsScreenState extends State<EventsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.app_registration,
-                  size: 18, color: Color(0xFF0B592A)),
+              const Icon(
+                Icons.app_registration,
+                size: 18,
+                color: Color(0xFF0B592A),
+              ),
               const SizedBox(width: 6),
               Text(
                 'Registration: ${event.regStartDate ?? ''} - ${event.regEndDate ?? ''}',
@@ -293,8 +303,7 @@ class _EventsScreenState extends State<EventsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.location_on,
-                  size: 18, color: Color(0xFF0B592A)),
+              const Icon(Icons.location_on, size: 18, color: Color(0xFF0B592A)),
               const SizedBox(width: 6),
               Flexible(
                 child: Text(
@@ -313,8 +322,11 @@ class _EventsScreenState extends State<EventsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.attach_money,
-                    size: 18, color: Color(0xFF0B592A)),
+                const Icon(
+                  Icons.attach_money,
+                  size: 18,
+                  color: Color(0xFF0B592A),
+                ),
                 const SizedBox(width: 6),
                 Text(
                   'Prize Money: ${event.priceMoney}',
@@ -336,13 +348,19 @@ class _EventsScreenState extends State<EventsScreen> {
               CustomButton(
                 text: "View",
                 onPressed: () {
-                  // Handle view logic
+                  Navigator.pushNamed(
+                    context,
+                    RoutesName.eventDetailsScreen,
+                    arguments: event,
+                  );
                 },
                 backgroundColor: const Color(0xFF0B592A),
                 textColor: Colors.white,
                 borderRadius: 10,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
               ),
               const SizedBox(width: 12),
 
@@ -353,9 +371,9 @@ class _EventsScreenState extends State<EventsScreen> {
                       // ✅ Registration Active → Register button
                       return OutlinedButton(
                         onPressed: () {
-                          context
-                              .read<UserDataBloc>()
-                              .add(FetchUserDataEvent());
+                          context.read<UserDataBloc>().add(
+                            FetchUserDataEvent(),
+                          );
                           showDialog(
                             context: context,
                             builder: (context) => EventRegisterPopup(
@@ -403,7 +421,9 @@ class _EventsScreenState extends State<EventsScreen> {
                         textColor: Colors.white,
                         borderRadius: 10,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
                       );
                     }
                   },
@@ -425,8 +445,10 @@ class _EventsScreenState extends State<EventsScreen> {
                   backgroundColor: const Color(0xFF0B592A),
                   textColor: Colors.white,
                   borderRadius: 10,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                 ),
             ],
           ),

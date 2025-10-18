@@ -10,9 +10,13 @@ import '../screens/payment_screen.dart'; // Add this import
 import '../screens/bookingscreen.dart'; // Add this import
 import '../screens/registerscreen.dart'; // Update this import path
 import '../screens/viewscore.dart'; // Add this import
+import '../screens/event_details_screen.dart'; // Add this import
 // import '../screens/splash_screen.dart';
 // import '../screens/register_screen.dart';
 // import '../screens/profile_screen.dart';
+
+// Models
+import '../model/eventmodel.dart'; // Add this import
 
 import 'routes_name.dart';
 
@@ -48,6 +52,11 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
         builder: (_) => EventScoreViewScreen(
           eventRefNo: args?['eventRefNo'] ?? '',
         ),
+      );
+    case RoutesName.eventDetailsScreen:
+      final event = settings.arguments as EventModel;
+      return MaterialPageRoute(
+        builder: (_) => EventDetailsScreen(event: event),
       );
 
     default:
