@@ -160,16 +160,16 @@ class _EventScoreViewScreenState extends State<EventScoreViewScreen> {
                                 padding: const EdgeInsets.symmetric(vertical: 8),
                                 child: Row(
                                   children: const [
-                                    Expanded(
-                                      child: Text(
-                                        "Date",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
+                                    // Expanded(
+                                    //   child: Text(
+                                    //     "Date",
+                                    //     textAlign: TextAlign.center,
+                                    //     style: TextStyle(
+                                    //       color: Colors.white,
+                                    //       fontWeight: FontWeight.bold,
+                                    //     ),
+                                    //   ),
+                                    // ),
                                     Expanded(
                                       child: Text(
                                         "Hole",
@@ -243,16 +243,16 @@ class _EventScoreViewScreenState extends State<EventScoreViewScreen> {
                                     ),
                                     child: Row(
                                       children: [
-                                        Expanded(
-                                          child: Text(
-                                            item.dates != null
-                                                ? DateFormat('dd MMM yyyy')
-                                                    .format(DateTime.parse(item.dates!))
-                                                : "-",
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(color: mainColor),
-                                          ),
-                                        ),
+                                        // Expanded(
+                                        //   child: Text(
+                                        //     item.dates != null
+                                        //         ? DateFormat('dd MMM yyyy')
+                                        //             .format(DateTime.parse(item.dates!))
+                                        //         : "-",
+                                        //     textAlign: TextAlign.center,
+                                        //     style: const TextStyle(color: mainColor),
+                                        //   ),
+                                        // ),
                                         Expanded(
                                           child: Text(
                                             "${item.holeThru}",
