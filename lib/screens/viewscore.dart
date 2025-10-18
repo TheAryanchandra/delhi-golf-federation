@@ -75,10 +75,7 @@ class _EventScoreViewScreenState extends State<EventScoreViewScreen> {
                 // Date Picker
                 Container(
                   color: mainColor.withOpacity(0.1),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -108,17 +105,10 @@ class _EventScoreViewScreenState extends State<EventScoreViewScreen> {
                             color: mainColor,
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           child: Row(
                             children: [
-                              const Icon(
-                                Icons.calendar_month,
-                                color: Colors.white,
-                                size: 18,
-                              ),
+                              const Icon(Icons.calendar_month, color: Colors.white, size: 18),
                               const SizedBox(width: 6),
                               Text(
                                 DateFormat('dd MMM yyyy').format(selectedDate),
@@ -158,168 +148,148 @@ class _EventScoreViewScreenState extends State<EventScoreViewScreen> {
                         }
 
                         items.sort(
-                          (a, b) =>
-                              (a.holeThru ?? 0).compareTo(b.holeThru ?? 0),
+                          (a, b) => (a.holeThru ?? 0).compareTo(b.holeThru ?? 0),
                         );
 
                         return SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Container(
-                            width: 600,
-                            child: Column(
-                              children: [
-                                // Table Header
-                                Container(
-                                  color: mainColor,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 8,
-                                  ),
-                                  child: Row(
-                                    children: const [
-                                      Expanded(
-                                        child: Text(
-                                          "Hole",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                          child: Column(
+                            children: [
+                              // Table Header
+                              Container(
+                                color: mainColor,
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                child: Row(
+                                  children: const [
+                                    Expanded(
+                                      child: Text(
+                                        "Date",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Expanded(
-                                        child: Text(
-                                          "Par",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        "Hole",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Expanded(
-                                        child: Text(
-                                          "Index",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        "Par",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Expanded(
-                                        child: Text(
-                                          "Points",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        "Index",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Expanded(
-                                        child: Text(
-                                          "Date",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        "Points",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
+                              ),
 
-                                // Table Rows
-                                ListView.separated(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: items.length,
-                                  separatorBuilder: (_, __) =>
-                                      Divider(color: Colors.grey.shade300),
-                                  itemBuilder: (context, index) {
-                                    final item = items[index];
-                                    final points = item.points ?? 0;
+                              // Table Rows
+                              ListView.separated(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: items.length,
+                                separatorBuilder: (_, __) =>
+                                    Divider(color: Colors.grey.shade300),
+                                itemBuilder: (context, index) {
+                                  final item = items[index];
+                                  final points = item.points ?? 0;
 
-                                    Color pointsColor = points < 0
-                                        ? Colors.redAccent
-                                        : (points > 0
-                                              ? Colors.green.shade700
-                                              : Colors.orangeAccent);
+                                  Color pointsColor = points < 0
+                                      ? Colors.redAccent
+                                      : (points > 0
+                                          ? Colors.green.shade700
+                                          : Colors.orangeAccent);
 
-                                    Color rowColor = index % 2 == 0
-                                        ? Colors.grey.shade100
-                                        : Colors.white;
+                                  Color rowColor = index % 2 == 0
+                                      ? Colors.grey.shade100
+                                      : Colors.white;
 
-                                    return Container(
-                                      color: rowColor,
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 6,
-                                        horizontal: 8,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              "${item.holeThru}",
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                color: mainColor,
-                                              ),
+                                  return Container(
+                                    color: rowColor,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 6,
+                                      horizontal: 8,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            item.dates != null
+                                                ? DateFormat('dd MMM yyyy')
+                                                    .format(DateTime.parse(item.dates!))
+                                                : "-",
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(color: mainColor),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            "${item.holeThru}",
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(color: mainColor),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            "${item.par}",
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(color: mainColor),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            "${item.indexs}",
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(color: mainColor),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            "$points",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: pointsColor,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          Expanded(
-                                            child: Text(
-                                              "${item.par}",
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                color: mainColor,
-                                              ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                              "${item.indexs}",
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                color: mainColor,
-                                              ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                              "$points",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: pointsColor,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                              item.dates != null
-                                                  ? DateFormat(
-                                                      'dd MMM yyyy',
-                                                    ).format(
-                                                      DateTime.parse(
-                                                        item.dates!,
-                                                      ),
-                                                    )
-                                                  : "-",
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                color: mainColor,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                         );
                       }
