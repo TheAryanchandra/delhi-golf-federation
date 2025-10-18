@@ -226,61 +226,61 @@ class _EventDetailsScreenState extends State<EventDetailsScreen>
                     const SizedBox(height: 35),
 
                     /// Register Button or Closed Label
-                    Center(
-                      child: details.isRegistrationActive == "1"
-                          ? ElevatedButton.icon(
-                              onPressed: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Registration feature coming soon...',
-                                    ),
-                                  ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: mainColor,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 40,
-                                  vertical: 16,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                elevation: 3,
-                              ),
-                              icon: const Icon(
-                                Icons.app_registration,
-                                color: Colors.white,
-                              ),
-                              label: const Text(
-                                "Register Now",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            )
-                          : Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.red.shade100,
-                              ),
-                              child: const Text(
-                                "Registration Closed",
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                    ),
+                    // Center(
+                    //   child: details.isRegistrationActive == "1"
+                    //       ? ElevatedButton.icon(
+                    //           onPressed: () {
+                    //             ScaffoldMessenger.of(context).showSnackBar(
+                    //               const SnackBar(
+                    //                 content: Text(
+                    //                   'Registration feature coming soon...',
+                    //                 ),
+                    //               ),
+                    //             );
+                    //           },
+                    //           style: ElevatedButton.styleFrom(
+                    //             backgroundColor: mainColor,
+                    //             padding: const EdgeInsets.symmetric(
+                    //               horizontal: 40,
+                    //               vertical: 16,
+                    //             ),
+                    //             shape: RoundedRectangleBorder(
+                    //               borderRadius: BorderRadius.circular(30),
+                    //             ),
+                    //             elevation: 3,
+                    //           ),
+                    //           icon: const Icon(
+                    //             Icons.app_registration,
+                    //             color: Colors.white,
+                    //           ),
+                    //           label: const Text(
+                    //             "Register Now",
+                    //             style: TextStyle(
+                    //               color: Colors.white,
+                    //               fontSize: 17,
+                    //               fontWeight: FontWeight.bold,
+                    //             ),
+                    //           ),
+                    //         )
+                    //       : Container(
+                    //           padding: const EdgeInsets.symmetric(
+                    //             horizontal: 20,
+                    //             vertical: 10,
+                    //           ),
+                    //           decoration: BoxDecoration(
+                    //             borderRadius: BorderRadius.circular(20),
+                    //             color: Colors.red.shade100,
+                    //           ),
+                    //           child: const Text(
+                    //             "Registration Closed",
+                    //             style: TextStyle(
+                    //               color: Colors.red,
+                    //               fontSize: 16,
+                    //               fontWeight: FontWeight.bold,
+                    //             ),
+                    //           ),
+                    //         ),
+                    // ),
 
                     const SizedBox(height: 30),
                   ],
