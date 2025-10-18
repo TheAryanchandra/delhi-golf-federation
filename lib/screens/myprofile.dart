@@ -1,8 +1,14 @@
+import 'dart:io';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_bloc.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_event.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_state.dart';
+import 'package:delhi_golf_federation/bloc/updateimage/bloc/updateimage_bloc.dart';
+import 'package:delhi_golf_federation/bloc/updateimage/bloc/updateimage_event.dart';
+import 'package:delhi_golf_federation/bloc/updateimage/bloc/updateimage_state.dart';
+import 'package:delhi_golf_federation/model/updatedprofile_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import '../components/color_constants.dart';
 
 class MyProfile extends StatefulWidget {
@@ -16,7 +22,7 @@ class _MyProfileState extends State<MyProfile> {
   @override
   void initState() {
     super.initState();
-    // ✅ Trigger API call every time screen opens
+    // ✅ Fetch user data every time screen opens
     context.read<UserDataBloc>().add(FetchUserDataEvent());
   }
 
@@ -43,7 +49,7 @@ class _MyProfileState extends State<MyProfile> {
               physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
-                  // ✅ Header with Gradient Overlay
+                  // ✅ Header
                   ClipRRect(
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(20),
@@ -85,7 +91,7 @@ class _MyProfileState extends State<MyProfile> {
                     ),
                   ),
 
-                  // ✅ Profile Info Card
+                  // ✅ Profile Info
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Container(
@@ -164,7 +170,9 @@ class _MyProfileState extends State<MyProfile> {
                             child: IconButton(
                               icon: Icon(Icons.edit,
                                   color: ColorConstants.buttonColor),
-                              onPressed: () {},
+                              onPressed: () {
+                                _showEditProfileDialog(context, user);
+                              },
                             ),
                           ),
                         ],
@@ -172,10 +180,10 @@ class _MyProfileState extends State<MyProfile> {
                     ),
                   ),
 
-                  // ✅ Handicap Info Card
+                  // ✅ Handicap Card
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
                     child: Container(
                       padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
@@ -193,7 +201,8 @@ class _MyProfileState extends State<MyProfile> {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: ColorConstants.buttonColor.withOpacity(0.1),
+                              color:
+                                  ColorConstants.buttonColor.withOpacity(0.1),
                               shape: BoxShape.circle,
                             ),
                             padding: const EdgeInsets.all(10),
@@ -237,8 +246,8 @@ class _MyProfileState extends State<MyProfile> {
 
                   // ✅ About Section
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
                     child: Container(
                       padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
@@ -284,7 +293,152 @@ class _MyProfileState extends State<MyProfile> {
     );
   }
 
-  // ✅ Reusable Chips
+  // ✅ Edit Profile Dialog
+  Future<void> _showEditProfileDialog(BuildContext context, dynamic user) async {
+  final picker = ImagePicker();
+  File? selectedImage;
+
+  final nameController = TextEditingController(text: user.name);
+  final emailController = TextEditingController(text: user.email);
+  final phoneController = TextEditingController(text: user.phoneNumber);
+  final genderController = TextEditingController(text: user.gender);
+  final dobController = TextEditingController(text: user.dob);
+
+  await showDialog(
+    context: context,
+    builder: (context) {
+      return BlocConsumer<UpdateProfileBloc, AuthState>(
+        listener: (context, state) {
+          if (state is UpdateProfileSuccess) {
+            Navigator.pop(context);
+            context.read<UserDataBloc>().add(FetchUserDataEvent());
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Profile updated successfully")),
+            );
+          } else if (state is UpdateProfileFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Error: ${state.error}")),
+            );
+          }
+        },
+        builder: (context, state) {
+          return AlertDialog(
+            title: const Text("Edit Profile"),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      final XFile? picked =
+                          await picker.pickImage(source: ImageSource.gallery);
+                      if (picked != null) {
+                        selectedImage = File(picked.path);
+                        // since this is inside a dialog, use StatefulBuilder for local setState
+                        (context as Element).markNeedsBuild();
+                      }
+                    },
+                    child: CircleAvatar(
+                      radius: 40,
+                      backgroundImage: selectedImage != null
+                          ? FileImage(selectedImage!)
+                          : (user.profileImg != null &&
+                                  user.profileImg!.isNotEmpty)
+                              ? NetworkImage(user.profileImg!)
+                              : null,
+                      child: selectedImage == null &&
+                              (user.profileImg == null ||
+                                  user.profileImg!.isEmpty)
+                          ? const Icon(Icons.camera_alt, size: 30)
+                          : null,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  _buildTextField("Name", nameController, readOnly: true),
+                  _buildTextField("Email", emailController, readOnly: true),
+                  _buildTextField("Phone", phoneController, readOnly: false),
+                  _buildTextField("Gender", genderController, readOnly: true),
+                  _buildTextField("DOB", dobController, readOnly: true),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: ColorConstants.buttonColor,
+                  foregroundColor: Colors.white, // white text
+                ),
+                onPressed: state is UpdateProfileLoading
+                    ? null
+                    : () {
+                        final model = UpdateProfileModel(
+                          id: user.id,
+                          name: nameController.text,
+                          phonumber: phoneController.text,
+                          email: emailController.text,
+                          gender: genderController.text,
+                          dob: dobController.text,
+                          cmpCode: user.cmpCode,
+                          refNo: user.refNo,
+                          activateStatus: "Activate",
+                          homeClub: user.homeClub,
+                          usgaHandicapIndex: user.usgaHandicapIndex,
+                        );
+
+                        context.read<UpdateProfileBloc>().add(
+                              UpdateProfileEvent(
+                                model: model,
+                                imageFile: selectedImage,
+                              ),
+                            );
+                      },
+                child: state is UpdateProfileLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text("Save"),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}
+
+/// helper for consistent textfield style
+Widget _buildTextField(String label, TextEditingController controller,
+    {bool readOnly = false}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6.0),
+    child: TextField(
+      controller: controller,
+      readOnly: readOnly,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+    ),
+  );
+}
+
+
+  // Widget _buildTextField(String label, TextEditingController controller) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 8),
+  //     child: TextField(
+  //       controller: controller,
+  //       decoration: InputDecoration(
+  //         labelText: label,
+  //         border:
+  //             OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   static Widget _buildChip(IconData icon, String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -310,7 +464,6 @@ class _MyProfileState extends State<MyProfile> {
     );
   }
 
-  // ✅ Info Text Row
   static Widget _buildInfo(String label, dynamic value, {Color? color}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
