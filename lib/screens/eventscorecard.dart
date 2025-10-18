@@ -127,36 +127,36 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
 
   // Add new method to calculate adjusted score
   int calculateAdjustedScore(HoleInfo hole) {
-  final handicap = playerInfo?.usgaHandicapIndex?.toInt() ?? 0;
-  final holeIndex = hole.indexNo ?? 0;
-  final inputScore = hole.score ?? 0;
-  final par = hole.par ?? 0;
+    final handicap = playerInfo?.usgaHandicapIndex?.toInt() ?? 0;
+    final holeIndex = hole.indexNo ?? 0;
+    final inputScore = hole.score ?? 0;
+    final par = hole.par ?? 0;
 
-  // ✅ Check Handicap Status
-  if (widget.handicapStatus == "Yes") {
-    // Handicap logic
-    if (handicap >= holeIndex) {
-      if (inputScore <= par) {
-        return inputScore - (par + 1);
+    // ✅ Check Handicap Status
+    if (widget.handicapStatus == "Yes") {
+      // Handicap logic
+      if (handicap >= holeIndex) {
+        if (inputScore <= par) {
+          return inputScore - (par + 1);
+        } else {
+          return inputScore - (par + 1);
+        }
       } else {
-        return inputScore - (par + 1);
+        if (inputScore <= par) {
+          return inputScore - par;
+        } else {
+          return inputScore - par;
+        }
       }
     } else {
+      // Non-handicap logic
       if (inputScore <= par) {
         return inputScore - par;
       } else {
         return inputScore - par;
       }
-    }
-  } else {
-    // Non-handicap logic
-    if (inputScore <= par) {
-      return inputScore - par;
-    } else {
-      return inputScore - par;
     }
   }
-}
 
   // print("Adjusted score: ${calculateAdjustedScore(hole)}");
 
@@ -392,39 +392,42 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                     color: Colors.black87,
                                   ),
                                 ),
-                                Text(
-                                  "Handicap: ${playerInfo?.usgaHandicapIndex?.toStringAsFixed(1) ?? '0'}",
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black87,
+                                if (widget.handicapStatus ==
+                                    "Yes") // ✅ Only show if Yes
+                                  Text(
+                                    "Handicap: ${playerInfo?.usgaHandicapIndex?.toStringAsFixed(1) ?? '0'}",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black87,
+                                    ),
                                   ),
-                                ),
                               ],
                             ),
+
                             const SizedBox(height: 15),
 
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  "Handicap Status:",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                                Text(
-                                  widget.handicapStatus.isNotEmpty
-                                      ? widget.handicapStatus
-                                      : 'N/A',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: mainColor,
-                                  ),
-                                ),
-                              ],
-                            ),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   children: [
+                            //     const Text(
+                            //       "Handicap Status:",
+                            //       style: TextStyle(
+                            //         fontSize: 16,
+                            //         color: Colors.black87,
+                            //       ),
+                            //     ),
+                            //     Text(
+                            //       widget.handicapStatus.isNotEmpty
+                            //           ? widget.handicapStatus
+                            //           : 'N/A',
+                            //       style: const TextStyle(
+                            //         fontSize: 16,
+                            //         fontWeight: FontWeight.w600,
+                            //         color: mainColor,
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
                             const SizedBox(height: 10),
 
                             Row(
