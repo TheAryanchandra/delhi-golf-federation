@@ -19,6 +19,7 @@ class UserDataModel {
   final String activateStatus;
   final String? eventRefNo;
   final String? industryRefNo;
+  final String? profileImg;
 
   UserDataModel({
     required this.id,
@@ -41,6 +42,7 @@ class UserDataModel {
     required this.activateStatus,
     required this.eventRefNo,
     required this.industryRefNo,
+    required this.profileImg,
   });
 
   factory UserDataModel.fromJson(Map<String, dynamic> json) {
@@ -56,8 +58,7 @@ class UserDataModel {
       dob: response['DOB'] ?? '',
       age: response['Age'] ?? 0,
       homeClub: response['HomeClub']?.toString() ?? '',
-      usgaHandicapIndex:
-          (response['USGA_handicap_index'] ?? 0).toDouble(),
+      usgaHandicapIndex: (response['USGA_handicap_index'] ?? 0).toDouble(),
       ghinNo: response['GHIN_No'] ?? '',
       cmpCode: response['Cmp_Code'] ?? '',
       userId: response['UserId']?.toString(),
@@ -68,6 +69,7 @@ class UserDataModel {
       activateStatus: response['ActivateStatus'] ?? '',
       eventRefNo: response['EventRefNo']?.toString(),
       industryRefNo: response['IndustryRefNo']?.toString(),
+      profileImg: response['ProfileImg']?.toString(),
     );
   }
 }
