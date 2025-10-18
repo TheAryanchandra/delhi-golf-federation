@@ -112,16 +112,26 @@ class _MyProfileState extends State<MyProfile> {
                         children: [
                           CircleAvatar(
                             radius: 38,
-                            backgroundColor:
-                                ColorConstants.buttonColor.withOpacity(0.2),
-                            backgroundImage: user.profileImg != null &&
-                                    user.profileImg!.isNotEmpty
-                                ? NetworkImage(user.profileImg!)
+                            backgroundColor: ColorConstants.buttonColor
+                                .withOpacity(0.2),
+                            backgroundImage:
+                                (user.profileImg != null &&
+                                    user.profileImg!.isNotEmpty)
+                                ? NetworkImage(
+                                    user.profileImg!.startsWith('http')
+                                        ? user.profileImg!
+                                        : 'https://delhigolf.org${user.profileImg!}',
+                                  )
                                 : null,
-                            child: (user.profileImg == null ||
+
+                            child:
+                                (user.profileImg == null ||
                                     user.profileImg!.isEmpty)
-                                ? const Icon(Icons.person,
-                                    size: 42, color: Colors.white)
+                                ? const Icon(
+                                    Icons.person,
+                                    size: 42,
+                                    color: Colors.white,
+                                  )
                                 : null,
                           ),
                           const SizedBox(width: 14),
@@ -163,13 +173,16 @@ class _MyProfileState extends State<MyProfile> {
                           ),
                           Container(
                             decoration: BoxDecoration(
-                              color:
-                                  ColorConstants.buttonColor.withOpacity(0.1),
+                              color: ColorConstants.buttonColor.withOpacity(
+                                0.1,
+                              ),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: IconButton(
-                              icon: Icon(Icons.edit,
-                                  color: ColorConstants.buttonColor),
+                              icon: Icon(
+                                Icons.edit,
+                                color: ColorConstants.buttonColor,
+                              ),
                               onPressed: () {
                                 _showEditProfileDialog(context, user);
                               },
@@ -183,7 +196,9 @@ class _MyProfileState extends State<MyProfile> {
                   // ✅ Handicap Card
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
                     child: Container(
                       padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
@@ -201,13 +216,17 @@ class _MyProfileState extends State<MyProfile> {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color:
-                                  ColorConstants.buttonColor.withOpacity(0.1),
+                              color: ColorConstants.buttonColor.withOpacity(
+                                0.1,
+                              ),
                               shape: BoxShape.circle,
                             ),
                             padding: const EdgeInsets.all(10),
-                            child: Icon(Icons.golf_course,
-                                color: ColorConstants.buttonColor, size: 30),
+                            child: Icon(
+                              Icons.golf_course,
+                              color: ColorConstants.buttonColor,
+                              size: 30,
+                            ),
                           ),
                           const SizedBox(width: 16),
                           const Expanded(
@@ -247,7 +266,9 @@ class _MyProfileState extends State<MyProfile> {
                   // ✅ About Section
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
                     child: Container(
                       padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
@@ -294,136 +315,154 @@ class _MyProfileState extends State<MyProfile> {
   }
 
   // ✅ Edit Profile Dialog
-  Future<void> _showEditProfileDialog(BuildContext context, dynamic user) async {
-  final picker = ImagePicker();
-  File? selectedImage;
+  Future<void> _showEditProfileDialog(
+    BuildContext context,
+    dynamic user,
+  ) async {
+    final picker = ImagePicker();
+    File? selectedImage;
 
-  final nameController = TextEditingController(text: user.name);
-  final emailController = TextEditingController(text: user.email);
-  final phoneController = TextEditingController(text: user.phoneNumber);
-  final genderController = TextEditingController(text: user.gender);
-  final dobController = TextEditingController(text: user.dob);
+    final nameController = TextEditingController(text: user.name);
+    final emailController = TextEditingController(text: user.email);
+    final phoneController = TextEditingController(text: user.phoneNumber);
+    final genderController = TextEditingController(text: user.gender);
+    final dobController = TextEditingController(text: user.dob);
 
-  await showDialog(
-    context: context,
-    builder: (context) {
-      return BlocConsumer<UpdateProfileBloc, AuthState>(
-        listener: (context, state) {
-          if (state is UpdateProfileSuccess) {
-            Navigator.pop(context);
-            context.read<UserDataBloc>().add(FetchUserDataEvent());
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Profile updated successfully")),
-            );
-          } else if (state is UpdateProfileFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Error: ${state.error}")),
-            );
-          }
-        },
-        builder: (context, state) {
-          return AlertDialog(
-            title: const Text("Edit Profile"),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      final XFile? picked =
-                          await picker.pickImage(source: ImageSource.gallery);
-                      if (picked != null) {
-                        selectedImage = File(picked.path);
-                        // since this is inside a dialog, use StatefulBuilder for local setState
-                        (context as Element).markNeedsBuild();
-                      }
-                    },
-                    child: CircleAvatar(
-                      radius: 40,
-                      backgroundImage: selectedImage != null
-                          ? FileImage(selectedImage!)
-                          : (user.profileImg != null &&
-                                  user.profileImg!.isNotEmpty)
-                              ? NetworkImage(user.profileImg!)
-                              : null,
-                      child: selectedImage == null &&
-                              (user.profileImg == null ||
-                                  user.profileImg!.isEmpty)
-                          ? const Icon(Icons.camera_alt, size: 30)
-                          : null,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  _buildTextField("Name", nameController, readOnly: true),
-                  _buildTextField("Email", emailController, readOnly: true),
-                  _buildTextField("Phone", phoneController, readOnly: false),
-                  _buildTextField("Gender", genderController, readOnly: true),
-                  _buildTextField("DOB", dobController, readOnly: true),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("Cancel"),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorConstants.buttonColor,
-                  foregroundColor: Colors.white, // white text
-                ),
-                onPressed: state is UpdateProfileLoading
-                    ? null
-                    : () {
-                        final model = UpdateProfileModel(
-                          id: user.id,
-                          name: nameController.text,
-                          phonumber: phoneController.text,
-                          email: emailController.text,
-                          gender: genderController.text,
-                          dob: dobController.text,
-                          cmpCode: user.cmpCode,
-                          refNo: user.refNo,
-                          activateStatus: "Activate",
-                          homeClub: user.homeClub,
-                          usgaHandicapIndex: user.usgaHandicapIndex,
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return BlocConsumer<UpdateProfileBloc, AuthState>(
+          listener: (context, state) {
+            if (state is UpdateProfileSuccess) {
+              Navigator.pop(context);
+              context.read<UserDataBloc>().add(FetchUserDataEvent());
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Profile updated successfully")),
+              );
+            } else if (state is UpdateProfileFailure) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text("Error: ${state.error}")));
+            }
+          },
+          builder: (context, state) {
+            return AlertDialog(
+              title: const Text("Edit Profile"),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 🖼 Profile Image Picker
+                    GestureDetector(
+                      onTap: () async {
+                        final XFile? picked = await picker.pickImage(
+                          source: ImageSource.gallery,
                         );
-
-                        context.read<UpdateProfileBloc>().add(
-                              UpdateProfileEvent(
-                                model: model,
-                                imageFile: selectedImage,
-                              ),
-                            );
+                        if (picked != null) {
+                          selectedImage = File(picked.path);
+                          (context as Element).markNeedsBuild();
+                        }
                       },
-                child: state is UpdateProfileLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("Save"),
+                      child: CircleAvatar(
+                        radius: 45,
+                        backgroundImage: selectedImage != null
+                            ? FileImage(selectedImage!)
+                            : (user.profileImg != null &&
+                                  user.profileImg!.isNotEmpty)
+                            ? NetworkImage(
+                                user.profileImg!.startsWith('http')
+                                    ? user.profileImg!
+                                    : 'https://delhigolf.org${user.profileImg!}',
+                              )
+                            : null,
+
+                        child:
+                            selectedImage == null &&
+                                (user.profileImg == null ||
+                                    user.profileImg!.isEmpty)
+                            ? const Icon(Icons.camera_alt, size: 32)
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // 📝 Editable Fields (only Email is read-only)
+                    _buildTextField("Name", nameController, readOnly: false),
+                    _buildTextField("Email", emailController, readOnly: true),
+                    _buildTextField("Phone", phoneController, readOnly: false),
+                    _buildTextField(
+                      "Gender",
+                      genderController,
+                      readOnly: false,
+                    ),
+                    _buildTextField("DOB", dobController, readOnly: false),
+                  ],
+                ),
               ),
-            ],
-          );
-        },
-      );
-    },
-  );
-}
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel"),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorConstants.buttonColor,
+                    foregroundColor: Colors.white, // white text
+                  ),
+                  onPressed: state is UpdateProfileLoading
+                      ? null
+                      : () {
+                          final model = UpdateProfileModel(
+                            id: user.id,
+                            name: nameController.text.trim(),
+                            phonumber: phoneController.text.trim(),
+                            email: emailController.text.trim(),
+                            gender: genderController.text.trim(),
+                            dob: dobController.text.trim(),
+                            cmpCode: user.cmpCode,
+                            refNo: user.refNo,
+                            activateStatus: "Activate",
+                            homeClub: user.homeClub,
+                            usgaHandicapIndex: user.usgaHandicapIndex,
+                          );
 
-/// helper for consistent textfield style
-Widget _buildTextField(String label, TextEditingController controller,
-    {bool readOnly = false}) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 6.0),
-    child: TextField(
-      controller: controller,
-      readOnly: readOnly,
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
+                          context.read<UpdateProfileBloc>().add(
+                            UpdateProfileEvent(
+                              model: model,
+                              imageFile: selectedImage,
+                            ),
+                          );
+                        },
+                  child: state is UpdateProfileLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text("Save"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  /// helper for consistent textfield style
+  Widget _buildTextField(
+    String label,
+    TextEditingController controller, {
+    bool readOnly = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: TextField(
+        controller: controller,
+        readOnly: readOnly,
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   // Widget _buildTextField(String label, TextEditingController controller) {
   //   return Padding(
@@ -486,10 +525,7 @@ Widget _buildTextField(String label, TextEditingController controller,
               value != null && value.toString().isNotEmpty
                   ? value.toString()
                   : "N/A",
-              style: TextStyle(
-                fontSize: 13,
-                color: color ?? Colors.grey[800],
-              ),
+              style: TextStyle(fontSize: 13, color: color ?? Colors.grey[800]),
             ),
           ),
         ],
