@@ -164,11 +164,20 @@ class _MyProfileState extends State<MyProfile> {
                                   spacing: 8,
                                   runSpacing: 6,
                                   children: [
-                              _buildChip(Icons.place, user.homeClub, label: "Home Club"),
-_buildChip(Icons.confirmation_number, user.ghinNo, label: "GHIN No"),
-
+                                    //                               _buildChip(Icons.place, user.homeClub, label: "Home Club"),
+                                    // _buildChip(Icons.confirmation_number, user.ghinNo, label: "GHIN No"),
                                     _buildChip(Icons.person, user.gender),
                                     _buildChip(Icons.cake, user.dob),
+                                    _buildChip(
+                                      Icons.place,
+                                      user.homeClub,
+                                      label: "Home Club",
+                                    ),
+                                    _buildChip(
+                                      Icons.confirmation_number,
+                                      user.ghinNo,
+                                      label: "GHIN No",
+                                    ),
                                   ],
                                 ),
                               ],
@@ -482,39 +491,52 @@ _buildChip(Icons.confirmation_number, user.ghinNo, label: "GHIN No"),
   // }
 
   static Widget _buildChip(IconData icon, String value, {String? label}) {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-    decoration: BoxDecoration(
-      color: ColorConstants.buttonColor.withOpacity(0.12),
-      borderRadius: BorderRadius.circular(20),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 14, color: ColorConstants.buttonColor),
-        const SizedBox(width: 4),
-        if (label != null)
-          Text(
-            "$label: ",
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.black87,
-              fontWeight: FontWeight.w500,
+    return Container(
+      constraints: const BoxConstraints(
+        maxWidth: 180,
+      ), // ⬅️ Increased a bit for longer text
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: ColorConstants.buttonColor.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(icon, size: 14, color: ColorConstants.buttonColor),
+          const SizedBox(width: 4),
+          Flexible(
+            // ⬅️ Wrap text inside Flexible to prevent overflow
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  if (label != null)
+                    TextSpan(
+                      text: "$label: ",
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  TextSpan(
+                    text: value.isNotEmpty ? value : "N/A",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: ColorConstants.buttonColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              // overflow: TextOverflow.ellipsis, // ⬅️ Avoids pixel overflow
             ),
           ),
-        Text(
-          value.isNotEmpty ? value : "N/A",
-          style: TextStyle(
-            fontSize: 12,
-            color: ColorConstants.buttonColor,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
+        ],
+      ),
+    );
+  }
 
   static Widget _buildInfo(String label, dynamic value, {Color? color}) {
     return Padding(
