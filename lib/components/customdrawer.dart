@@ -12,6 +12,7 @@ import 'package:delhi_golf_federation/screens/myprofile.dart';
 import 'package:delhi_golf_federation/screens/eventreport.dart';
 import 'package:delhi_golf_federation/components/bottomnavigation.dart';
 import 'package:delhi_golf_federation/components/topnavigationbar.dart';
+import 'package:delhi_golf_federation/services/navigation_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -201,19 +202,19 @@ class CustomDrawer extends StatelessWidget {
   void _navigateToTab(BuildContext context, String route) {
     switch (route) {
       case "/about":
-        if (onItemTap != null) onItemTap!(4);
+        NavigationService.instance.navigateToTab(4);
         break;
 
       case "/eventreport":
-        if (onItemTap != null) onItemTap!(3);
+        NavigationService.instance.navigateToTab(3);
         break;
 
       case "/leaderboard":
-        if (onItemTap != null) onItemTap!(1);
+        NavigationService.instance.navigateToTab(1);
         break;
 
       case "/events":
-        if (onItemTap != null) onItemTap!(2);
+        NavigationService.instance.navigateToTab(2);
         break;
 
       case "/booking":
@@ -237,7 +238,7 @@ class CustomDrawer extends StatelessWidget {
       //   break;
 
       default:
-        if (onItemTap != null) onItemTap!(0);
+        NavigationService.instance.navigateToTab(0);
     }
   }
 

@@ -1,7 +1,5 @@
-# TODO: Add Navigation from Event Screen to Event Details Screen
-
-## Steps to Complete:
-- [ ] Add route name for event details in `lib/config/routes_name.dart`
-- [ ] Update `lib/config/routes.dart` to include event details route in `onGenerateRoute`, accepting EventModel as argument
-- [ ] Modify `lib/screens/event_details_screen.dart` to accept EventModel and display dynamic event data instead of hardcoded values
-- [ ] Update the "View" button's `onPressed` in `lib/screens/event_screen.dart` to navigate to event details screen, passing the event data
+- [x] Modify CustomDrawer to use NavigationService for main tab navigation instead of onItemTap to prevent nested navigators
+- [x] Import NavigationService in CustomDrawer
+- [x] Update _navigateToTab method to call NavigationService.instance.navigateToTab(index) for main tabs (About, Leaderboard, Events, Scorecard)
+- [x] Keep _pushSimpleScreen for simple screens (Gallery, Videos, News, etc.)
+- [ ] Test the navigation to ensure no black screens on second tap
