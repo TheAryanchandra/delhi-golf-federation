@@ -399,13 +399,13 @@ class _MyProfileState extends State<MyProfile> {
                     const SizedBox(height: 16),
 
                     // 📝 Editable Fields (only Email is read-only)
-                    _buildTextField("Name", nameController, readOnly: false),
+                    _buildTextField("Name", nameController, readOnly: true),
                     _buildTextField("Email", emailController, readOnly: true),
-                    _buildTextField("Phone", phoneController, readOnly: false),
+                    _buildTextField("Phone", phoneController, readOnly: true),
                     _buildTextField(
                       "Gender",
                       genderController,
-                      readOnly: false,
+                      readOnly: true,
                     ),
                     _buildTextField("DOB", dobController, readOnly: false),
                   ],
