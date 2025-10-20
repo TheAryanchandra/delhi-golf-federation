@@ -407,7 +407,7 @@ class _MyProfileState extends State<MyProfile> {
                       genderController,
                       readOnly: true,
                     ),
-                    _buildTextField("DOB", dobController, readOnly: false),
+                    _buildTextField("DOB", dobController, readOnly: true),
                   ],
                 ),
               ),
