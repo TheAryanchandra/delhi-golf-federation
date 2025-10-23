@@ -80,7 +80,7 @@ class GolfClubFacilities extends StatelessWidget {
       children: [
         const Center(
           child: Text(
-            "Golf Club Facilities",
+            "Our Golf Federation Facilities",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,

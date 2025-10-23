@@ -71,33 +71,36 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
 
                 return Column(
                   children: [
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(
-                          Icons.emoji_events,
-                          color: ColorConstants.green,
-                          size: 28,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          "LEADERBOARD",
-                          style: TextStyle(
-                            color: ColorConstants.green,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.2,
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/images/ranthumbor.png',
+                            height: 60,
+                            width: 60,
+                            fit: BoxFit.contain,
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 8),
+                          const Text(
+                            "ROYAL RANTHAMBORE LEADERBOARD",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: ColorConstants.green,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+
                     const SizedBox(height: 20),
 
                     /// TABLE VIEW
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16),
                           child: Material(
@@ -123,15 +126,16 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                       fontSize: 13,
                                     ),
                                     dataTextStyle: const TextStyle(
-                                      color: ColorConstants.darkGray,
+                                      color: Colors.white,
                                       fontSize: 13,
                                     ),
                                     columnSpacing: 16,
                                     horizontalMargin: 12,
                                     dividerThickness: 1,
                                     border: TableBorder.all(
-                                      color: ColorConstants.green,
-                                      width: 1,
+                                      color: Colors
+                                          .white70, // Lighter border on green
+                                      width: 0.8,
                                     ),
                                     columns: const [
                                       DataColumn(label: Text("POS")),
@@ -153,27 +157,52 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                       final player = players[index];
                                       final todayValue =
                                           player.today?.toString() ?? "0";
-                                      final todayColor =
-                                          todayValue.startsWith('-')
-                                          ? ColorConstants.redAccent
-                                          : ColorConstants.darkGray;
 
                                       return DataRow(
                                         color: MaterialStateProperty.all(
                                           index % 2 == 0
-                                              ? ColorConstants.lightGray
-                                              : Colors.white,
+                                              ? const Color(
+                                                  0xFF12563C,
+                                                ) // dark green shade
+                                              : const Color.fromARGB(
+                                                  255,
+                                                  4,
+                                                  107,
+                                                  69,
+                                                ), // lighter green shade
                                         ),
                                         cells: [
                                           DataCell(Text("${index + 1}")),
                                           DataCell(
-                                            Text(
-                                              player.stateName ?? "",
-                                              style: const TextStyle(
-                                                fontSize: 16,
+                                            Center(
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize
+                                                    .min, // Shrinks row to content width
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  const Text(
+                                                    "🇮🇳 ",
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    player.stateName ?? "",
+                                                    style: const TextStyle(
+                                                      fontSize: 13,
+                                                      color: Colors.white,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ),
+
                                           DataCell(
                                             Text(
                                               player.playerName ?? "",
@@ -187,9 +216,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                               player.score?.toString() ?? "0",
                                               style: TextStyle(
                                                 color: (player.score ?? 0) < 0
-                                                    ? ColorConstants.redAccent
-                                                    : Colors
-                                                          .black, // 🔥 red if negative, black otherwise
+                                                    ? Colors.redAccent.shade100
+                                                    : Colors.white,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
@@ -204,14 +232,12 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                                             ) ??
                                                             0) <
                                                         0
-                                                    ? ColorConstants.redAccent
-                                                    : Colors
-                                                          .black, // 🔥 red if negative, black otherwise
+                                                    ? Colors.redAccent.shade100
+                                                    : Colors.white,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                           ),
-
                                           DataCell(
                                             Text(player.r1?.toString() ?? "0"),
                                           ),
@@ -257,7 +283,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     ),
 
                     /// PAGINATION
-                    const SizedBox(height: 12),
+                    // const SizedBox(height: 12),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Row(
