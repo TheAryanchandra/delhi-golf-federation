@@ -157,7 +157,8 @@ class _DelhiGolfRankingScreenState extends State<DelhiGolfRankingScreen>
                   _buildJuniorEliteSection(),
 
                   // 🟢 Club Golfers
-                  _buildRankingTable(),
+                  // 🟢 Club Golfers
+                  _buildClubGolfersTable(),
                 ],
               ),
             ),
@@ -531,7 +532,6 @@ class _DelhiGolfRankingScreenState extends State<DelhiGolfRankingScreen>
             //     fontSize: 14,
             //   ),
             // ),
-
             const SizedBox(height: 12),
 
             // 🔹 Table Section
@@ -597,4 +597,225 @@ class _DelhiGolfRankingScreenState extends State<DelhiGolfRankingScreen>
       ),
     );
   }
+
+  // 🔹 Club Golfers Table Layout (Custom)
+  // 🔹 Club Golfers Table Layout (Compact + Unified Style)
+// 🔹 Club Golfers Table Layout (Compact & Fixed)
+// 🔹 Club Golfers Table Layout (Updated & Color-Matched)
+Widget _buildClubGolfersTable() {
+  return Padding(
+    padding: const EdgeInsets.all(16),
+    child: Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF003F2F),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            // 🔍 Search Box
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "Enter Event Name",
+                  hintStyle: const TextStyle(color: Colors.white70),
+                  filled: true,
+                  fillColor: const Color(0xFF12563C),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+
+            // 🏁 Table Header
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 4, 107, 69), // Deep green
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: const [
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      "SR. NO",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      "PROFILE",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      "NAME",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      "POSITION",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      "SCORE",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      "PLAYER POINT",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // 🧾 Table Rows
+            Container(
+              decoration: const BoxDecoration(
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(16)),
+              ),
+              child: Column(
+                children: List.generate(5, (index) {
+                  final rowColor = index % 2 == 0
+                      ? const Color.fromARGB(255, 4, 107, 69) // Dark green
+                      : const Color(0xFF12563C); // Lighter green
+
+                  return Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                    decoration: BoxDecoration(
+                      color: rowColor,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.black.withOpacity(0.2),
+                          width: 0.3,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            "${index + 1}",
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 13),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Image.asset(
+                            "assets/images/owgr.png",
+                            height: 30,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        const Expanded(
+                          flex: 3,
+                          child: Text(
+                            "OWGR",
+                            textAlign: TextAlign.center,
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 13),
+                          ),
+                        ),
+                        const Expanded(
+                          flex: 2,
+                          child: Text(
+                            "1",
+                            textAlign: TextAlign.center,
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 13),
+                          ),
+                        ),
+                        const Expanded(
+                          flex: 2,
+                          child: Text(
+                            "-9",
+                            textAlign: TextAlign.center,
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 13),
+                          ),
+                        ),
+                        const Expanded(
+                          flex: 3,
+                          child: Text(
+                            "4",
+                            textAlign: TextAlign.center,
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 13),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
 }
