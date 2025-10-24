@@ -13,6 +13,7 @@ import '../screens/viewscore.dart'; // Add this import
 import '../screens/event_details_screen.dart'; // Add this import
 import '../screens/elitegolfer.dart'; // Add this import
 import '../screens/clubgolfer.dart'; // Add this import
+import '../screens/IGUranking.dart'; // Add this import
 import '../screens/delhi_golf_ranking.dart'; // Add this import
 // import '../screens/splash_screen.dart';
 // import '../screens/register_screen.dart';
@@ -35,7 +36,9 @@ final Map<String, WidgetBuilder> appRoutes = {
   '/about': (context) => const AboutScreen(),
   RoutesName.eliteGolferScreen: (context) => const EliteGolferScreen(),
   RoutesName.clubGolferScreen: (context) => const ClubGolferScreen(),
-  RoutesName.delhiGolfRankingScreen: (context) => const DelhiGolfRankingScreen(),
+  RoutesName.iguRankingScreen: (context) => const IGURankingScreen(),
+  RoutesName.delhiGolfRankingScreen: (context) =>
+      const DelhiGolfRankingScreen(),
 
   /// Add when ready
   // RoutesName.splashScreen: (context) => const SplashScreen(),

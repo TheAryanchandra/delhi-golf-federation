@@ -136,21 +136,17 @@ class _ProfileWithNavigationState extends State<_ProfileWithNavigation> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void updateIndex(int index) {
-    Navigator.pushAndRemoveUntil(
+    Navigator.pop(context);
+    Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => CustomBottomNav(initialIndex: index),
       ),
-      (route) => false,
     );
   }
 
   Future<bool> _onWillPop() async {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const CustomBottomNav()),
-      (route) => false,
-    );
+    Navigator.pop(context);
     return false;
   }
 
@@ -169,11 +165,7 @@ class _ProfileWithNavigationState extends State<_ProfileWithNavigation> {
         appBar: TopNavigationBar(
           showBackButton: true,
           onBackTap: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const CustomBottomNav()),
-              (route) => false,
-            );
+            Navigator.pop(context);
           },
           onMenuTap: () {
             _scaffoldKey.currentState?.openDrawer();

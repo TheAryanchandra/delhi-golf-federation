@@ -120,97 +120,84 @@ class _EliteGolferScreenState extends State<EliteGolferScreen>
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        textTheme: GoogleFonts.urbanistTextTheme(Theme.of(context).textTheme)
-            .copyWith(
-              bodyMedium: const TextStyle(fontSize: 15),
-              titleLarge: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: TopNavigationBar(
+        showBackButton: true,
+        onBackTap: () => Navigator.pop(context),
       ),
-      home: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: TopNavigationBar(
-          showBackButton: true,
-          onBackTap: () => Navigator.pop(context),
-        ),
-        body: Column(
-          children: [
-            // 🔹 HEADER SECTION
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
+      body: Column(
+        children: [
+          // 🔹 HEADER SECTION
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/welcome.png",
+                  height: screenHeight * 0.18,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+                Container(
+                  height: screenHeight * 0.18,
+                  color: Colors.black.withOpacity(0.35),
+                ),
+                const Text(
+                  "Elite Golfer",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    letterSpacing: 1.2,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // 🔹 CUSTOM TOGGLE BUTTONS
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: ColorConstants.buttonColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: Stack(
-                alignment: Alignment.center,
+              child: Row(
                 children: [
-                  Image.asset(
-                    "assets/images/welcome.png",
-                    height: screenHeight * 0.18,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                  Container(
-                    height: screenHeight * 0.18,
-                    color: Colors.black.withOpacity(0.35),
-                  ),
-                  const Text(
-                    "Elite Golfer",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 26,
-                      letterSpacing: 1.2,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  _buildTabButton("Pro Elite", 0),
+                  const SizedBox(width: 8),
+                  _buildTabButton("Amateur Elite", 1),
+                  const SizedBox(width: 8),
+                  _buildTabButton("Junior Elite", 2),
                 ],
               ),
             ),
+          ),
 
-            const SizedBox(height: 16),
+          const SizedBox(height: 10),
 
-            // 🔹 CUSTOM TOGGLE BUTTONS
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: ColorConstants.buttonColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    _buildTabButton("Pro Elite", 0),
-                    const SizedBox(width: 8),
-                    _buildTabButton("Amateur Elite", 1),
-                    const SizedBox(width: 8),
-                    _buildTabButton("Junior Elite", 2),
-                  ],
-                ),
-              ),
+          // 🔹 TAB CONTENT
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                buildDataTable(proEliteData),
+                buildDataTable(amateurEliteData),
+                buildDataTable(juniorEliteData),
+              ],
             ),
-
-            const SizedBox(height: 10),
-
-            // 🔹 TAB CONTENT
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  buildDataTable(proEliteData),
-                  buildDataTable(amateurEliteData),
-                  buildDataTable(juniorEliteData),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

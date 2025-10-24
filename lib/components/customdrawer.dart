@@ -190,17 +190,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               ),
                             ),
                             onTap: () {
-                              Navigator.pop(
+                              Navigator.pop(context);
+                              Navigator.pushNamed(
                                 context,
-                              ); // Close current menu/drawer
-                              _pushSimpleScreen(
-                                context,
-                                CommonWebPageScreen(
-                                  title: "Elite Golfer (International)",
-                                  url:
-                                      "https://indiangolfunion.org/order-of-merit-2025/",
-                                ),
-                                "Elite Golfer (International)",
+                                RoutesName.iguRankingScreen,
                               );
                             },
                           ),

@@ -77,7 +77,16 @@ class _CommonWebPageScreenState extends State<CommonWebPageScreen> {
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            // Check if WebView can go back
+            controller.canGoBack().then((canGoBack) {
+              if (canGoBack) {
+                controller.goBack();
+              } else {
+                Navigator.pop(context);
+              }
+            });
+          },
         ),
       ),
       body: Column(
@@ -89,9 +98,7 @@ class _CommonWebPageScreenState extends State<CommonWebPageScreen> {
               color: Colors.green,
               backgroundColor: Colors.grey.shade300,
             ),
-          Expanded(
-            child: WebViewWidget(controller: controller),
-          ),
+          Expanded(child: WebViewWidget(controller: controller)),
         ],
       ),
     );
