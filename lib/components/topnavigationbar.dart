@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:delhi_golf_federation/screens/myprofile.dart';
+import 'package:delhi_golf_federation/components/profile_with_navigation.dart';
 
 class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onMenuTap;
@@ -30,7 +30,8 @@ class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
       leading: displayBackButton
           ? IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black, size: 28),
-              onPressed: onBackTap ??
+              onPressed:
+                  onBackTap ??
                   () {
                     if (Navigator.canPop(context)) Navigator.pop(context);
                   },
@@ -42,16 +43,23 @@ class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           icon: const Icon(Icons.settings, color: Colors.black, size: 24),
-          onPressed: onSettingsTap ??
+          onPressed:
+              onSettingsTap ??
               () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MyProfile()),
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileWithNavigation(),
+                  ),
                 );
               },
         ),
         IconButton(
-          icon: const Icon(Icons.notifications_none, color: Colors.black, size: 26),
+          icon: const Icon(
+            Icons.notifications_none,
+            color: Colors.black,
+            size: 26,
+          ),
           onPressed: onNotificationTap ?? () {},
         ),
         const SizedBox(width: 4),

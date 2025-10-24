@@ -3,6 +3,7 @@ import 'package:delhi_golf_federation/bloc/auth/auth_event.dart';
 import 'package:delhi_golf_federation/bloc/auth/auth_state.dart';
 import 'package:delhi_golf_federation/config/routes_name.dart';
 import 'package:delhi_golf_federation/database/shared_preferences.dart';
+import 'package:delhi_golf_federation/widgets/commonwebpage.dart';
 import 'package:flutter/material.dart';
 import 'package:delhi_golf_federation/screens/mybookings.dart';
 import 'package:delhi_golf_federation/screens/gallery.dart';
@@ -188,16 +189,21 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 fontSize: 14,
                               ),
                             ),
-                            // onTap: () {
-                            //   Navigator.pop(context);
-                            //   _pushSimpleScreen(
-                            //     context,
-                            //     Placeholder(),
-                            //     "Elite Golfer (International)",
-                            //   );
-                            // },
+                            onTap: () {
+                              Navigator.pop(
+                                context,
+                              ); // Close current menu/drawer
+                              _pushSimpleScreen(
+                                context,
+                                CommonWebPageScreen(
+                                  title: "Elite Golfer (International)",
+                                  url:
+                                      "https://indiangolfunion.org/order-of-merit-2025/",
+                                ),
+                                "Elite Golfer (International)",
+                              );
+                            },
                           ),
-                          
                         ],
                       ),
 
@@ -214,7 +220,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           size: 20,
                         ),
                         children: [
-                          
                           ListTile(
                             contentPadding: const EdgeInsets.only(
                               left: 48,

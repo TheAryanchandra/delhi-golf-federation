@@ -1,5 +1,6 @@
 import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/components/topnavigationbar.dart';
+import 'package:delhi_golf_federation/widgets/commonwebpage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -15,22 +16,43 @@ class _EliteGolferScreenState extends State<EliteGolferScreen>
   late TabController _tabController;
 
   final List<Map<String, String>> proEliteData = [
-    {"logo": "assets/images/owgr.png", "title": "OWGR", "link": "Ranking"},
-    {"logo": "assets/images/pgti.png", "title": "PGTI", "link": "Ranking"},
-    {"logo": "assets/images/dpworld.png", "title": "DP World", "link": "Ranking"},
-    {"logo": "assets/images/let.png", "title": "LET", "link": "Ranking"},
+    {
+      "logo": "assets/images/owgr.png",
+      "title": "OWGR",
+      "link": "https://www.owgr.com/current-world-ranking",
+    },
+    // {
+    //   "logo": "assets/images/pgti.png",
+    //   "title": "PGTI",
+    //   "link": "https://www.pgtofindia.com/stat/season",
+    // },
+    {
+      "logo": "assets/images/dpworld.png",
+      "title": "DP World",
+      "link":
+          "https://www.europeantour.com/dpworld-tour/rankings/overview/rankings/",
+    },
+    {
+      "logo": "assets/images/let.png",
+      "title": "LET",
+      "link": "https://ladieseuropeantour.com/order-of-merit?id=2025&oom=PT",
+    },
   ];
 
   final List<Map<String, String>> amateurEliteData = [
     {
       "logo": "assets/images/wagr.png",
       "title": "World Amateur Golf Ranking",
-      "link": "Ranking"
+      "link": "https://www.wagr.com/mens-ranking",
     },
   ];
 
   final List<Map<String, String>> juniorEliteData = [
-    {"logo": "assets/images/jgti.png", "title": "Junior Golf", "link": "Ranking"},
+    {
+      "logo": "assets/images/jgti.png",
+      "title": "Junior Golf",
+      "link": "https://app.juniorgolfhub.com/rankings",
+    },
   ];
 
   @override
@@ -63,7 +85,17 @@ class _EliteGolferScreenState extends State<EliteGolferScreen>
               ),
             ),
             trailing: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CommonWebPageScreen(
+                      title: item["title"]!,
+                      url: item["link"]!,
+                    ),
+                  ),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
@@ -71,7 +103,7 @@ class _EliteGolferScreenState extends State<EliteGolferScreen>
                 ),
               ),
               child: Text(
-                item["link"]!,
+                "Ranking",
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: ColorConstants.buttonColor,
                   fontWeight: FontWeight.bold,
@@ -91,15 +123,14 @@ class _EliteGolferScreenState extends State<EliteGolferScreen>
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        textTheme: GoogleFonts.urbanistTextTheme(
-          Theme.of(context).textTheme,
-        ).copyWith(
-          bodyMedium: const TextStyle(fontSize: 15),
-          titleLarge: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        textTheme: GoogleFonts.urbanistTextTheme(Theme.of(context).textTheme)
+            .copyWith(
+              bodyMedium: const TextStyle(fontSize: 15),
+              titleLarge: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
       ),
       home: Scaffold(
         backgroundColor: Colors.white,

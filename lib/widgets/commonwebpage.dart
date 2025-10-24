@@ -22,32 +22,57 @@ class _CommonWebPageScreenState extends State<CommonWebPageScreen> {
   @override
   void initState() {
     super.initState();
+
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Colors.white)
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int p) {
-            
-            setState(() {
-              progress = p / 100;
-            });
+            setState(() => progress = p / 100);
           },
-          onWebResourceError: (error) {
-            debugPrint("WebView Error: ${error.description}");
+          onPageStarted: (String url) {
+            debugPrint("Started loading: $url");
+          },
+          onPageFinished: (String url) {
+            debugPrint("Finished loading: $url");
+          },
+          onWebResourceError: (WebResourceError error) {
+            debugPrint("❌ WebView Error: ${error.description}");
           },
           onNavigationRequest: (NavigationRequest request) {
-            return NavigationDecision.navigate;
+            // ✅ Allow both HTTP and HTTPS for sites like PGTI
+            if (request.url.startsWith('http://') ||
+                request.url.startsWith('https://')) {
+              return NavigationDecision.navigate;
+            }
+            return NavigationDecision.prevent;
           },
         ),
       )
-      ..loadRequest(Uri.parse(widget.url));
+      ..loadRequest(
+        Uri.parse(widget.url),
+        headers: {
+          // ✅ Custom User-Agent to avoid blocking
+          "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+              "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+        },
+      );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(widget.title, style: const TextStyle(color: Colors.black)),
+        title: Text(
+          widget.title,
+          style: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
@@ -57,13 +82,16 @@ class _CommonWebPageScreenState extends State<CommonWebPageScreen> {
       ),
       body: Column(
         children: [
+          // ✅ Smooth progress bar for page load
           if (progress < 1.0)
             LinearProgressIndicator(
               value: progress,
-              color: Colors.blue,
+              color: Colors.green,
               backgroundColor: Colors.grey.shade300,
             ),
-          Expanded(child: WebViewWidget(controller: controller)),
+          Expanded(
+            child: WebViewWidget(controller: controller),
+          ),
         ],
       ),
     );

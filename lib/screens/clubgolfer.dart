@@ -1,5 +1,6 @@
 import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/components/topnavigationbar.dart';
+import 'package:delhi_golf_federation/widgets/commonwebpage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -15,19 +16,19 @@ class _ClubGolferScreenState extends State<ClubGolferScreen>
   late TabController _tabController;
 
   final List<Map<String, String>> stateWiseData = [
-    {"logo": "assets/images/owgr.png", "title": "Delhi", "link": "Ranking"},
-    {"logo": "assets/images/owgr.png", "title": "Punjab", "link": "Ranking"},
+    {"logo": "assets/images/owgr.png", "title": "Delhi", "link": "https://www.owgr.com/current-world-ranking"},
+    {"logo": "assets/images/owgr.png", "title": "Punjab", "link": "https://www.owgr.com/current-world-ranking"},
   ];
 
   final List<Map<String, String>> industryWiseData = [
-    {"logo": "assets/images/pgti.png", "title": "Corporate", "link": "Ranking"},
+    {"logo": "assets/images/owgr.png", "title": "Corporate", "link": "https://www.owgr.com/current-world-ranking"},
   ];
 
   final List<Map<String, String>> professionalWiseData = [
     {
       "logo": "assets/images/dpworld.png",
       "title": "Professional Golfers",
-      "link": "Ranking",
+      "link": "https://www.europeantour.com/dpworld-tour/rankings/overview/rankings/",
     },
   ];
 
@@ -35,103 +36,93 @@ class _ClubGolferScreenState extends State<ClubGolferScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        textTheme: GoogleFonts.urbanistTextTheme(Theme.of(context).textTheme)
-            .copyWith(
-              bodyMedium: const TextStyle(fontSize: 15, color: Colors.black),
-              titleLarge: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: TopNavigationBar(
+        showBackButton: true,
+        onBackTap: () => Navigator.pop(context),
       ),
-      home: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: TopNavigationBar(
-          showBackButton: true,
-          onBackTap: () => Navigator.pop(context),
-        ),
-        body: Column(
-          children: [
-            // 🔹 HEADER
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
+      body: Column(
+        children: [
+          // 🔹 HEADER
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/welcome.png",
+                  height: screenHeight * 0.18,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+                Container(
+                  height: screenHeight * 0.18,
+                  color: Colors.black.withOpacity(0.35),
+                ),
+                const Text(
+                  "Club Golfers",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    letterSpacing: 1.2,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // 🔹 TAB BUTTONS
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: ColorConstants.buttonColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: Stack(
-                alignment: Alignment.center,
+              child: Row(
                 children: [
-                  Image.asset(
-                    "assets/images/welcome.png",
-                    height: screenHeight * 0.18,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                  Container(
-                    height: screenHeight * 0.18,
-                    color: Colors.black.withOpacity(0.35),
-                  ),
-                  const Text(
-                    "Club Golfers",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 26,
-                      letterSpacing: 1.2,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  _buildTabButton("State Wise", 0),
+                  const SizedBox(width: 8),
+                  _buildTabButton("Industry Wise", 1),
+                  const SizedBox(width: 8),
+                  _buildTabButton("Professional Wise", 2),
                 ],
               ),
             ),
+          ),
 
-            const SizedBox(height: 16),
+          const SizedBox(height: 10),
 
-            // 🔹 TAB BUTTONS
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: ColorConstants.buttonColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    _buildTabButton("State Wise", 0),
-                    const SizedBox(width: 8),
-                    _buildTabButton("Industry Wise", 1),
-                    const SizedBox(width: 8),
-                    _buildTabButton("Professional Wise", 2),
-                  ],
-                ),
-              ),
+          // 🔹 TAB CONTENT
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                buildDataTable(stateWiseData),
+                buildDataTable(industryWiseData),
+                buildDataTable(professionalWiseData),
+              ],
             ),
-
-            const SizedBox(height: 10),
-
-            // 🔹 TAB CONTENT
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  buildDataTable(stateWiseData),
-                  buildDataTable(industryWiseData),
-                  buildDataTable(professionalWiseData),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -161,7 +152,6 @@ class _ClubGolferScreenState extends State<ClubGolferScreen>
             maxLines: 2,
             textAlign: TextAlign.center,
             overflow: TextOverflow.visible,
-
             style: TextStyle(
               color: isSelected ? Colors.white : ColorConstants.buttonColor,
               fontWeight: FontWeight.w600,
@@ -197,16 +187,26 @@ class _ClubGolferScreenState extends State<ClubGolferScreen>
               ),
             ),
             trailing: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CommonWebPageScreen(
+                      title: item["title"]!,
+                      url: item["link"]!,
+                    ),
+                  ),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: Text(
-                item["link"]!,
-                style: const TextStyle(
+              child: const Text(
+                "Open",
+                style: TextStyle(
                   color: ColorConstants.buttonColor,
                   fontWeight: FontWeight.bold,
                 ),
