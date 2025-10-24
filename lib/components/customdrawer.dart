@@ -113,11 +113,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         tilePadding: const EdgeInsets.only(left: 32, right: 16),
                         title: const Text(
                           "International Rankings",
-                          style: TextStyle(color: Colors.white70, fontSize: 15),
+                          style: TextStyle(color:  Colors.white, fontSize: 15),
                         ),
                         trailing: const Icon(
                           Icons.keyboard_arrow_down,
-                          color: Colors.white70,
+                          color: Colors.white,
                           size: 20,
                         ),
                         children: [
@@ -129,7 +129,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             title: const Text(
                               "Elite Golfer",
                               style: TextStyle(
-                                color: Colors.white60,
+                                color:  Colors.white,
                                 fontSize: 14,
                               ),
                             ),
@@ -149,7 +149,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             title: const Text(
                               "Club Golfer",
                               style: TextStyle(
-                                color: Colors.white60,
+                                color: Colors.white,
                                 fontSize: 14,
                               ),
                             ),
@@ -169,11 +169,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         tilePadding: const EdgeInsets.only(left: 32, right: 16),
                         title: const Text(
                           "National Rankings",
-                          style: TextStyle(color: Colors.white70, fontSize: 15),
+                          style: TextStyle(color: Colors.white, fontSize: 15),
                         ),
                         trailing: const Icon(
                           Icons.keyboard_arrow_down,
-                          color: Colors.white70,
+                          color: Colors.white,
                           size: 20,
                         ),
                         children: [
@@ -185,7 +185,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             title: const Text(
                               "IGU Ranking",
                               style: TextStyle(
-                                color: Colors.white60,
+                                color: Colors.white,
                                 fontSize: 14,
                               ),
                             ),
@@ -205,11 +205,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         tilePadding: const EdgeInsets.only(left: 32, right: 16),
                         title: const Text(
                           "State Rankings",
-                          style: TextStyle(color: Colors.white70, fontSize: 15),
+                          style: TextStyle(color: Colors.white, fontSize: 15),
                         ),
                         trailing: const Icon(
                           Icons.keyboard_arrow_down,
-                          color: Colors.white70,
+                          color: Colors.white,
                           size: 20,
                         ),
                         children: [
@@ -221,7 +221,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             title: const Text(
                               "Delhi Golf Ranking",
                               style: TextStyle(
-                                color: Colors.white60,
+                                color: Colors.white,
                                 fontSize: 14,
                               ),
                             ),
