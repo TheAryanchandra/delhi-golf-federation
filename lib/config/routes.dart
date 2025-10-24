@@ -11,6 +11,7 @@ import '../screens/bookingscreen.dart'; // Add this import
 import '../screens/registerscreen.dart'; // Update this import path
 import '../screens/viewscore.dart'; // Add this import
 import '../screens/event_details_screen.dart'; // Add this import
+import '../screens/elitegolfer.dart'; // Add this import
 // import '../screens/splash_screen.dart';
 // import '../screens/register_screen.dart';
 // import '../screens/profile_screen.dart';
@@ -30,6 +31,7 @@ final Map<String, WidgetBuilder> appRoutes = {
 
   /// Other Screens
   '/about': (context) => const AboutScreen(),
+  RoutesName.eliteGolferScreen: (context) => const EliteGolferScreen(),
 
   /// Add when ready
   // RoutesName.splashScreen: (context) => const SplashScreen(),

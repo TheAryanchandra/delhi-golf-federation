@@ -78,10 +78,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           Image.asset(
                             'assets/images/ranthumbor.png',
                             height: 60,
-                            width: 60,
-                            fit: BoxFit.contain,
+                            width: 150,
+                            fit: BoxFit.cover,
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 2),
                           const Text(
                             "ROYAL RANTHAMBORE LEADERBOARD",
                             textAlign: TextAlign.center,
@@ -95,7 +95,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
 
                     /// TABLE VIEW
                     Expanded(
@@ -161,16 +161,17 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                       return DataRow(
                                         color: MaterialStateProperty.all(
                                           index % 2 == 0
-                                              ? const Color(
-                                                  0xFF12563C,
-                                                ) // dark green shade
-                                              : const Color.fromARGB(
+                                              ? const Color.fromARGB(
                                                   255,
                                                   4,
                                                   107,
                                                   69,
-                                                ), // lighter green shade
+                                                ) // Dark green for even rows
+                                              : const Color(
+                                                  0xFF12563C,
+                                                ), // Slightly lighter green for odd rows
                                         ),
+
                                         cells: [
                                           DataCell(Text("${index + 1}")),
                                           DataCell(
@@ -351,7 +352,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 12),
+                    // const SizedBox(height: 12),
                   ],
                 );
               } else if (state is LeaderboardScreenError) {

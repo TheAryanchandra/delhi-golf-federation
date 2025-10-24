@@ -15,10 +15,17 @@ import 'package:delhi_golf_federation/components/topnavigationbar.dart';
 import 'package:delhi_golf_federation/services/navigation_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends StatefulWidget {
   final Function(int)? onItemTap;
 
   const CustomDrawer({super.key, this.onItemTap});
+
+  @override
+  State<CustomDrawer> createState() => _CustomDrawerState();
+}
+
+class _CustomDrawerState extends State<CustomDrawer> {
+  bool _indiaGolfExpanded = false; // <-- for collapsible section
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +50,14 @@ class CustomDrawer extends StatelessWidget {
               children: [
                 /// Logo Header
                 SizedBox(
-                  height: 130,
+                  height: 100,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(height: 40),
                       Image.asset(
                         "assets/images/logo.png",
-                        height: 90,
+                        height: 50,
                         fit: BoxFit.contain,
                       ),
                     ],
@@ -62,6 +69,171 @@ class CustomDrawer extends StatelessWidget {
                   indent: 20,
                   endIndent: 20,
                   thickness: 0.7,
+                ),
+
+                Theme(
+                  data: Theme.of(
+                    context,
+                  ).copyWith(dividerColor: Colors.transparent),
+                  child: ExpansionTile(
+                    tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+                    title: Row(
+                      children: const [
+                        Icon(
+                          Icons.golf_course, // 🏌️‍♂️ golf icon before title
+                          color: Colors.white,
+                          size: 22,
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          "India Golf Rankings",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    trailing: Icon(
+                      _indiaGolfExpanded
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      color: Colors.white,
+                    ),
+                    onExpansionChanged: (expanded) {
+                      setState(() {
+                        _indiaGolfExpanded = expanded;
+                      });
+                    },
+                    children: [
+                      // 🌍 International Rankings
+                      ExpansionTile(
+                        tilePadding: const EdgeInsets.only(left: 32, right: 16),
+                        title: const Text(
+                          "International Rankings",
+                          style: TextStyle(color: Colors.white70, fontSize: 15),
+                        ),
+                        trailing: const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.white70,
+                          size: 20,
+                        ),
+                        children: [
+                          ListTile(
+                            contentPadding: const EdgeInsets.only(
+                              left: 48,
+                              right: 16,
+                            ),
+                            title: const Text(
+                              "Elite Golfer",
+                              style: TextStyle(
+                                color: Colors.white60,
+                                fontSize: 14,
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.pushNamed(
+                                context,
+                                RoutesName.eliteGolferScreen,
+                              );
+                            },
+                          ),
+                          ListTile(
+                            contentPadding: const EdgeInsets.only(
+                              left: 48,
+                              right: 16,
+                            ),
+                            title: const Text(
+                              "Club Golfer",
+                              style: TextStyle(
+                                color: Colors.white60,
+                                fontSize: 14,
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                              _pushSimpleScreen(
+                                context,
+                                Placeholder(),
+                                "Club Golfer (International)",
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+
+                      // 🇮🇳 National Rankings
+                      ExpansionTile(
+                        tilePadding: const EdgeInsets.only(left: 32, right: 16),
+                        title: const Text(
+                          "National Rankings",
+                          style: TextStyle(color: Colors.white70, fontSize: 15),
+                        ),
+                        trailing: const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.white70,
+                          size: 20,
+                        ),
+                        children: [
+                          ListTile(
+                            contentPadding: const EdgeInsets.only(
+                              left: 48,
+                              right: 16,
+                            ),
+                            title: const Text(
+                              "IGU Ranking",
+                              style: TextStyle(
+                                color: Colors.white60,
+                                fontSize: 14,
+                              ),
+                            ),
+                            // onTap: () {
+                            //   Navigator.pop(context);
+                            //   _pushSimpleScreen(
+                            //     context,
+                            //     Placeholder(),
+                            //     "Elite Golfer (International)",
+                            //   );
+                            // },
+                          ),
+                          
+                        ],
+                      ),
+
+                      // 🏠 State Rankings
+                      ExpansionTile(
+                        tilePadding: const EdgeInsets.only(left: 32, right: 16),
+                        title: const Text(
+                          "State Rankings",
+                          style: TextStyle(color: Colors.white70, fontSize: 15),
+                        ),
+                        trailing: const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.white70,
+                          size: 20,
+                        ),
+                        children: [
+                          
+                          ListTile(
+                            contentPadding: const EdgeInsets.only(
+                              left: 48,
+                              right: 16,
+                            ),
+                            title: const Text(
+                              "Delhi Golf Ranking",
+                              style: TextStyle(
+                                color: Colors.white60,
+                                fontSize: 14,
+                              ),
+                            ),
+                            // 
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
 
                 /// Menu Items
@@ -90,7 +262,87 @@ class CustomDrawer extends StatelessWidget {
                   "Leader board",
                   "/leaderboard",
                 ),
-                _buildDrawerItem(context, Icons.photo, "Photos", "/photos"),
+                // Theme(
+                //   data: Theme.of(
+                //     context,
+                //   ).copyWith(dividerColor: Colors.transparent),
+                //   child: ExpansionTile(
+                //     tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+                //     title: Row(
+                //       children: const [
+                //         Icon(
+                //           Icons.golf_course, // 🏌️‍♂️ golf icon before text
+                //           color: Colors.white,
+                //           size: 22,
+                //         ),
+                //         SizedBox(width: 10),
+                //         Text(
+                //           "India Golf Rankings",
+                //           style: TextStyle(
+                //             color: Colors.white,
+                //             fontSize: 16,
+                //             fontWeight: FontWeight.w500,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //     trailing: Icon(
+                //       _indiaGolfExpanded
+                //           ? Icons.keyboard_arrow_up
+                //           : Icons.keyboard_arrow_down,
+                //       color: Colors.white,
+                //     ),
+                //     onExpansionChanged: (expanded) {
+                //       setState(() {
+                //         _indiaGolfExpanded = expanded;
+                //       });
+                //     },
+                //     children: [
+                //       ListTile(
+                //         title: const Text(
+                //           "International Rankings",
+                //           style: TextStyle(color: Colors.white70, fontSize: 15),
+                //         ),
+                //         onTap: () {
+                //           Navigator.pop(context);
+                //           _pushSimpleScreen(
+                //             context,
+                //             Placeholder(),
+                //             "International Rankings",
+                //           );
+                //         },
+                //       ),
+                //       ListTile(
+                //         title: const Text(
+                //           "National Rankings",
+                //           style: TextStyle(color: Colors.white70, fontSize: 15),
+                //         ),
+                //         onTap: () {
+                //           Navigator.pop(context);
+                //           _pushSimpleScreen(
+                //             context,
+                //             Placeholder(),
+                //             "National Rankings",
+                //           );
+                //         },
+                //       ),
+                //       ListTile(
+                //         title: const Text(
+                //           "State Ranking",
+                //           style: TextStyle(color: Colors.white70, fontSize: 15),
+                //         ),
+                //         onTap: () {
+                //           Navigator.pop(context);
+                //           _pushSimpleScreen(
+                //             context,
+                //             Placeholder(),
+                //             "State Ranking",
+                //           );
+                //         },
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 _buildDrawerItem(
                   context,
                   Icons.video_library,

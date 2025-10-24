@@ -19,4 +19,5 @@ class RoutesName {
   static const String confirmUploadScore = '/confirm-upload-score';
   static const String viewScoreScreen = '/viewscore';
   static const String eventDetailsScreen = '/event-details';
+  static const String eliteGolferScreen = '/elite-golfer';
 }
