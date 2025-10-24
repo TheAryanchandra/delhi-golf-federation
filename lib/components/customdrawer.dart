@@ -154,10 +154,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             ),
                             onTap: () {
                               Navigator.pop(context);
-                              _pushSimpleScreen(
+                              Navigator.pushNamed(
                                 context,
-                                Placeholder(),
-                                "Club Golfer (International)",
+                                RoutesName.clubGolferScreen,
                               );
                             },
                           ),
@@ -228,7 +227,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 fontSize: 14,
                               ),
                             ),
-                            // 
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.pushNamed(
+                                context,
+                                RoutesName.delhiGolfRankingScreen,
+                              );
+                            },
                           ),
                         ],
                       ),
