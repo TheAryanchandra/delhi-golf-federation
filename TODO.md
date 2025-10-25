@@ -1,5 +1,3 @@
-- [x] Modify CustomDrawer to use NavigationService for main tab navigation instead of onItemTap to prevent nested navigators
-- [x] Import NavigationService in CustomDrawer
-- [x] Update _navigateToTab method to call NavigationService.instance.navigateToTab(index) for main tabs (About, Leaderboard, Events, Scorecard)
-- [x] Keep _pushSimpleScreen for simple screens (Gallery, Videos, News, etc.)
-- [ ] Test the navigation to ensure no black screens on second tap
+- Move misplaced functions (_buildRankingTable, _buildJuniorEliteSection, _buildSelectableSmallTab) from widget file to screen's state class
+- Clean up widget file to only contain buildClubGolfersTable
+- Ensure all code is error-free and reduce redundancy

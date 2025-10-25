@@ -17,7 +17,7 @@ class _EliteGolferScreenState extends State<EliteGolferScreen>
 
   final List<Map<String, String>> proEliteData = [
     {
-      "logo": "d",
+      "logo": "assets/images/owgr.png",
       "title": "OWGR",
       "link": "https://www.owgr.com/current-world-ranking",
     },
