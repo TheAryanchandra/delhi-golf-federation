@@ -252,7 +252,9 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                               );
                                             },
                                             style: ElevatedButton.styleFrom(
-                                               backgroundColor: const Color(0xFF0B592A),
+                                              backgroundColor: const Color(
+                                                0xFF0B592A,
+                                              ),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
@@ -286,7 +288,9 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                               );
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: const Color(0xFF0B592A),
+                                              backgroundColor: const Color(
+                                                0xFF0B592A,
+                                              ),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
@@ -321,8 +325,7 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                               );
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  ColorConstants.buttonColor,
+                                              backgroundColor: const Color(0xFF0B592A),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
@@ -427,7 +430,15 @@ class _EventReportScreenState extends State<EventReportScreen> {
         children: [
           Icon(icon, color: Colors.white, size: 18),
           const SizedBox(width: 8),
-          Expanded(child: Text(text, style: const TextStyle(fontSize: 15))),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 15,
+                color: Colors.white, // ✅ set text color to white
+              ),
+            ),
+          ),
         ],
       ),
     );

@@ -6,7 +6,7 @@ import '../screens/finalscorecard.dart'; // Add this import
 import '../screens/login_screen.dart';
 import '../screens/about.dart';
 import '../screens/slot_details.dart'; // Add this import
-import '../screens/payment_screen.dart'; // Add this import
+import '../screens/paymentscreen.dart'; // Add this import
 import '../screens/bookingscreen.dart'; // Add this import
 import '../screens/registerscreen.dart'; // Update this import path
 import '../screens/viewscore.dart'; // Add this import
@@ -39,6 +39,7 @@ final Map<String, WidgetBuilder> appRoutes = {
   RoutesName.iguRankingScreen: (context) => const IGURankingScreen(),
   RoutesName.delhiGolfRankingScreen: (context) =>
       const DelhiGolfRankingScreen(),
+  RoutesName.paymentScreen: (context) => const PaymentScreen(),
 
   /// Add when ready
   // RoutesName.splashScreen: (context) => const SplashScreen(),

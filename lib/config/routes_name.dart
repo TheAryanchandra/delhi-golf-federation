@@ -23,4 +23,5 @@ class RoutesName {
   static const String clubGolferScreen = '/club-golfer';
   static const String iguRankingScreen = '/igu-ranking';
   static const String delhiGolfRankingScreen = '/delhi-golf-ranking';
+  static const String paymentScreen = '/payment';
 }

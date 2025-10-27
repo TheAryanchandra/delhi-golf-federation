@@ -1,7 +1,11 @@
+import 'package:delhi_golf_federation/services/paymentkey.dart';
 import 'package:flutter/material.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+ // import the test keys
 
 class PaymentScreen extends StatefulWidget {
+  const PaymentScreen({Key? key}) : super(key: key);
+
   @override
   _PaymentScreenState createState() => _PaymentScreenState();
 }
@@ -20,16 +24,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   void dispose() {
-    _razorpay.clear(); // VERY IMPORTANT
+    _razorpay.clear();
     super.dispose();
   }
 
   void openCheckout() {
     var options = {
-      'key': 'rzp_test_VGeS7Ec7McP9LF', // your Razorpay key ID
-      'amount': 50000, // amount in paise => ₹500
-      'name': 'Aryan Store',
-      'description': 'Test Payment',
+      'key': RazorpayKeys.keyId, // using your test key
+      'amount': 50000, // ₹500 in paise
+      'name': 'Delhi Golf Federation',
+      'description': 'DLF Golf Event Payment',
       'prefill': {
         'contact': '9999999999',
         'email': 'test@example.com',
@@ -38,6 +42,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         'wallets': ['paytm']
       }
     };
+    print(options);
 
     try {
       _razorpay.open(options);
@@ -48,30 +53,48 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("SUCCESS: ${response.paymentId}")),
+      SnackBar(
+        content: Text("✅ Payment Successful!\nPayment ID: ${response.paymentId}"),
+        backgroundColor: Colors.green,
+      ),
     );
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("ERROR: ${response.message}")),
+      SnackBar(
+        content: Text("❌ Payment Failed!\n${response.message}"),
+        backgroundColor: Colors.red,
+      ),
     );
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("EXTERNAL WALLET: ${response.walletName}")),
+      SnackBar(
+        content: Text("💼 External Wallet Selected: ${response.walletName}"),
+        backgroundColor: Colors.orange,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Razorpay Payment')),
+      appBar: AppBar(
+        title: const Text('Razorpay Payment'),
+        backgroundColor: Colors.green[700],
+      ),
       body: Center(
-        child: ElevatedButton(
+        child: ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green[700],
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+            textStyle: const TextStyle(fontSize: 18),
+          ),
           onPressed: openCheckout,
-          child: Text('Pay ₹500'),
+          icon: const Icon(Icons.payment, color: Colors.white),
+          label: const Text('Pay ₹500', style: TextStyle(color: Colors.white)),
         ),
       ),
     );

@@ -15,11 +15,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return Container(
-      color: const Color(0xFFEFF2F1),
-      child: Column(
+    return Scaffold(
+      backgroundColor: const Color(0xFFEFF2F1),
+      body: Column(
         children: [
-          // ✅ Top Header
           ClipRRect(
             borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(20),
@@ -51,8 +50,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ],
             ),
           ),
-
-          // ✅ Scrollable content
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),

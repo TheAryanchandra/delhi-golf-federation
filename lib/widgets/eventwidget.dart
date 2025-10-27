@@ -8,6 +8,7 @@ import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_bloc.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_state.dart';
 
 import 'package:delhi_golf_federation/components/color_constants.dart';
+import 'package:delhi_golf_federation/config/routes_name.dart';
 import 'package:delhi_golf_federation/model/eventregistermodel.dart';
 import 'package:delhi_golf_federation/model/getdatamodel.dart';
 import 'package:delhi_golf_federation/model/industrymodel.dart';
@@ -132,7 +133,11 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("✅ ${state.response.message}")),
               );
-              Navigator.pop(context);
+              final navigator = Navigator.of(context, rootNavigator: true);
+              navigator.pop();
+              Future.delayed(const Duration(milliseconds: 500), () {
+                navigator.pushNamed(RoutesName.paymentScreen);
+              });
             } else if (state is EventRegistrationFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("❌ ${state.error}")),
