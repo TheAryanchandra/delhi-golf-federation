@@ -282,75 +282,75 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         ),
                       ),
                     ),
-
+                    const SizedBox(height: 8),
                     /// PAGINATION
                     // const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.arrow_back_ios, size: 16),
-                            onPressed: currentPage > 1
-                                ? () {
-                                    setState(() => currentPage--);
-                                    _bloc.add(
-                                      FetchLeaderboardScreenEvent(currentPage),
-                                    );
-                                  }
-                                : null,
-                          ),
-                          ...List.generate(totalPages, (index) {
-                            final page = index + 1;
-                            final isActive = page == currentPage;
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() => currentPage = page);
-                                _bloc.add(
-                                  FetchLeaderboardScreenEvent(currentPage),
-                                );
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 4,
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: isActive
-                                      ? ColorConstants.green
-                                      : Colors.grey.shade200,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  "$page",
-                                  style: TextStyle(
-                                    color: isActive
-                                        ? Colors.white
-                                        : Colors.black87,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
-                          IconButton(
-                            icon: const Icon(Icons.arrow_forward_ios, size: 16),
-                            onPressed: currentPage < totalPages
-                                ? () {
-                                    setState(() => currentPage++);
-                                    _bloc.add(
-                                      FetchLeaderboardScreenEvent(currentPage),
-                                    );
-                                  }
-                                : null,
-                          ),
-                        ],
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(vertical: 12),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: [
+                    //       IconButton(
+                    //         icon: const Icon(Icons.arrow_back_ios, size: 16),
+                    //         onPressed: currentPage > 1
+                    //             ? () {
+                    //                 setState(() => currentPage--);
+                    //                 _bloc.add(
+                    //                   FetchLeaderboardScreenEvent(currentPage),
+                    //                 );
+                    //               }
+                    //             : null,
+                    //       ),
+                    //       ...List.generate(totalPages, (index) {
+                    //         final page = index + 1;
+                    //         final isActive = page == currentPage;
+                    //         return GestureDetector(
+                    //           onTap: () {
+                    //             setState(() => currentPage = page);
+                    //             _bloc.add(
+                    //               FetchLeaderboardScreenEvent(currentPage),
+                    //             );
+                    //           },
+                    //           child: Container(
+                    //             margin: const EdgeInsets.symmetric(
+                    //               horizontal: 4,
+                    //             ),
+                    //             padding: const EdgeInsets.symmetric(
+                    //               horizontal: 12,
+                    //               vertical: 6,
+                    //             ),
+                    //             decoration: BoxDecoration(
+                    //               color: isActive
+                    //                   ? ColorConstants.green
+                    //                   : Colors.grey.shade200,
+                    //               borderRadius: BorderRadius.circular(8),
+                    //             ),
+                    //             child: Text(
+                    //               "$page",
+                    //               style: TextStyle(
+                    //                 color: isActive
+                    //                     ? Colors.white
+                    //                     : Colors.black87,
+                    //                 fontWeight: FontWeight.bold,
+                    //               ),
+                    //             ),
+                    //           ),
+                    //         );
+                    //       }),
+                    //       IconButton(
+                    //         icon: const Icon(Icons.arrow_forward_ios, size: 16),
+                    //         onPressed: currentPage < totalPages
+                    //             ? () {
+                    //                 setState(() => currentPage++);
+                    //                 _bloc.add(
+                    //                   FetchLeaderboardScreenEvent(currentPage),
+                    //                 );
+                    //               }
+                    //             : null,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
 
                     // const SizedBox(height: 12),
                   ],
