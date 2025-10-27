@@ -173,7 +173,9 @@ class _EventReportScreenState extends State<EventReportScreen> {
                               margin: const EdgeInsets.only(bottom: 16),
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: const Color(
+                                  0xFF12563C,
+                                ), // ✅ wrap with Color()
                                 borderRadius: BorderRadius.circular(16),
                                 border: Border.all(color: Colors.grey.shade300),
                                 boxShadow: [
@@ -184,6 +186,7 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                   ),
                                 ],
                               ),
+
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -191,7 +194,7 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                     child: Text(
                                       event.eventName ?? "Unnamed Event",
                                       style: const TextStyle(
-                                        color: Color(0xFF12563C),
+                                        color: Colors.white,
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -249,8 +252,7 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                               );
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  ColorConstants.buttonColor,
+                                               backgroundColor: const Color(0xFF0B592A),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
@@ -278,13 +280,13 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                                 context,
                                                 RoutesName.viewScoreScreen,
                                                 arguments: {
-                                                  'eventRefNo': event.refNo ?? '',
+                                                  'eventRefNo':
+                                                      event.refNo ?? '',
                                                 },
                                               );
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  ColorConstants.buttonColor,
+                                              backgroundColor: const Color(0xFF0B592A),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
@@ -423,7 +425,7 @@ class _EventReportScreenState extends State<EventReportScreen> {
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
-          Icon(icon, color: const Color(0xFF12563C), size: 18),
+          Icon(icon, color: Colors.white, size: 18),
           const SizedBox(width: 8),
           Expanded(child: Text(text, style: const TextStyle(fontSize: 15))),
         ],
