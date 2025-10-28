@@ -113,7 +113,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         tilePadding: const EdgeInsets.only(left: 32, right: 16),
                         title: const Text(
                           "International Rankings",
-                          style: TextStyle(color:  Colors.white, fontSize: 15),
+                          style: TextStyle(color: Colors.white, fontSize: 15),
                         ),
                         trailing: const Icon(
                           Icons.keyboard_arrow_down,
@@ -129,7 +129,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             title: const Text(
                               "Elite Golfer",
                               style: TextStyle(
-                                color:  Colors.white,
+                                color: Colors.white,
                                 fontSize: 14,
                               ),
                             ),
@@ -240,12 +240,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 ),
 
                 /// Menu Items
-                _buildDrawerItem(
-                  context,
-                  Icons.info_outline,
-                  "About",
-                  "/about",
-                ),
+                // _buildDrawerItem(
+                //   context,
+                //   Icons.info_outline,
+                //   "About",
+                //   "/about",
+                // ),
                 // _buildDrawerItem(
                 //   context,
                 //   Icons.sports_golf,
@@ -354,6 +354,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 ),
                 _buildDrawerItem(context, Icons.event, "Events", "/events"),
                 _buildDrawerItem(context, Icons.article, "News", "/news"),
+                _buildDrawerItem(
+                  context,
+                  Icons.info_outline,
+                  "About",
+                  "/about",
+                ),
 
                 const Divider(
                   color: Colors.white38,
