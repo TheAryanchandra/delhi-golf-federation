@@ -310,7 +310,7 @@ class _MyProfileState extends State<MyProfile> {
                           _buildInfo("Email", user.email),
                           _buildInfo("Phone", user.phoneNumber),
                           _buildInfo("GHIN No", user.ghinNo),
-                          _buildInfo("Age", user.age),
+                          // _buildInfo("Age", user.age),
                         ],
                       ),
                     ),
