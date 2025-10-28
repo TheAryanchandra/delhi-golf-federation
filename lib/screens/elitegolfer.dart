@@ -103,7 +103,7 @@ class _EliteGolferScreenState extends State<EliteGolferScreen>
                 ),
               ),
               child: Text(
-                "Ranking",
+                "Open",
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: ColorConstants.buttonColor,
                   fontWeight: FontWeight.bold,

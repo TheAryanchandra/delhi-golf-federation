@@ -355,8 +355,8 @@ class _EventsScreenState extends State<EventsScreen> {
                     arguments: {'refNo': event.refNo ?? ''},
                   );
                 },
-                backgroundColor: const Color(0xFF0B592A),
-                textColor: Colors.white,
+                backgroundColor: Colors.white,
+                textColor: Colors.black,
                 borderRadius: 10,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
@@ -384,9 +384,7 @@ class _EventsScreenState extends State<EventsScreen> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(
-                            0xFF0B592A,
-                          ), // ✅ same green as others
+                          backgroundColor: Colors.white, // ✅ same green as others
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -398,7 +396,7 @@ class _EventsScreenState extends State<EventsScreen> {
                         child: const Text(
                           "Register",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.black,
                             fontWeight: FontWeight.w600,
                             fontSize: 15,
                           ),
@@ -418,8 +416,8 @@ class _EventsScreenState extends State<EventsScreen> {
                             (route) => false,
                           );
                         },
-                        backgroundColor: const Color(0xFF0B592A),
-                        textColor: Colors.white,
+                        backgroundColor: Colors.white,
+                        textColor: Colors.black,
                         borderRadius: 10,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 24,
@@ -443,8 +441,8 @@ class _EventsScreenState extends State<EventsScreen> {
                       (route) => false,
                     );
                   },
-                  backgroundColor: const Color(0xFF0B592A),
-                  textColor: Colors.white,
+                  backgroundColor: Colors.white,
+                  textColor: Colors.black,
                   borderRadius: 10,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,

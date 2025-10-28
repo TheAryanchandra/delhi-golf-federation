@@ -252,9 +252,7 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                               );
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: const Color(
-                                                0xFF0B592A,
-                                              ),
+                                             backgroundColor: Colors.white,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
@@ -267,7 +265,7 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                             child: const Text(
                                               "Add Score",
                                               style: TextStyle(
-                                                color: Colors.white,
+                                                color: Colors.black,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                             ),
@@ -288,9 +286,7 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                               );
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: const Color(
-                                                0xFF0B592A,
-                                              ),
+                                              backgroundColor: Colors.white,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
@@ -303,7 +299,7 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                             child: const Text(
                                               "View Score",
                                               style: TextStyle(
-                                                color: Colors.white,
+                                                color: Colors.black,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                             ),
@@ -325,7 +321,7 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                               );
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: const Color(0xFF0B592A),
+                                              backgroundColor: Colors.white,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
@@ -338,7 +334,7 @@ class _EventReportScreenState extends State<EventReportScreen> {
                                             child: const Text(
                                               "Leaderboard",
                                               style: TextStyle(
-                                                color: Colors.white,
+                                                color: Colors.black,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                             ),
