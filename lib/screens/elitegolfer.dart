@@ -79,7 +79,7 @@ class _EliteGolferScreenState extends State<EliteGolferScreen>
             leading: Image.asset(item["logo"]!, width: 50, height: 50),
             title: Text(
               item["title"]!,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
