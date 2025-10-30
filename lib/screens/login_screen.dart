@@ -1,3 +1,4 @@
+import 'package:delhi_golf_federation/config/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../components/bottomnavigation.dart';
@@ -124,14 +125,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   );
                                 } else if (state is LoginFailure) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(state.error),
-                                      backgroundColor: Colors.red,
-                                    ),
-                                  );
+                                  if (state.statusCode == 402) {
+                                    Navigator.pushReplacementNamed(
+                                      context,
+                                      RoutesName.membershipScreen,
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(state.error),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
                                 }
                               },
+
                               builder: (context, state) {
                                 if (state is LoginLoading) {
                                   return const Center(
@@ -153,11 +162,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                     onPressed: () {
                                       context.read<LoginBloc>().add(
-                                            LoginSubmitted(
-                                              emailController.text.trim(),
-                                              passwordController.text.trim(),
-                                            ),
-                                          );
+                                        LoginSubmitted(
+                                          emailController.text.trim(),
+                                          passwordController.text.trim(),
+                                        ),
+                                      );
                                     },
                                     child: const Text(
                                       "Login",
@@ -202,8 +211,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: CircleAvatar(
                             radius: 55,
                             backgroundColor: Colors.white,
-                            backgroundImage:
-                                const AssetImage("assets/images/logo.png"),
+                            backgroundImage: const AssetImage(
+                              "assets/images/logo.png",
+                            ),
                           ),
                         ),
                       ),

@@ -24,4 +24,6 @@ class RoutesName {
   static const String iguRankingScreen = '/igu-ranking';
   static const String delhiGolfRankingScreen = '/delhi-golf-ranking';
   static const String paymentScreen = '/payment';
+  static const String membershipScreen = '/membership';
+
 }

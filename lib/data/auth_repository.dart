@@ -62,10 +62,23 @@ class LoginRepository {
       print("Status Code: ${response.statusCode}");
       print("Body: ${response.body}");
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 402) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
 
-        // ✅ Extract token from response
+        if (response.statusCode == 402) {
+          final message =
+              jsonResponse['message']?.toString() ?? 'Membership expired';
+          return LoginResponse(
+            status: false,
+            message: message,
+            token: null,
+            refNo: jsonResponse['RefNo']?.toString(),
+            dataList: (jsonResponse['DataList'] as List<dynamic>?)
+                ?.map((e) => e.toString())
+                .toList(),
+            statusCode: response.statusCode,
+          );
+        }
         final String? token = jsonResponse["response"] as String?;
         if (token != null && token.isNotEmpty) {
           await SharedPreferencesHelper.setUserToken(token);
@@ -74,7 +87,10 @@ class LoginRepository {
           print("✅ Token saved in SharedPreferences: $token");
           print("✅ Email saved in SharedPreferences: $email");
         }
-        return LoginResponse.fromJson(jsonResponse);
+        return LoginResponse.fromJson(
+          jsonResponse,
+          statusCode: response.statusCode,
+        );
       } else {
         throw Exception("Failed to login: ${response.statusCode}");
       }

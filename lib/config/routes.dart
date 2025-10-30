@@ -1,3 +1,4 @@
+import 'package:delhi_golf_federation/screens/membershipscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:delhi_golf_federation/components/bottomnavigation.dart';
 import '../screens/finalscorecard.dart'; // Add this import
@@ -40,6 +41,8 @@ final Map<String, WidgetBuilder> appRoutes = {
   RoutesName.delhiGolfRankingScreen: (context) =>
       const DelhiGolfRankingScreen(),
   RoutesName.paymentScreen: (context) => const PaymentScreen(),
+  RoutesName.membershipScreen: (context) => const MembershipScreen(),
+
 
   /// Add when ready
   // RoutesName.splashScreen: (context) => const SplashScreen(),

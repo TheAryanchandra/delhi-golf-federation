@@ -46,10 +46,11 @@ class LoginSuccess extends LoginState {
 
 class LoginFailure extends LoginState {
   final String error;
-  LoginFailure(this.error);
+  final int? statusCode;
+  LoginFailure(this.error, {this.statusCode});
 
   @override
-  List<Object?> get props => [error];
+  List<Object?> get props => [error, statusCode];
 }
 
 // logout state
