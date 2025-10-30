@@ -1,3 +1,1 @@
-- Move misplaced functions (_buildRankingTable, _buildJuniorEliteSection, _buildSelectableSmallTab) from widget file to screen's state class
-- Clean up widget file to only contain buildClubGolfersTable
-- Ensure all code is error-free and reduce redundancy
+- [ ] Modify MembershipScreen to override back navigation to login screen
