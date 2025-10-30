@@ -53,6 +53,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
                   ? response.message
                   : "Invalid credentials",
               statusCode: response.statusCode,
+              response: response,
             ),
           );
         }

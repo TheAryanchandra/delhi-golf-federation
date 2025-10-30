@@ -1,28 +1,59 @@
 import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/config/routes_name.dart';
+import 'package:delhi_golf_federation/model/paymentmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../main.dart';
+import '../model/login_model.dart';
+
+import '../bloc/payementlogin/bloc/paymentlogin_bloc.dart';
+import '../bloc/payementlogin/bloc/paymentlogin_event.dart';
 
 class MembershipScreen extends StatefulWidget {
-  const MembershipScreen({Key? key}) : super(key: key);
+  final LoginResponse? loginResponse;
+  const MembershipScreen({Key? key, this.loginResponse}) : super(key: key);
 
   @override
   State<MembershipScreen> createState() => _MembershipScreenState();
 }
 
 class _MembershipScreenState extends State<MembershipScreen> {
-  String selectedPlan = 'Gold';
+  String selectedPlan = '';
 
-  final Map<String, dynamic> membershipData = {
-    'Gold': {'price': 5000, 'discount': 500},
-    'Premium': {'price': 10000, 'discount': 1500},
-  };
+  @override
+  void initState() {
+    super.initState();
+    if (widget.loginResponse != null &&
+        widget.loginResponse!.membershipPlans != null &&
+        widget.loginResponse!.membershipPlans!.isNotEmpty) {
+      selectedPlan =
+          widget.loginResponse!.membershipPlans!.first.membershipType ?? 'Gold';
+      print('User Name: ${widget.loginResponse!.response?.userName}');
+      print('Email: ${widget.loginResponse!.response?.emailId}');
+      print('Mobile: ${widget.loginResponse!.response?.mobileNo}');
+      print('Cmp Code: ${widget.loginResponse!.response?.cmpCode}');
+      print('Membership Plans: ${widget.loginResponse!.membershipPlans}');
+    } else {
+      selectedPlan = 'Gold';
+    }
+  }
+
+  Map<String, dynamic> get membershipData {
+    return {
+      for (var plan in widget.loginResponse!.membershipPlans!)
+        plan.membershipType ?? 'Unknown': {
+          'price': plan.amount ?? 0,
+          'discount': plan.discount ?? 0,
+          'refNo': plan.refNo,
+        },
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
-    final price = membershipData[selectedPlan]!['price'] as int;
-    final discount = membershipData[selectedPlan]!['discount'] as int;
-    final payable = price - discount;
+    final price = membershipData[selectedPlan]!['price'] as double;
+    final discount = membershipData[selectedPlan]!['discount'] as double;
+    final payable = price - (price * discount / 100);
 
     return WillPopScope(
       onWillPop: () async {
@@ -89,19 +120,13 @@ class _MembershipScreenState extends State<MembershipScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                // Stylish Plan Selection
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildPlanOption('Gold'),
-                    _buildPlanOption('Premium'),
-                  ],
+                  children: membershipData.keys
+                      .map((plan) => _buildPlanOption(plan))
+                      .toList(),
                 ),
-
                 const SizedBox(height: 25),
-
-                // Membership Details Section
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.08),
@@ -111,15 +136,12 @@ class _MembershipScreenState extends State<MembershipScreen> {
                   child: Column(
                     children: [
                       _buildRow('Amount', '₹$price'),
-                      _buildRow('Discount', '₹$discount'),
+                      _buildRow('Discount', '%$discount'),
                       _buildRow('Payable Amount', '₹$payable'),
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 35),
-
-                // Proceed Button
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
@@ -134,7 +156,22 @@ class _MembershipScreenState extends State<MembershipScreen> {
                     shadowColor: Colors.black.withOpacity(0.25),
                   ),
                   onPressed: () {
-                    _showConfirmDialog(context, selectedPlan, payable);
+                    final selectedPlanData = membershipData[selectedPlan];
+                    final String? eventRefNo = selectedPlanData['refNo'];
+                    final String cmpCode =
+                        widget.loginResponse?.response?.cmpCode ?? '';
+
+                    if (eventRefNo == null || cmpCode.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Missing payment details.'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    _showConfirmDialog(
+                        context, selectedPlan, payable, cmpCode, eventRefNo);
                   },
                   child: Text(
                     'Proceed to Pay',
@@ -154,7 +191,6 @@ class _MembershipScreenState extends State<MembershipScreen> {
     );
   }
 
-  /// Builds the plan option with visible circular selection
   Widget _buildPlanOption(String plan) {
     final bool isSelected = selectedPlan == plan;
     return GestureDetector(
@@ -177,8 +213,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color:
-                      isSelected ? ColorConstants.buttonColor : Colors.white,
+                  color: isSelected ? ColorConstants.buttonColor : Colors.white,
                   width: 2.5,
                 ),
                 color: isSelected
@@ -233,7 +268,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
     );
   }
 
-  void _showConfirmDialog(BuildContext context, String plan, int payable) {
+  void _showConfirmDialog(BuildContext context, String plan, double payable,
+      String cmpCode, String eventRefNo) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -265,18 +301,55 @@ class _MembershipScreenState extends State<MembershipScreen> {
             ),
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    '$plan membership activated successfully for ₹$payable!',
-                  ),
-                  backgroundColor: ColorConstants.buttonColor,
-                ),
-              );
+              _handlePayment(context, cmpCode, eventRefNo, payable);
             },
             child: const Text('Confirm', style: TextStyle(color: Colors.white)),
           ),
         ],
+      ),
+    );
+  }
+
+  void _handlePayment(
+      BuildContext context, String cmpCode, String eventRefNo, double amount) {
+    final paymentRequest = PaymentRequest(
+      id: 0,
+      eventRefNo: eventRefNo,
+      rzrPaymentId: '',
+      rzrTransactionId: '',
+      currency: 'INR',
+      method: 'Online',
+      cardId: '',
+      international: false,
+      paymentStatus: 'Pending',
+      rzrSignature: '',
+      rzrOrderId: '',
+      amount: amount,
+      cmpCode: cmpCode,
+      userId:  '',
+      roleId: 1,
+      formType: 'Membership',
+      source: 'APP',
+      dataJson: '',
+      contactNo: widget.loginResponse?.response?.mobileNo ?? '',
+      bank: '',
+      wallet: '',
+      email: widget.loginResponse?.response?.emailId ?? '',
+      dts: DateTime.now().toIso8601String(),
+      name: widget.loginResponse?.response?.userName ?? '',
+    );
+
+    context.read<PaymentBloc>().add(
+          CreatePaymentEvent(
+            paymentRequest: paymentRequest,
+            cmpCode: cmpCode,
+          ),
+        );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Processing payment for ₹$amount...'),
+        backgroundColor: ColorConstants.buttonColor,
       ),
     );
   }

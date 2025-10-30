@@ -1,5 +1,3 @@
-
-
 import 'package:delhi_golf_federation/model/industrymodel.dart';
 import 'package:delhi_golf_federation/model/login_model.dart';
 import 'package:delhi_golf_federation/model/refresh_token_model.dart';
@@ -47,10 +45,11 @@ class LoginSuccess extends LoginState {
 class LoginFailure extends LoginState {
   final String error;
   final int? statusCode;
-  LoginFailure(this.error, {this.statusCode});
+  final LoginResponse? response;
+  LoginFailure(this.error, {this.statusCode, this.response});
 
   @override
-  List<Object?> get props => [error, statusCode];
+  List<Object?> get props => [error, statusCode, response];
 }
 
 // logout state
@@ -60,7 +59,9 @@ abstract class LogoutState extends Equatable {
 }
 
 class LogoutInitial extends LogoutState {}
+
 class LogoutLoading extends LogoutState {}
+
 class LogoutSuccess extends LogoutState {
   final String message;
   LogoutSuccess(this.message);
@@ -68,6 +69,7 @@ class LogoutSuccess extends LogoutState {
   @override
   List<Object?> get props => [message];
 }
+
 class LogoutFailure extends LogoutState {
   final String error;
   LogoutFailure(this.error);
@@ -76,8 +78,7 @@ class LogoutFailure extends LogoutState {
   List<Object?> get props => [error];
 }
 
-
-// industry 
+// industry
 abstract class IndustryState extends Equatable {
   @override
   List<Object?> get props => [];
@@ -105,7 +106,7 @@ class IndustryError extends IndustryState {
   List<Object?> get props => [message];
 }
 
-// refresh token 
+// refresh token
 abstract class RefreshTokenState extends Equatable {
   @override
   List<Object?> get props => [];

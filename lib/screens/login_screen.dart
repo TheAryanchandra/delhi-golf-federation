@@ -129,6 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Navigator.pushReplacementNamed(
                                       context,
                                       RoutesName.membershipScreen,
+                                      arguments: state.response,
                                     );
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(

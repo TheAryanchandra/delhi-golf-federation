@@ -22,6 +22,7 @@ import '../screens/delhi_golf_ranking.dart'; // Add this import
 
 // Models
 import '../model/eventmodel.dart'; // Add this import
+import '../model/login_model.dart'; // Add this import
 
 import 'routes_name.dart';
 
@@ -41,8 +42,10 @@ final Map<String, WidgetBuilder> appRoutes = {
   RoutesName.delhiGolfRankingScreen: (context) =>
       const DelhiGolfRankingScreen(),
   RoutesName.paymentScreen: (context) => const PaymentScreen(),
-  RoutesName.membershipScreen: (context) => const MembershipScreen(),
-
+  RoutesName.membershipScreen: (context) {
+    final args = ModalRoute.of(context)?.settings.arguments as LoginResponse?;
+    return MembershipScreen(loginResponse: args);
+  },
 
   /// Add when ready
   // RoutesName.splashScreen: (context) => const SplashScreen(),

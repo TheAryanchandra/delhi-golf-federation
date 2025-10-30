@@ -68,14 +68,8 @@ class LoginRepository {
         if (response.statusCode == 402) {
           final message =
               jsonResponse['message']?.toString() ?? 'Membership expired';
-          return LoginResponse(
-            status: false,
-            message: message,
-            token: null,
-            refNo: jsonResponse['RefNo']?.toString(),
-            dataList: (jsonResponse['DataList'] as List<dynamic>?)
-                ?.map((e) => e.toString())
-                .toList(),
+          return LoginResponse.fromJson(
+            jsonResponse,
             statusCode: response.statusCode,
           );
         }
