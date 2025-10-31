@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/config/routes_name.dart';
+import 'package:delhi_golf_federation/data/paymentrepository.dart';
 import 'package:delhi_golf_federation/model/paymentmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -529,13 +530,83 @@ class _MembershipScreenState extends State<MembershipScreen> {
   }
 
   // 🔴 Error handler
-  void _handleRazorpayError(PaymentFailureResponse response) {
+  void _handleRazorpayError(PaymentFailureResponse response) async {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Payment failed: ${response.message}'),
+        content: Text('Payment failed/Cancelled'),
         backgroundColor: Colors.red,
       ),
     );
+
+    // 🟡 Detect if user exited manually
+    if (response.code == 2) {
+      debugPrint('⚠️ User exited Razorpay checkout manually.');
+    }
+
+    try {
+      final blocState = context.read<PaymentBloc>().state;
+      if (blocState is! PaymentSuccess) {
+        debugPrint('⚠️ No payment context available to mark as failed.');
+        return;
+      }
+
+      final payment = blocState.response.response?.payment;
+      final paymentKey = blocState.response.response?.paymentKey;
+
+      if (payment == null || paymentKey == null) {
+        debugPrint('❌ Missing payment or payment key.');
+        return;
+      }
+
+      // 🧾 Prepare payload
+      final Map<String, dynamic> failurePayload = {
+        "PaymentStatus": "Failed",
+        "rzr_orderId": payment.rzrOrderId,
+      };
+
+      debugPrint('📤 Sending failed payment update: $failurePayload');
+
+      // 🧩 Call API using PaymentRepository
+      final paymentRepository = PaymentRepository();
+      final failureRequest = PaymentRequest(
+        id: payment.id,
+        eventRefNo: payment.eventRefNo,
+        rzrPaymentId: '',
+        rzrTransactionId: '',
+        currency: 'INR',
+        method: 'Online',
+        cardId: '',
+        international: false,
+        paymentStatus: 'Cancelled',
+        rzrSignature: '',
+        rzrOrderId: payment.rzrOrderId,
+        amount: payment.amount,
+        cmpCode: payment.cmpCode,
+        userId: payment.userId,
+        roleId: payment.roleId,
+        formType: payment.formType,
+        source: payment.source,
+        dataJson: '',
+        contactNo: payment.contactNo,
+        bank: '',
+        wallet: '',
+        email: payment.email,
+        dts: DateTime.now().toIso8601String(),
+        name: payment.name,
+      );
+
+      try {
+        await paymentRepository.confirmPayment(
+          request: failureRequest,
+          cmpCode: payment.cmpCode ?? '',
+        );
+        debugPrint('✅ Payment failed status sent successfully.');
+      } catch (e) {
+        debugPrint('❌ Failed to update backend: $e');
+      }
+    } catch (e) {
+      debugPrint('❌ Error sending failed payment update: $e');
+    }
   }
 
   // 🟡 External wallet handler
