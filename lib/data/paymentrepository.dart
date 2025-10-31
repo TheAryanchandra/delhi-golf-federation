@@ -58,7 +58,7 @@ class PaymentRepository {
     required String cmpCode,
   }) async {
     const String url =
-        'https://admin.delhigolf.org/api/account/registration-payment?Action=INSERT';
+        'https://admin.delhigolf.org/api/account/registration-payment?Action=UPDATE';
 
     final headers = {
       'Content-Type': 'application/json',

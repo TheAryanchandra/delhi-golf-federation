@@ -402,7 +402,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
       'amount': (amount * 100).toInt(), // Razorpay expects amount in paise
       'name': merchantName, // ✅ constant merchant name
       'order_id': orderId,
-      'description': 'Membership Fee',
+      'description': 'RegistrationFee',
       'prefill': {'contact': contact, 'email': email},
       'theme': {'color': '#0A8FDC'},
     };
@@ -457,14 +457,17 @@ class _MembershipScreenState extends State<MembershipScreen> {
       final updatedPayment = PaymentRequest(
         id: payment.id,
         eventRefNo: payment.eventRefNo,
-        rzrPaymentId: razorpayDetails.id,
-        rzrTransactionId: razorpayDetails.id,
+        rzrPaymentId: razorpayDetails
+            .id, // Razorpay Payment ID (e.g., pay_RZxcyiAubkGRMF)
+        rzrTransactionId:
+            razorpayDetails.acquirerData?.upiTransactionId ??
+            '', // ✅ UPI Transaction ID
         currency: razorpayDetails.currency,
         method: razorpayDetails.method,
         cardId: '',
-        international: false,
+        international: razorpayDetails.international ?? false,
         paymentStatus: 'Success',
-        rzrSignature: '',
+        rzrSignature: response.signature,
         rzrOrderId: payment.rzrOrderId,
         amount: payment.amount,
         cmpCode: payment.cmpCode,
@@ -479,6 +482,12 @@ class _MembershipScreenState extends State<MembershipScreen> {
         email: razorpayDetails.email,
         dts: DateTime.now().toIso8601String(),
         name: payment.name,
+      );
+
+      // 🧾 Print complete payload being sent
+      print('📦 Payment Payload:');
+      print(
+        const JsonEncoder.withIndent('  ').convert(updatedPayment.toJson()),
       );
 
       // ✅ Step 3: Send Final Confirmation to Backend using ConfirmPaymentEvent
@@ -540,7 +549,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
       cmpCode: cmpCode,
       userId: '',
       roleId: 1,
-      formType: 'Membership',
+      formType: 'RegistrationFee',
       source: 'APP',
       dataJson: '',
       contactNo: widget.loginResponse?.response?.mobileNo ?? '',

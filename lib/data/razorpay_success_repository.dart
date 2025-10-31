@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import '../model/razorpayresponse.dart';
+import '../model/razorpayresponse_model.dart';
 import '../model/paymentmodel.dart';
 
 class PaymentAfterSuccess {

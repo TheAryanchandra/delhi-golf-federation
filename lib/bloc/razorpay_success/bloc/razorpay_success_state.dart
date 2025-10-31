@@ -1,4 +1,4 @@
-import 'package:delhi_golf_federation/model/razorpayresponse.dart';
+import 'package:delhi_golf_federation/model/razorpayresponse_model.dart';
 import 'package:equatable/equatable.dart';
 
 
