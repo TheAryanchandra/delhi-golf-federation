@@ -19,10 +19,7 @@ class LoginResponse {
     this.membershipPlans,
   });
 
-  factory LoginResponse.fromJson(
-    Map<String, dynamic> json, {
-    int? statusCode,
-  }) {
+  factory LoginResponse.fromJson(Map<String, dynamic> json, {int? statusCode}) {
     return LoginResponse(
       status: json['status'] ?? false,
       message: json['message']?.toString() ?? '',
@@ -32,9 +29,7 @@ class LoginResponse {
           ?.map((e) => e.toString())
           .toList(),
       statusCode: statusCode,
-      response: json['response'] != null
-          ? ResponseData.fromJson(json['response'])
-          : null, // ✅ Parse nested response
+      response: null, // 'response' is the token string, not a nested object
       membershipPlans: (json['_dt'] as List<dynamic>?)
           ?.map((e) => MembershipPlan.fromJson(e))
           .toList(), // ✅ Parse membership list
@@ -63,8 +58,9 @@ class ResponseData {
       emailId: json['EmailId']?.toString(),
       mobileNo: json['MobileNo']?.toString(),
       cmpCode: json['Cmp_Code']?.toString(),
-      payment:
-          json['paymemt'] != null ? PaymentData.fromJson(json['paymemt']) : null,
+      payment: json['paymemt'] != null
+          ? PaymentData.fromJson(json['paymemt'])
+          : null,
     );
   }
 }
@@ -89,12 +85,7 @@ class MembershipPlan {
   final double? discount;
   final String? refNo;
 
-  MembershipPlan({
-    this.membershipType,
-    this.amount,
-    this.discount,
-    this.refNo,
-  });
+  MembershipPlan({this.membershipType, this.amount, this.discount, this.refNo});
 
   factory MembershipPlan.fromJson(Map<String, dynamic> json) {
     return MembershipPlan(
