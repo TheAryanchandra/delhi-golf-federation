@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/config/routes_name.dart';
 import 'package:delhi_golf_federation/model/paymentmodel.dart';
@@ -10,6 +11,7 @@ import '../model/login_model.dart';
 import '../bloc/payementlogin/bloc/paymentlogin_bloc.dart';
 import '../bloc/payementlogin/bloc/paymentlogin_event.dart';
 import '../bloc/payementlogin/bloc/paymentlogin_state.dart';
+import '../data/razorpay_success_repository.dart';
 
 class MembershipScreen extends StatefulWidget {
   final LoginResponse? loginResponse;
@@ -95,6 +97,19 @@ class _MembershipScreenState extends State<MembershipScreen> {
               ),
             );
           }
+        } else if (state is PaymentConfirmed) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Membership activated successfully!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          Future.delayed(const Duration(seconds: 2), () {
+            navigatorKey.currentState?.pushNamedAndRemoveUntil(
+              RoutesName.loginScreen,
+              (route) => false,
+            );
+          });
         } else if (state is PaymentFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -404,13 +419,84 @@ class _MembershipScreenState extends State<MembershipScreen> {
   }
 
   // 🟢 Success handler
-  void _handleRazorpaySuccess(PaymentSuccessResponse response) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Payment Successful!'),
-        backgroundColor: Colors.green,
-      ),
-    );
+  void _handleRazorpaySuccess(PaymentSuccessResponse response) async {
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Payment Successful! Fetching details...'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      final blocState = context.read<PaymentBloc>().state;
+      if (blocState is! PaymentSuccess) {
+        debugPrint('⚠️ PaymentBloc state not available, skipping follow-up.');
+        return;
+      }
+
+      final paymentKey = blocState.response.response?.paymentKey;
+      final payment = blocState.response.response?.payment;
+
+      if (paymentKey == null || payment == null) {
+        debugPrint('❌ Missing payment or key details.');
+        return;
+      }
+
+      final paymentAfterSuccess = PaymentAfterSuccess();
+
+      // ✅ Step 1: Fetch Razorpay Payment Details
+      final razorpayDetails = await paymentAfterSuccess.getPaymentDetails(
+        paymentId: response.paymentId!,
+        key: paymentKey.key!,
+        secret: paymentKey.secret!,
+      );
+
+      debugPrint('✅ Razorpay Details Retrieved Successfully');
+
+      // ✅ Step 2: Prepare final PaymentRequest with updated info
+      final updatedPayment = PaymentRequest(
+        id: payment.id,
+        eventRefNo: payment.eventRefNo,
+        rzrPaymentId: razorpayDetails.id,
+        rzrTransactionId: razorpayDetails.id,
+        currency: razorpayDetails.currency,
+        method: razorpayDetails.method,
+        cardId: '',
+        international: false,
+        paymentStatus: 'Success',
+        rzrSignature: '',
+        rzrOrderId: payment.rzrOrderId,
+        amount: payment.amount,
+        cmpCode: payment.cmpCode,
+        userId: payment.userId,
+        roleId: payment.roleId,
+        formType: payment.formType,
+        source: payment.source,
+        dataJson: jsonEncode(razorpayDetails.toJson()),
+        contactNo: razorpayDetails.contact,
+        bank: razorpayDetails.bank ?? '',
+        wallet: razorpayDetails.wallet ?? '',
+        email: razorpayDetails.email,
+        dts: DateTime.now().toIso8601String(),
+        name: payment.name,
+      );
+
+      // ✅ Step 3: Send Final Confirmation to Backend using ConfirmPaymentEvent
+      context.read<PaymentBloc>().add(
+        ConfirmPaymentEvent(
+          paymentRequest: updatedPayment,
+          cmpCode: payment.cmpCode ?? '',
+        ),
+      );
+    } catch (e) {
+      debugPrint('❌ Error in payment success handler: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error finalizing payment: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   // 🔴 Error handler

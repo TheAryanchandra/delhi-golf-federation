@@ -8,6 +8,7 @@ import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_event.dart';
 import 'package:delhi_golf_federation/bloc/insertscore/bloc/insertscore_bloc.dart';
 import 'package:delhi_golf_federation/bloc/leaderboard/bloc/leaderboardScreen_bloc.dart';
 import 'package:delhi_golf_federation/bloc/payementlogin/bloc/paymentlogin_bloc.dart';
+import 'package:delhi_golf_federation/bloc/razorpay_success/bloc/razorpay_success_bloc.dart';
 import 'package:delhi_golf_federation/bloc/scorecard/bloc/scorecard_bloc.dart';
 import 'package:delhi_golf_federation/bloc/updateimage/bloc/updateimage_bloc.dart';
 import 'package:delhi_golf_federation/bloc/viewscore/bloc/viewscore_bloc.dart';
@@ -22,6 +23,7 @@ import 'package:delhi_golf_federation/data/getdatarepository.dart';
 import 'package:delhi_golf_federation/data/insertscore_repository.dart';
 import 'package:delhi_golf_federation/data/leaderboardScreen_repository.dart';
 import 'package:delhi_golf_federation/data/paymentrepository.dart';
+import 'package:delhi_golf_federation/data/razorpay_success_repository.dart';
 import 'package:delhi_golf_federation/data/scorecard_repository.dart';
 import 'package:delhi_golf_federation/data/updateimage_repository.dart';
 import 'package:delhi_golf_federation/data/viewscore_repository.dart';
@@ -120,6 +122,7 @@ class GolfApp extends StatelessWidget {
         ),
         BlocProvider(create: (_) => EventDetailsBloc(EventDetailsRepository())),
         BlocProvider(create: (_) =>  PaymentBloc(PaymentRepository())),
+        BlocProvider(create: (_) =>  PaymentAfterSuccessBloc(PaymentAfterSuccess())),
       ],
       child: SafeArea(
         bottom: true,

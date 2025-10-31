@@ -1,6 +1,7 @@
-- [ ] Update LoginFailure state to include LoginResponse
-- [ ] Modify LoginBloc to pass response in LoginFailure
-- [ ] Update auth_repository.dart to parse full response for 402
-- [ ] Update login_screen.dart to pass response as arguments on 402
-- [ ] Update routes.dart to handle arguments for membershipScreen
-- [ ] Update MembershipScreen to accept LoginResponse and use the data
+- [ ] Add ConfirmPaymentEvent to paymentlogin_event.dart
+- [ ] Add PaymentConfirmed state to paymentlogin_state.dart
+- [ ] Update PaymentBloc to handle ConfirmPaymentEvent
+- [ ] Add toJson method to RazorpayPaymentDetails
+- [ ] Update _handleRazorpaySuccess in membershipscreen.dart to use ConfirmPaymentEvent instead of non-existent method
+- [ ] Update BlocListener in membershipscreen.dart to handle PaymentConfirmed state
+- [ ] Add necessary imports (dart:convert)

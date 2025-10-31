@@ -41,7 +41,7 @@ final Map<String, WidgetBuilder> appRoutes = {
   RoutesName.iguRankingScreen: (context) => const IGURankingScreen(),
   RoutesName.delhiGolfRankingScreen: (context) =>
       const DelhiGolfRankingScreen(),
-  RoutesName.paymentScreen: (context) => const PaymentScreen(),
+  // RoutesName.paymentScreen: (context) => const PaymentScreen(),
   RoutesName.membershipScreen: (context) {
     final args = ModalRoute.of(context)?.settings.arguments as LoginResponse?;
     return MembershipScreen(loginResponse: args);
