@@ -78,12 +78,12 @@ class _MembershipScreenState extends State<MembershipScreen> {
           final email = payment?.email ?? '';
           final contact = payment?.contactNo ?? '';
 
-          if (orderId.isNotEmpty && paymentKey != null) {
+          if (orderId.isNotEmpty && paymentKey?.key != null) {
             _openRazorpayCheckout(
               orderId,
-              paymentKey.key ?? '',
+              paymentKey!.key!, // only the public key
               amount,
-              name,
+              'Delhi Golf Federation', // always display this as merchant name
               email,
               contact,
             );
@@ -363,29 +363,43 @@ class _MembershipScreenState extends State<MembershipScreen> {
     );
   }
 
-  // 🧾 Razorpay handler
+  // 🧾 Razorpay handler with debug prints
   void _openRazorpayCheckout(
     String orderId,
     String key,
     double amount,
-    String name,
+    String merchantName, // renamed for clarity
     String email,
     String contact,
   ) {
+    debugPrint('🟩 --- Razorpay Checkout Initialization ---');
+    debugPrint('➡️ Order ID: $orderId');
+    debugPrint('➡️ Public Key: $key');
+    debugPrint('➡️ Amount (₹): $amount');
+    debugPrint('➡️ Amount in paise: ${(amount * 100).toInt()}');
+    debugPrint('➡️ Merchant Name: $merchantName');
+    debugPrint('➡️ Email: $email');
+    debugPrint('➡️ Contact: $contact');
+    debugPrint('-----------------------------------------');
+
     var options = {
-      'key': key,
+      'key': key, // ✅ public key from PaymentKeys.key
       'amount': (amount * 100).toInt(), // Razorpay expects amount in paise
-      'name': name,
+      'name': merchantName, // ✅ constant merchant name
       'order_id': orderId,
-      'description': 'Membership Purchase',
+      'description': 'Membership Fee',
       'prefill': {'contact': contact, 'email': email},
       'theme': {'color': '#0A8FDC'},
     };
 
+    debugPrint('🧾 Razorpay Options: ${options.toString()}');
+    debugPrint('-----------------------------------------');
+
     try {
       _razorpay.open(options);
+      debugPrint('✅ Razorpay checkout opened successfully.');
     } catch (e) {
-      debugPrint('Error opening Razorpay: $e');
+      debugPrint('❌ Error opening Razorpay: $e');
     }
   }
 
