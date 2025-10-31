@@ -20,16 +20,26 @@ class LoginResponse {
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json, {int? statusCode}) {
+    dynamic responseValue = json['response'];
+    ResponseData? responseData;
+    String? token;
+
+    if (responseValue is Map<String, dynamic>) {
+      responseData = ResponseData.fromJson(responseValue);
+    } else if (responseValue is String) {
+      token = responseValue;
+    }
+
     return LoginResponse(
       status: json['status'] ?? false,
       message: json['message']?.toString() ?? '',
-      token: json['response']?.toString(),
+      token: token ?? json['response']?.toString(),
       refNo: json['RefNo']?.toString(),
       dataList: (json['DataList'] as List<dynamic>?)
           ?.map((e) => e.toString())
           .toList(),
       statusCode: statusCode,
-      response: null, // 'response' is the token string, not a nested object
+      response: responseData,
       membershipPlans: (json['_dt'] as List<dynamic>?)
           ?.map((e) => MembershipPlan.fromJson(e))
           .toList(), // ✅ Parse membership list

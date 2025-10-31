@@ -213,12 +213,31 @@ class _MembershipScreenState extends State<MembershipScreen> {
                       ),
                     ),
                     onPressed: () {
+                      debugPrint('🟩 --- Proceed to Pay Button Pressed ---');
+                      debugPrint('➡️ loginResponse: ${widget.loginResponse}');
+                      debugPrint(
+                        '➡️ loginResponse.response: ${widget.loginResponse?.response}',
+                      );
+                      debugPrint(
+                        '➡️ cmpCode: ${widget.loginResponse?.response?.cmpCode}',
+                      );
+                      debugPrint(
+                        '➡️ membershipPlans: ${widget.loginResponse?.membershipPlans}',
+                      );
+                      debugPrint('➡️ selectedPlan: $selectedPlan');
+                      debugPrint('➡️ membershipData: $membershipData');
                       final selectedPlanData = membershipData[selectedPlan];
+                      debugPrint('➡️ selectedPlanData: $selectedPlanData');
                       final String? eventRefNo = selectedPlanData['refNo'];
+                      debugPrint('➡️ eventRefNo: $eventRefNo');
                       final String cmpCode =
                           widget.loginResponse?.response?.cmpCode ?? '';
+                      debugPrint('➡️ cmpCode: $cmpCode');
 
                       if (eventRefNo == null || cmpCode.isEmpty) {
+                        debugPrint(
+                          '❌ Missing payment details: eventRefNo=$eventRefNo, cmpCode=$cmpCode',
+                        );
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Missing payment details.'),
@@ -228,6 +247,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                         return;
                       }
 
+                      debugPrint('✅ Proceeding to confirm dialog');
                       _showConfirmDialog(
                         context,
                         selectedPlan,
