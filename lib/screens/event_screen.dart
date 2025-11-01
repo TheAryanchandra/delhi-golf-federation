@@ -4,7 +4,6 @@ import 'package:delhi_golf_federation/bloc/event/bloc/event_state.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_bloc.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_event.dart';
 import 'package:delhi_golf_federation/components/bottomnavigation.dart';
-import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/components/custombutton.dart';
 import 'package:delhi_golf_federation/config/routes_name.dart';
 import 'package:delhi_golf_federation/model/eventmodel.dart';
@@ -370,21 +369,41 @@ class _EventsScreenState extends State<EventsScreen> {
                 Builder(
                   builder: (context) {
                     if (isRegistrationActive) {
-                      // ✅ Registration Active → Register button
+                      // ✅ Registration Active → Check payment mode before popup
                       return ElevatedButton(
                         onPressed: () {
-                          context.read<UserDataBloc>().add(
-                            FetchUserDataEvent(),
-                          );
-                          showDialog(
-                            context: context,
-                            builder: (context) => EventRegisterPopup(
-                              eventRefNo: event.refNo ?? '',
-                            ),
-                          );
+                          final paymentMode =
+                              event.paymentMode?.toLowerCase() ?? 'un paid';
+
+                          if (paymentMode == 'un paid') {
+                            // 🔹 Show payment popup or navigate to Razorpay screen
+                            showDialog(
+                              context: context,
+                              builder: (context) => const PaymentPopup(),
+                            );
+                          } else if (paymentMode == 'paid') {
+                            // 🔹 Directly open registration popup
+                            context.read<UserDataBloc>().add(
+                              FetchUserDataEvent(),
+                            );
+                            showDialog(
+                              context: context,
+                              builder: (context) => EventRegisterPopup(
+                                eventRefNo: event.refNo ?? '',
+                                price: event.price ?? 0.0,
+                              ),
+                            );
+                          } else {
+                            // 🔹 fallback
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Invalid Payment Mode'),
+                              ),
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white, // ✅ same green as others
+                          backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -453,6 +472,35 @@ class _EventsScreenState extends State<EventsScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Payment Popup Widget
+class PaymentPopup extends StatelessWidget {
+  const PaymentPopup({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Complete Payment'),
+      content: const Text(
+        'Please complete your payment to register for this event.',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+            // 🔹 Proceed to Razorpay payment screen or logic
+            // e.g., Navigator.pushNamed(context, RoutesName.paymentScreen);
+          },
+          child: const Text('Pay Now'),
+        ),
+      ],
     );
   }
 }

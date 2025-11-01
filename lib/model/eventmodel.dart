@@ -1,85 +1,54 @@
-class EventModel {
-  final String? eventType;
-  final String? eventName;
-  final String? startDate;
-  final String? endDate;
-  final String? regStartDate;
-  final String? regEndDate;
-  final String? isRegistrationActive;
-  final String? eventActive;
-  final String? venue;
-  final String? priceMoney;
-  final String? content;
-  final String? year;
+class EventsResponse {
+  final int? id;
+  final int? bigId;
+  final bool? status;
+  final String? message;
   final String? refNo;
-  final String? image;
-  final String? pageUrl;
-  final String? entryDate;
+  final ResponseData? response;
+  final dynamic dataList;
+  final dynamic ds;
+  final dynamic dt;
 
-  EventModel({
-    this.eventType,
-    this.eventName,
-    this.startDate,
-    this.endDate,
-    this.regStartDate,
-    this.regEndDate,
-    this.isRegistrationActive,
-    this.eventActive,
-    this.venue,
-    this.priceMoney,
-    this.content,
-    this.year,
+  EventsResponse({
+    this.id,
+    this.bigId,
+    this.status,
+    this.message,
     this.refNo,
-    this.image,
-    this.pageUrl,
-    this.entryDate,
+    this.response,
+    this.dataList,
+    this.ds,
+    this.dt,
   });
 
-  factory EventModel.fromJson(Map<String, dynamic> json) {
-    return EventModel(
-      eventType: json['EventType'] as String?,
-      eventName: json['EventName'] as String?,
-      startDate: json['StartDate'] as String?,
-      endDate: json['EndDate'] as String?,
-      regStartDate: json['RegStartDate'] as String?,
-      regEndDate: json['RegEndDate'] as String?,
-      isRegistrationActive: json['IsRegistrationActive'] as String?,
-      eventActive: json['EventActive'] as String?,
-      venue: json['Venue'] as String?,
-      priceMoney: json['PriceMoney'] as String?,
-      content: json['Content'] as String?,
-      year: json['Year'] as String?,
+  factory EventsResponse.fromJson(Map<String, dynamic> json) {
+    return EventsResponse(
+      id: json['Id'] as int?,
+      bigId: json['BigId'] as int?,
+      status: json['status'] as bool?,
+      message: json['message'] as String?,
       refNo: json['RefNo'] as String?,
-      image: json['Image'] as String?,
-      pageUrl: json['PageUrl'] as String?,
-      entryDate: json['EntryDate'] as String?,
+      response: json['response'] != null
+          ? ResponseData.fromJson(json['response'])
+          : null,
+      dataList: json['DataList'],
+      ds: json['_ds'],
+      dt: json['_dt'],
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'EventType': eventType,
-        'EventName': eventName,
-        'StartDate': startDate,
-        'EndDate': endDate,
-        'RegStartDate': regStartDate,
-        'RegEndDate': regEndDate,
-        'IsRegistrationActive': isRegistrationActive,
-        'EventActive': eventActive,
-        'Venue': venue,
-        'PriceMoney': priceMoney,
-        'Content': content,
-        'Year': year,
+        'Id': id,
+        'BigId': bigId,
+        'status': status,
+        'message': message,
         'RefNo': refNo,
-        'Image': image,
-        'PageUrl': pageUrl,
-        'EntryDate': entryDate,
+        'response': response?.toJson(),
+        'DataList': dataList,
+        '_ds': ds,
+        '_dt': dt,
       };
 }
-
-
-// ─────────────────────────────────────────────
-// NESTED RESPONSE OBJECT
-// ─────────────────────────────────────────────
 
 class ResponseData {
   final dynamic id;
@@ -158,58 +127,92 @@ class ResponseData {
       };
 }
 
-// ─────────────────────────────────────────────
-// MAIN ROOT MODEL
-// ─────────────────────────────────────────────
-
-class EventsResponse {
-  final int? id;
-  final int? bigId;
-  final bool? status;
-  final String? message;
+class EventModel {
+  final String? eventType;
+  final String? eventName;
+  final String? startDate;
+  final String? endDate;
+  final String? regStartDate;
+  final String? regEndDate;
+  final String? isRegistrationActive;
+  final String? eventActive;
+  final String? venue;
+  final String? priceMoney;
+  final double? price;
+  final String? content;
+  final String? year;
   final String? refNo;
-  final ResponseData? response;
-  final dynamic dataList;
-  final dynamic ds;
-  final dynamic dt;
+  final String? image;
+  final String? pageUrl;
+  final String? entryDate;
+  final String? paymentMode;
 
-  EventsResponse({
-    this.id,
-    this.bigId,
-    this.status,
-    this.message,
+  EventModel({
+    this.eventType,
+    this.eventName,
+    this.startDate,
+    this.endDate,
+    this.regStartDate,
+    this.regEndDate,
+    this.isRegistrationActive,
+    this.eventActive,
+    this.venue,
+    this.priceMoney,
+    this.price,
+    this.content,
+    this.year,
     this.refNo,
-    this.response,
-    this.dataList,
-    this.ds,
-    this.dt,
+    this.image,
+    this.pageUrl,
+    this.entryDate,
+    this.paymentMode,
   });
 
-  factory EventsResponse.fromJson(Map<String, dynamic> json) {
-    return EventsResponse(
-      id: json['Id'] as int?,
-      bigId: json['BigId'] as int?,
-      status: json['status'] as bool?,
-      message: json['message'] as String?,
+  factory EventModel.fromJson(Map<String, dynamic> json) {
+    return EventModel(
+      eventType: json['EventType'] as String?,
+      eventName: json['EventName'] as String?,
+      startDate: json['StartDate'] as String?,
+      endDate: json['EndDate'] as String?,
+      regStartDate: json['RegStartDate'] as String?,
+      regEndDate: json['RegEndDate'] as String?,
+      isRegistrationActive: json['IsRegistrationActive'] as String?,
+      eventActive: json['EventActive'] as String?,
+      venue: json['Venue'] as String?,
+      priceMoney: json['PriceMoney'] as String?,
+      price: (json['Price'] != null)
+          ? double.tryParse(json['Price'].toString())
+          : 0.0,
+      content: json['Content'] as String?,
+      year: json['Year'] as String?,
       refNo: json['RefNo'] as String?,
-      response: json['response'] != null
-          ? ResponseData.fromJson(json['response'])
-          : null,
-      dataList: json['DataList'],
-      ds: json['_ds'],
-      dt: json['_dt'],
+      image: json['Image'] as String?,
+      pageUrl: json['PageUrl'] as String?,
+      entryDate: json['EntryDate'] as String?,
+      paymentMode: json['PaymentMode'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'Id': id,
-        'BigId': bigId,
-        'status': status,
-        'message': message,
+        'EventType': eventType,
+        'EventName': eventName,
+        'StartDate': startDate,
+        'EndDate': endDate,
+        'RegStartDate': regStartDate,
+        'RegEndDate': regEndDate,
+        'IsRegistrationActive': isRegistrationActive,
+        'EventActive': eventActive,
+        'Venue': venue,
+        'PriceMoney': priceMoney,
+        'Price': price,
+        'Content': content,
+        'Year': year,
         'RefNo': refNo,
-        'response': response?.toJson(),
-        'DataList': dataList,
-        '_ds': ds,
-        '_dt': dt,
+        'Image': image,
+        'PageUrl': pageUrl,
+        'EntryDate': entryDate,
+        'PaymentMode': paymentMode,
       };
 }
+
+

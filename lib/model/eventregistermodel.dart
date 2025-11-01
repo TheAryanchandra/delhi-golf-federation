@@ -1,67 +1,154 @@
 class EventRegistrationRequest {
-  final int id;
-  final String name;
-  final String phonumber;
-  final String email;
-  final String gender;
-  final String password;
-  final String dob;
-  final int age;
-  final String homeClub;
-  final double usgaHandicapIndex;
-  final String ghinNo;
+  final int? id;
+  final String? email;
+  final String? homeClub;
+  final double? usgaHandicapIndex;
+  final String? ghinNo;
+  final String? userId;
   final String? cmpCode;
   final String? roleId;
-  final String eventRefNo;
-  final String source;
+  final String? refNo;
+  final String? activateStatus;
+  final String? source;
+  final String? eventRefNo;
+  final double? amount;
+  final String? paymentMode;
+  final String? status;
 
   EventRegistrationRequest({
-    required this.id,
-    required this.name,
-    required this.phonumber,
-    required this.email,
-    required this.gender,
-    required this.password,
-    required this.dob,
-    required this.age,
-    required this.homeClub,
-    required this.usgaHandicapIndex,
-    required this.ghinNo,
+    this.id,
+    this.email,
+    this.homeClub,
+    this.usgaHandicapIndex,
+    this.ghinNo,
+    this.userId,
     this.cmpCode,
     this.roleId,
-    required this.eventRefNo,
-    required this.source,
+    this.refNo,
+    this.activateStatus,
+    this.source,
+    this.eventRefNo,
+    this.amount,
+    this.paymentMode,
+    this.status,
   });
 
   Map<String, dynamic> toJson() => {
-    "Id": id,
-    "Name": name,
-    "Phonumber": phonumber,
-    "Email": email,
-    "Gender": gender,
-    "Password": password,
-    "DOB": dob,
-    "Age": age,
-    "HomeClub": homeClub,
-    "USGA_handicap_index": usgaHandicapIndex,
-    "GHIN_No": ghinNo,
-    "Cmp_Code": cmpCode,
-    "RoleId": roleId,
-    "EventRefNo": eventRefNo,
-    "Source": source,
-  };
+        "Id": id ?? 0,
+        "Email": email,
+        "HomeClub": homeClub,
+        "USGAHandicapIndex": usgaHandicapIndex,
+        "GHIN_No": ghinNo,
+        "UserId": userId,
+        "Cmp_Code": cmpCode,
+        "RoleId": roleId,
+        "RefNo": refNo,
+        "ActivateStatus": activateStatus,
+        "Source": source,
+        "EventRefNo": eventRefNo,
+        "Amount": amount,
+        "PaymentMode": paymentMode,
+        "Status": status,
+      }..removeWhere((key, value) => value == null);
 }
 
 class EventRegistrationResponse {
-  final bool success;
-  final String message;
+  final int? id;
+  final int? bigId;
+  final bool? status;
+  final String? message;
+  final String? refNo;
+  final EventResponseData? response;
 
-  EventRegistrationResponse({required this.success, required this.message});
+  EventRegistrationResponse({
+    this.id,
+    this.bigId,
+    this.status,
+    this.message,
+    this.refNo,
+    this.response,
+  });
 
   factory EventRegistrationResponse.fromJson(Map<String, dynamic> json) {
     return EventRegistrationResponse(
-      success: json['success'] ?? false,
-      message: json['message'] ?? '',
+      id: json['Id'],
+      bigId: json['BigId'],
+      status: json['status'],
+      message: json['message'],
+      refNo: json['RefNo'],
+      response: json['response'] != null
+          ? EventResponseData.fromJson(json['response'])
+          : null,
+    );
+  }
+}
+
+class EventResponseData {
+  final bool? paymentStatus;
+  final double? discount;
+  final UserData? userData;
+  final PaymentData? payment;
+
+  EventResponseData({
+    this.paymentStatus,
+    this.discount,
+    this.userData,
+    this.payment,
+  });
+
+  factory EventResponseData.fromJson(Map<String, dynamic> json) {
+    return EventResponseData(
+      paymentStatus: json['PaymentStatus'],
+      discount: (json['Discount'] ?? 0).toDouble(),
+      userData: json['UserData'] != null
+          ? UserData.fromJson(json['UserData'])
+          : null,
+      payment: json['paymemt'] != null
+          ? PaymentData.fromJson(json['paymemt'])
+          : null,
+    );
+  }
+}
+
+class UserData {
+  final String? userName;
+  final String? emailId;
+  final String? mobileNo;
+  final String? cmpCode;
+
+  UserData({
+    this.userName,
+    this.emailId,
+    this.mobileNo,
+    this.cmpCode,
+  });
+
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
+      userName: json['UserName'],
+      emailId: json['EmailId'],
+      mobileNo: json['MobileNo'],
+      cmpCode: json['Cmp_Code'],
+    );
+  }
+}
+
+class PaymentData {
+  final String? key;
+  final String? secret;
+  final String? orderId;
+
+  PaymentData({
+    this.key,
+    this.secret,
+    this.orderId,
+  });
+
+  factory PaymentData.fromJson(Map<String, dynamic> json) {
+    return PaymentData(
+      key: json['Key'],
+      secret: json['Secret'],
+      orderId: json['OrderId'],
     );
   }
 }

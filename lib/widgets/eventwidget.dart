@@ -18,7 +18,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EventRegisterPopup extends StatefulWidget {
   final String eventRefNo;
-  const EventRegisterPopup({super.key, required this.eventRefNo});
+  final double? price;
+  final String? paymentMode; // to handle UPI direct case
+
+  const EventRegisterPopup({
+    super.key,
+    required this.eventRefNo,
+    this.price,
+    this.paymentMode,
+  });
 
   @override
   State<EventRegisterPopup> createState() => _EventRegisterPopupState();
@@ -41,7 +49,6 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
 
   String? _selectedGender;
   String? _selectedIndustry;
-
   final List<String> _genderOptions = ["Male", "Female", "Other"];
 
   @override
@@ -122,9 +129,7 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
             } else {
               if (_isProgressVisible) {
                 final nav = Navigator.of(context, rootNavigator: true);
-                if (nav.canPop()) {
-                  nav.pop();
-                }
+                if (nav.canPop()) nav.pop();
                 _isProgressVisible = false;
               }
             }
@@ -133,15 +138,28 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("✅ ${state.response.message}")),
               );
+
               final navigator = Navigator.of(context, rootNavigator: true);
               navigator.pop();
-              Future.delayed(const Duration(milliseconds: 500), () {
-                navigator.pushNamed(RoutesName.paymentScreen);
-              });
+
+              // 🧾 Handle payment redirection
+              if (widget.paymentMode?.toLowerCase() == "upi") {
+                // Direct registration complete, no gateway
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("✅ UPI registration completed successfully"),
+                  ),
+                );
+              } else {
+                // Go to Razorpay or other payment screen
+                Future.delayed(const Duration(milliseconds: 500), () {
+                  navigator.pushNamed(RoutesName.paymentScreen);
+                });
+              }
             } else if (state is EventRegistrationFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("❌ ${state.error}")),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text("❌ ${state.error}")));
             }
           },
           child: Dialog(
@@ -172,7 +190,6 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                       ),
                       const SizedBox(height: 24),
 
-                      /// ✅ Using GlobalTextField everywhere
                       GlobalTextField(
                         controller: _nameController,
                         prefixIcon: Icons.person,
@@ -188,7 +205,7 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                       GlobalTextField(
                         controller: _emailController,
                         prefixIcon: Icons.email_outlined,
-                        enabled: false,
+                        enabled: false, // read-only email field
                       ),
                       GlobalTextField(
                         controller: _phoneController,
@@ -198,7 +215,6 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                             v == null || v.isEmpty ? "Required field" : null,
                       ),
 
-                      /// ✅ Gender Dropdown
                       _buildDropdown(
                         icon: Icons.person_outline,
                         hint: "Select your gender",
@@ -208,22 +224,23 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                             setState(() => _selectedGender = val),
                       ),
 
-                      /// ✅ Industry Dropdown via Bloc
                       BlocBuilder<IndustryBloc, IndustryState>(
                         builder: (context, state) {
                           if (state is IndustryLoading) {
                             return const Center(
-                                child: CircularProgressIndicator());
+                              child: CircularProgressIndicator(),
+                            );
                           } else if (state is IndustryLoaded) {
-                            final industryNames =
-                                state.industries.map((e) => e.name).toList();
+                            final industryNames = state.industries
+                                .map((e) => e.name)
+                                .toList();
 
-                            // Map stored refNo to name once industries are loaded
                             if (_selectedIndustry != null &&
                                 !industryNames.contains(_selectedIndustry)) {
                               final match = state.industries.firstWhere(
                                 (e) => e.refNo.toString() == _selectedIndustry,
-                                orElse: () => IndustryModel(id: 0, name: '', refNo: ''),
+                                orElse: () =>
+                                    IndustryModel(id: 0, name: '', refNo: ''),
                               );
                               if (match.name.isNotEmpty) {
                                 _selectedIndustry = match.name;
@@ -252,27 +269,12 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                       ),
 
                       _buildDatePicker(context),
-
-                      GlobalTextField(
-                        controller: _handicapController,
-                        prefixIcon: Icons.sports_golf,
-                      ),
-                      GlobalTextField(
-                        controller: _ghinController,
-                        prefixIcon: Icons.confirmation_number_outlined,
-                      ),
-                      // GlobalTextField(
-                      //   controller: _passwordController,
-                      //   prefixIcon: Icons.lock_outline,
-                      //   obscureText: true,
-                      //   validator: (v) =>
-                      //       v == null || v.isEmpty ? "Required field" : null,
-                      // ),
-
                       const SizedBox(height: 20),
 
-                      BlocBuilder<EventRegistrationBloc,
-                          EventRegistrationState>(
+                      BlocBuilder<
+                        EventRegistrationBloc,
+                        EventRegistrationState
+                      >(
                         builder: (context, state) {
                           final isLoading = state is EventRegistrationLoading;
                           return ElevatedButton(
@@ -280,52 +282,58 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                                 ? null
                                 : () {
                                     if (_formKey.currentState!.validate()) {
-                                      final request = EventRegistrationRequest(
-                                        id: 0,
-                                        name: _nameController.text.trim(),
-                                        phonumber: _phoneController.text.trim(),
-                                        email: _emailController.text.trim(),
-                                        gender: _selectedGender ?? "",
-                                        password:
-                                            _passwordController.text.trim(),
-                                        dob: _dobController.text.trim(),
-                                        age: _calculateAge(
-                                            _dobController.text.trim()),
-                                        homeClub: _clubController.text.trim(),
-                                        usgaHandicapIndex: double.tryParse(
-                                              _handicapController.text.trim(),
-                                            ) ??
-                                            0.0,
-                                        ghinNo: _ghinController.text.trim(),
-                                        cmpCode: null,
-                                        roleId: null,
-                                        eventRefNo: widget.eventRefNo,
-                                        source: "APP",
-                                      );
-                                      print(request.toJson());
-                                      print('Submitting registration...');
-                                      print(request);
-                                       print("Sending EventRegistrationRequest: $request");
-                                      print("Event Ref No: ${widget.eventRefNo}");
-                                      print("Name: ${request.name}");
-                                      print("Email: ${request.email}");
-                                      print("Phone: ${request.phonumber}");
-                                      print("Gender: ${request.gender}");
-                                      print("DOB: ${request.dob}");
-                                      print("Age: ${request.age}");
-                                      print("Home Club: ${request.homeClub}");
-                                      print("Handicap: ${request.usgaHandicapIndex}");
-                                      print("GHIN: ${request.ghinNo}");
-                                      print("Source: ${request.source}");
-                                      context
-                                          .read<EventRegistrationBloc>()
-                                          .add(SubmitEventRegistration(request));
+                                      final userDataState = context
+                                          .read<UserDataBloc>()
+                                          .state;
+                                      if (userDataState is UserDataLoaded) {
+                                        final userData = userDataState.userData;
+
+                                        final request = EventRegistrationRequest(
+                                          id: 0,
+                                          // name: _nameController.text.trim(),
+                                          // phonumber: _phoneController.text
+                                          //     .trim(),
+                                          // email: userData.email,
+                                          // gender: _selectedGender ?? "",
+                                          // password: _passwordController.text
+                                          //     .trim(),
+                                          // dob: _dobController.text.trim(),
+                                          // age: _calculateAge(
+                                          //   _dobController.text.trim(),
+                                          // ),
+                                          homeClub: _clubController.text.trim(),
+                                          usgaHandicapIndex:
+                                              double.tryParse(
+                                                _handicapController.text.trim(),
+                                              ) ??
+                                              0.0,
+                                          ghinNo: _ghinController.text.trim(),
+                                          cmpCode: userData.cmpCode,
+
+                                          eventRefNo: widget.eventRefNo,
+                                          source: "APP",
+                                          // userId: userData.email, // Commented out: named parameter 'userId' isn't defined
+                                          // refNo: "", // Commented out: named parameter 'refNo' isn't defined
+                                          // activateStatus: "Active", // Commented out: named parameter 'activateStatus' isn't defined
+                                          amount: widget.price ?? 0.0, // Commented out: named parameter 'amount' isn't defined
+                                          // status: "", // Commented out: named parameter 'status' isn't defined
+                                        );
+
+                                        print(
+                                          "🟢 Sending Payload: ${request.toJson()}",
+                                        );
+
+                                        context
+                                            .read<EventRegistrationBloc>()
+                                            .add(
+                                              SubmitEventRegistration(request),
+                                            );
+                                      }
                                     }
                                   },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: ColorConstants.buttonColor,
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 14),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
                               ),
