@@ -35,23 +35,24 @@ class EventRegistrationRequest {
 
   Map<String, dynamic> toJson() => {
         "Id": id ?? 0,
-        "Email": email,
-        "HomeClub": homeClub,
+        "Email": email ?? "",
+        "HomeClub": homeClub ?? "",
         "USGAHandicapIndex": usgaHandicapIndex,
-        "GHIN_No": ghinNo,
-        "UserId": userId,
-        "Cmp_Code": cmpCode,
+        "GHIN_No": ghinNo ?? "",
+        "UserId": userId ?? "",
+        "Cmp_Code": cmpCode ?? "",
         "RoleId": roleId,
-        "RefNo": refNo,
-        "ActivateStatus": activateStatus,
-        "Source": source,
-        "EventRefNo": eventRefNo,
-        "Amount": amount,
-        "PaymentMode": paymentMode,
-        "Status": status,
+        "RefNo": refNo ?? "",
+        "ActivateStatus": activateStatus ?? "",
+        "Source": source ?? "",
+        "EventRefNo": eventRefNo ?? "",
+        "Amount": amount ?? 0.0,
+        "PaymentMode": paymentMode ?? "",
+        "Status": status ?? "",
       }..removeWhere((key, value) => value == null);
 }
 
+/// ✅ Response Model
 class EventRegistrationResponse {
   final int? id;
   final int? bigId;
@@ -83,6 +84,7 @@ class EventRegistrationResponse {
   }
 }
 
+/// ✅ Nested "response" field
 class EventResponseData {
   final bool? paymentStatus;
   final double? discount;
@@ -100,16 +102,15 @@ class EventResponseData {
     return EventResponseData(
       paymentStatus: json['PaymentStatus'],
       discount: (json['Discount'] ?? 0).toDouble(),
-      userData: json['UserData'] != null
-          ? UserData.fromJson(json['UserData'])
-          : null,
-      payment: json['paymemt'] != null
-          ? PaymentData.fromJson(json['paymemt'])
-          : null,
+      userData:
+          json['UserData'] != null ? UserData.fromJson(json['UserData']) : null,
+      payment:
+          json['paymemt'] != null ? PaymentData.fromJson(json['paymemt']) : null,
     );
   }
 }
 
+/// ✅ Nested user info
 class UserData {
   final String? userName;
   final String? emailId;
@@ -133,6 +134,7 @@ class UserData {
   }
 }
 
+/// ✅ Nested payment info
 class PaymentData {
   final String? key;
   final String? secret;

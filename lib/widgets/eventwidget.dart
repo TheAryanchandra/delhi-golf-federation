@@ -1,25 +1,22 @@
-import 'package:delhi_golf_federation/bloc/auth/auth_bloc.dart';
-import 'package:delhi_golf_federation/bloc/auth/auth_event.dart';
-import 'package:delhi_golf_federation/bloc/auth/auth_state.dart';
+import 'dart:convert';
 import 'package:delhi_golf_federation/bloc/eventregister/bloc/eventregister_bloc.dart';
 import 'package:delhi_golf_federation/bloc/eventregister/bloc/eventregister_event.dart';
 import 'package:delhi_golf_federation/bloc/eventregister/bloc/eventregister_state.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_bloc.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_state.dart';
-
 import 'package:delhi_golf_federation/components/color_constants.dart';
-import 'package:delhi_golf_federation/config/routes_name.dart';
 import 'package:delhi_golf_federation/model/eventregistermodel.dart';
 import 'package:delhi_golf_federation/model/getdatamodel.dart';
 import 'package:delhi_golf_federation/model/industrymodel.dart';
 import 'package:delhi_golf_federation/services/TextFieldWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class EventRegisterPopup extends StatefulWidget {
   final String eventRefNo;
   final double? price;
-  final String? paymentMode; // to handle UPI direct case
+  final String? paymentMode;
 
   const EventRegisterPopup({
     super.key,
@@ -34,6 +31,7 @@ class EventRegisterPopup extends StatefulWidget {
 
 class _EventRegisterPopupState extends State<EventRegisterPopup> {
   final _formKey = GlobalKey<FormState>();
+  final Razorpay _razorpay = Razorpay();
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _clubController = TextEditingController();
@@ -54,7 +52,35 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
   @override
   void initState() {
     super.initState();
-    context.read<IndustryBloc>().add(FetchIndustriesEvent());
+    // context.read<IndustryBloc>().add(FetchIndustriesEvent());
+
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("✅ Payment Successful: ${response.paymentId}")),
+    );
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("❌ Payment Failed: ${response.message}")),
+    );
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("🌐 External Wallet: ${response.walletName}")),
+    );
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
   }
 
   void _fillForm(UserDataModel userData) {
@@ -135,31 +161,40 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
             }
 
             if (state is EventRegistrationSuccess) {
+              final response = state.response;
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("✅ ${state.response.message}")),
+                SnackBar(content: Text("✅ ${response.message ?? ''}")),
               );
 
               final navigator = Navigator.of(context, rootNavigator: true);
               navigator.pop();
 
-              // 🧾 Handle payment redirection
+              // 🧾 Handle payment
               if (widget.paymentMode?.toLowerCase() == "upi") {
-                // Direct registration complete, no gateway
+                // Direct registration (no gateway)
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text("✅ UPI registration completed successfully"),
                   ),
                 );
-              } else {
-                // Go to Razorpay or other payment screen
-                Future.delayed(const Duration(milliseconds: 500), () {
-                  navigator.pushNamed(RoutesName.paymentScreen);
-                });
+              } else if (response.response?.payment != null) {
+                // Razorpay flow
+                final payment = response.response!.payment!;
+                final user = response.response!.userData!;
+
+                _openRazorpayCheckout(
+                  payment.key!,
+                  payment.orderId!,
+                  widget.price ?? 0.0,
+                  user.userName ?? "DGFI User",
+                  user.emailId ?? "",
+                  user.mobileNo ?? "",
+                );
               }
             } else if (state is EventRegistrationFailure) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text("❌ ${state.error}")));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("❌ ${state.error}")),
+              );
             }
           },
           child: Dialog(
@@ -205,7 +240,7 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                       GlobalTextField(
                         controller: _emailController,
                         prefixIcon: Icons.email_outlined,
-                        enabled: false, // read-only email field
+                        enabled: false,
                       ),
                       GlobalTextField(
                         controller: _phoneController,
@@ -215,66 +250,11 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                             v == null || v.isEmpty ? "Required field" : null,
                       ),
 
-                      _buildDropdown(
-                        icon: Icons.person_outline,
-                        hint: "Select your gender",
-                        value: _selectedGender,
-                        items: _genderOptions,
-                        onChanged: (val) =>
-                            setState(() => _selectedGender = val),
-                      ),
-
-                      BlocBuilder<IndustryBloc, IndustryState>(
-                        builder: (context, state) {
-                          if (state is IndustryLoading) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          } else if (state is IndustryLoaded) {
-                            final industryNames = state.industries
-                                .map((e) => e.name)
-                                .toList();
-
-                            if (_selectedIndustry != null &&
-                                !industryNames.contains(_selectedIndustry)) {
-                              final match = state.industries.firstWhere(
-                                (e) => e.refNo.toString() == _selectedIndustry,
-                                orElse: () =>
-                                    IndustryModel(id: 0, name: '', refNo: ''),
-                              );
-                              if (match.name.isNotEmpty) {
-                                _selectedIndustry = match.name;
-                              } else {
-                                _selectedIndustry = null;
-                              }
-                            }
-
-                            return _buildDropdown(
-                              icon: Icons.business_outlined,
-                              hint: "Select your industry",
-                              value: _selectedIndustry,
-                              items: industryNames,
-                              onChanged: (val) =>
-                                  setState(() => _selectedIndustry = val),
-                            );
-                          } else if (state is IndustryError) {
-                            return Text(
-                              "Failed to load industries: ${state.message}",
-                              style: const TextStyle(color: Colors.red),
-                            );
-                          } else {
-                            return const SizedBox.shrink();
-                          }
-                        },
-                      ),
-
                       _buildDatePicker(context),
                       const SizedBox(height: 20),
 
-                      BlocBuilder<
-                        EventRegistrationBloc,
-                        EventRegistrationState
-                      >(
+                      BlocBuilder<EventRegistrationBloc,
+                          EventRegistrationState>(
                         builder: (context, state) {
                           final isLoading = state is EventRegistrationLoading;
                           return ElevatedButton(
@@ -288,52 +268,42 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                                       if (userDataState is UserDataLoaded) {
                                         final userData = userDataState.userData;
 
-                                        final request = EventRegistrationRequest(
+                                        final request =
+                                            EventRegistrationRequest(
                                           id: 0,
-                                          // name: _nameController.text.trim(),
-                                          // phonumber: _phoneController.text
-                                          //     .trim(),
-                                          // email: userData.email,
-                                          // gender: _selectedGender ?? "",
-                                          // password: _passwordController.text
-                                          //     .trim(),
-                                          // dob: _dobController.text.trim(),
-                                          // age: _calculateAge(
-                                          //   _dobController.text.trim(),
-                                          // ),
-                                          homeClub: _clubController.text.trim(),
-                                          usgaHandicapIndex:
-                                              double.tryParse(
-                                                _handicapController.text.trim(),
-                                              ) ??
+                                          email: userData.email,
+                                          homeClub:
+                                              _clubController.text.trim(),
+                                          usgaHandicapIndex: double.tryParse(
+                                                  _handicapController.text
+                                                      .trim()) ??
                                               0.0,
                                           ghinNo: _ghinController.text.trim(),
+                                          userId: userData.email,
                                           cmpCode: userData.cmpCode,
-
-                                          eventRefNo: widget.eventRefNo,
+                                          roleId: null,
+                                          refNo: "",
+                                          activateStatus: "",
                                           source: "APP",
-                                          // userId: userData.email, // Commented out: named parameter 'userId' isn't defined
-                                          // refNo: "", // Commented out: named parameter 'refNo' isn't defined
-                                          // activateStatus: "Active", // Commented out: named parameter 'activateStatus' isn't defined
-                                          amount: widget.price ?? 0.0, // Commented out: named parameter 'amount' isn't defined
-                                          // status: "", // Commented out: named parameter 'status' isn't defined
+                                          eventRefNo: widget.eventRefNo,
+                                          amount: widget.price ?? 0.0,
+                                          paymentMode:
+                                              widget.paymentMode ?? "online",
+                                          status: "",
                                         );
 
-                                        print(
-                                          "🟢 Sending Payload: ${request.toJson()}",
-                                        );
+                                        print("🟢 Sending Payload: ${jsonEncode(request.toJson())}");
 
                                         context
                                             .read<EventRegistrationBloc>()
-                                            .add(
-                                              SubmitEventRegistration(request),
-                                            );
+                                            .add(SubmitEventRegistration(request));
                                       }
                                     }
                                   },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: ColorConstants.buttonColor,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
                               ),
@@ -369,43 +339,41 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
     );
   }
 
-  Widget _buildDropdown({
-    required IconData icon,
-    required String hint,
-    required List<String> items,
-    required String? value,
-    required Function(String?) onChanged,
-  }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.grey.shade300),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: DropdownButtonFormField<String>(
-        value: (value != null && items.contains(value)) ? value : null,
-        onChanged: onChanged,
-        decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: ColorConstants.buttonColor),
-          border: InputBorder.none,
-        ),
-        hint: Text(hint),
-        items: items
-            .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-            .toList(),
-        validator: (val) => val == null ? "Required field" : null,
-      ),
-    );
+  void _openRazorpayCheckout(
+  String key,
+  String orderId,
+  double amount,
+  String userName,
+  String email,
+  String contact,
+) {
+  debugPrint("🧾 Razorpay Checkout Triggered -------------------");
+  debugPrint("🔹 Key: $key");
+  debugPrint("🔹 Order ID: $orderId");
+  debugPrint("🔹 Amount: $amount");
+  debugPrint("🔹 Name: $userName");
+  debugPrint("🔹 Email: $email");
+  debugPrint("🔹 Contact: $contact");
+  debugPrint("-----------------------------------------------");
+
+  var options = {
+    'key': key,
+    'amount': (amount * 100).toInt(), // Razorpay expects paise
+    'name': userName,
+    'order_id': orderId,
+    'prefill': {'contact': contact, 'email': email},
+    'theme': {'color': '#0F5C4C'},
+  };
+
+  try {
+    _razorpay.open(options);
+    debugPrint("✅ Razorpay Checkout Opened Successfully");
+  } catch (e, stackTrace) {
+    debugPrint("❌ Razorpay Checkout Error: $e");
+    debugPrint("📜 StackTrace: $stackTrace");
   }
+}
+
 
   Widget _buildDatePicker(BuildContext context) {
     return GestureDetector(
@@ -417,9 +385,8 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
           lastDate: DateTime.now(),
           builder: (context, child) => Theme(
             data: Theme.of(context).copyWith(
-              colorScheme: ColorScheme.light(
-                primary: ColorConstants.buttonColor,
-              ),
+              colorScheme:
+                  ColorScheme.light(primary: ColorConstants.buttonColor),
             ),
             child: child!,
           ),
