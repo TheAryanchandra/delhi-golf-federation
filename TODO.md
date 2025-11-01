@@ -1,9 +1,5 @@
-# TODO: Fix Payment Errors in Event Widget
+# TODO for Updating eventwidget.dart to use PaymentData from eventregister model
 
-## Tasks
-- [ ] Update PaymentData class in lib/model/eventregistermodel.dart to include all required fields (id, eventRefNo, currency, method, international, rzrOrderId, amount, cmpCode, userId, roleId, formType, source, contactNo, bank, wallet, email, name) and fix typo in ResponseData.fromJson ('paymemt' to 'payment').
-- [ ] Fix PaymentRequest creation in lib/widgets/eventwidget.dart _handleRazorpaySuccess: set rzrTransactionId to response.paymentId, remove externalWallet, use custom map for dataJson.
-- [ ] Add updatePayment method to PaymentRepository in lib/data/paymentrepository.dart as alias to confirmPayment.
-
-## Followup Steps
-- [ ] Test the payment flow after fixes.
+- [ ] Add PaymentData? _paymentData; field to _EventRegisterPopupState class.
+- [ ] In BlocListener for EventRegistrationSuccess, set _paymentData = state.response.response?.payment;
+- [ ] In _handlePaymentSuccess, replace hardcoded key with _paymentData?.key ?? '' and secret with _paymentData?.secret ?? ''
