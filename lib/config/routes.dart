@@ -16,6 +16,7 @@ import '../screens/elitegolfer.dart'; // Add this import
 import '../screens/clubgolfer.dart'; // Add this import
 import '../screens/IGUranking.dart'; // Add this import
 import '../screens/delhi_golf_ranking.dart'; // Add this import
+import '../screens/paymentsuccessscreen.dart';
 // import '../screens/splash_screen.dart';
 // import '../screens/register_screen.dart';
 // import '../screens/profile_screen.dart';
@@ -46,6 +47,7 @@ final Map<String, WidgetBuilder> appRoutes = {
     final args = ModalRoute.of(context)?.settings.arguments as LoginResponse?;
     return MembershipScreen(loginResponse: args);
   },
+  RoutesName.paymentSuccessScreen: (context) => const PaymentSuccessScreen(),
 
   /// Add when ready
   // RoutesName.splashScreen: (context) => const SplashScreen(),

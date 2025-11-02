@@ -99,18 +99,10 @@ class _MembershipScreenState extends State<MembershipScreen> {
             );
           }
         } else if (state is PaymentConfirmed) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Membership activated successfully!'),
-              backgroundColor: Colors.green,
-            ),
+          navigatorKey.currentState?.pushNamedAndRemoveUntil(
+            RoutesName.paymentSuccessScreen,
+            (route) => false,
           );
-          Future.delayed(const Duration(seconds: 2), () {
-            navigatorKey.currentState?.pushNamedAndRemoveUntil(
-              RoutesName.loginScreen,
-              (route) => false,
-            );
-          });
         } else if (state is PaymentFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
