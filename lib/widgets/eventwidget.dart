@@ -88,7 +88,9 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
         secret: _paymentData!.secret!,
       );
 
-      debugPrint("💳 Razorpay Details: ${jsonEncode(razorpayDetails.toJson())}");
+      debugPrint(
+        "💳 Razorpay Details: ${jsonEncode(razorpayDetails.toJson())}",
+      );
 
       // ✅ Prepare confirmation request for backend
       final updatedPayment = PaymentRequest(
@@ -243,10 +245,14 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                     payment.key!.isEmpty ||
                     payment.orderId == null ||
                     payment.orderId!.isEmpty) {
-                  debugPrint("⚠️ Missing Razorpay key or orderId, aborting checkout.");
+                  debugPrint(
+                    "⚠️ Missing Razorpay key or orderId, aborting checkout.",
+                  );
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text("Payment key/order missing, please try again."),
+                      content: Text(
+                        "Payment key/order missing, please try again.",
+                      ),
                     ),
                   );
                   return;
@@ -296,12 +302,7 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                     GlobalTextField(
                       controller: _nameController,
                       prefixIcon: Icons.person,
-                      validator: (v) =>
-                          v == null || v.isEmpty ? "Required field" : null,
-                    ),
-                    GlobalTextField(
-                      controller: _clubController,
-                      prefixIcon: Icons.groups_3_outlined,
+                      enabled: false,
                       validator: (v) =>
                           v == null || v.isEmpty ? "Required field" : null,
                     ),
@@ -310,14 +311,6 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                       prefixIcon: Icons.email_outlined,
                       enabled: false,
                     ),
-                    GlobalTextField(
-                      controller: _phoneController,
-                      prefixIcon: Icons.phone,
-                      keyboardType: TextInputType.phone,
-                      validator: (v) =>
-                          v == null || v.isEmpty ? "Required field" : null,
-                    ),
-                    _buildDatePicker(context),
                     const SizedBox(height: 20),
                     BlocBuilder<EventRegistrationBloc, EventRegistrationState>(
                       builder: (context, state) {
@@ -341,7 +334,7 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                                             double.tryParse(
                                               _handicapController.text.trim(),
                                             ) ??
-                                                0.0,
+                                            0.0,
                                         ghinNo: _ghinController.text.trim(),
                                         userId: userData.email,
                                         cmpCode: userData.cmpCode,
@@ -360,8 +353,8 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                                         "🟢 Sending Payload: ${jsonEncode(request.toJson())}",
                                       );
                                       context.read<EventRegistrationBloc>().add(
-                                            SubmitEventRegistration(request),
-                                          );
+                                        SubmitEventRegistration(request),
+                                      );
                                     }
                                   }
                                 },
