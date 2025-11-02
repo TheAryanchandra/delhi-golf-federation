@@ -127,7 +127,9 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
         cmpCode: updatedPayment.cmpCode ?? '',
       );
 
-      debugPrint("✅ Payment confirmed on backend: ${jsonEncode(apiResponse)}");
+      // debugPrint(
+      //   "✅ Payment confirmed on backend: ${jsonEncode(apiResponse.toJson())}",
+      // );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -290,7 +292,7 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                   children: [
                     Center(
                       child: Text(
-                        "REGISTER",
+                        "EVENT REGISTER",
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
