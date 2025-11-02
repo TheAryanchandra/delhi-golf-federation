@@ -95,7 +95,7 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
         id: 0,
         eventRefNo: widget.eventRefNo,
         rzrPaymentId: response.paymentId ?? '',
-        rzrTransactionId: '',
+        rzrTransactionId: razorpayDetails.acquirerData?.upiTransactionId ?? '',
         currency: razorpayDetails.currency ?? "INR",
         method: razorpayDetails.method ?? '',
         cardId: '',
