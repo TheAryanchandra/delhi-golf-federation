@@ -8,6 +8,7 @@ import 'package:delhi_golf_federation/bloc/payementlogin/bloc/paymentlogin_bloc.
 import 'package:delhi_golf_federation/bloc/payementlogin/bloc/paymentlogin_event.dart';
 import 'package:delhi_golf_federation/bloc/payementlogin/bloc/paymentlogin_state.dart';
 import 'package:delhi_golf_federation/components/color_constants.dart';
+import 'package:delhi_golf_federation/config/routes_name.dart';
 import 'package:delhi_golf_federation/data/paymentrepository.dart';
 import 'package:delhi_golf_federation/data/razorpay_success_repository.dart';
 import 'package:delhi_golf_federation/model/eventregistermodel.dart';
@@ -142,6 +143,8 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
           ),
         );
         Navigator.of(context, rootNavigator: true).pop();
+        // Navigate to payment success screen
+        Navigator.pushNamed(context, RoutesName.paymentSuccess2Screen);
       }
     } catch (e, stack) {
       debugPrint("❌ Error confirming payment: $e");

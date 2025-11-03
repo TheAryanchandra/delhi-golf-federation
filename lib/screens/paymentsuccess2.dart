@@ -72,11 +72,11 @@ class PaymentDoneScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     onPressed: () {
-                      // Navigator.pushNamedAndRemoveUntil(
-                      //   context,
-                      //   RoutesName.eventScreen, // ✅ Go to EventScreen
-                      //   (route) => false,
-                      // );
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        RoutesName.eventScreen, // ✅ Go to EventScreen
+                        (route) => false,
+                      );
                     },
                     child: const Text(
                       "Go to Events",

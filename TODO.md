@@ -1,4 +1,4 @@
-- [ ] Add eventScreen and paymentSuccess2Screen routes in lib/config/routes_name.dart
-- [ ] Add corresponding routes in lib/config/routes.dart
-- [ ] Modify lib/widgets/eventwidget.dart to navigate to paymentSuccess2Screen after successful payment
-- [ ] Enable navigation in lib/screens/paymentsuccess2.dart to eventScreen on button click
+- [ ] Add eventScreen and paymentSuccess2Screen constants to lib/config/routes_name.dart
+- [ ] Add corresponding routes in lib/config/routes.dart: paymentSuccess2Screen → PaymentDoneScreen, eventScreen → CustomBottomNav(initialIndex: 2)
+- [ ] Modify lib/widgets/eventwidget.dart in _handlePaymentSuccess to navigate to RoutesName.paymentSuccess2Screen after payment confirmation, instead of just popping the dialog.
+- [ ] Enable navigation in lib/screens/paymentsuccess2.dart by uncommenting and fixing the onPressed to navigate to RoutesName.eventScreen.

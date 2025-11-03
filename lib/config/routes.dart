@@ -17,6 +17,7 @@ import '../screens/clubgolfer.dart'; // Add this import
 import '../screens/IGUranking.dart'; // Add this import
 import '../screens/delhi_golf_ranking.dart'; // Add this import
 import '../screens/paymentsuccessscreen.dart';
+import '../screens/paymentsuccess2.dart';
 // import '../screens/splash_screen.dart';
 // import '../screens/register_screen.dart';
 // import '../screens/profile_screen.dart';
@@ -48,6 +49,8 @@ final Map<String, WidgetBuilder> appRoutes = {
     return MembershipScreen(loginResponse: args);
   },
   RoutesName.paymentSuccessScreen: (context) => const PaymentSuccessScreen(),
+  RoutesName.paymentSuccess2Screen: (context) => const PaymentDoneScreen(),
+  RoutesName.eventScreen: (context) => const CustomBottomNav(initialIndex: 2),
 
   /// Add when ready
   // RoutesName.splashScreen: (context) => const SplashScreen(),

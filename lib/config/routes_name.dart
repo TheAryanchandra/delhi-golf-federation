@@ -26,4 +26,6 @@ class RoutesName {
   static const String paymentScreen = '/payment';
   static const String membershipScreen = '/membership';
   static const String paymentSuccessScreen = '/payment-success';
+  static const String paymentSuccess2Screen = '/payment-success-2';
+  static const String eventScreen = '/event-screen';
 }
