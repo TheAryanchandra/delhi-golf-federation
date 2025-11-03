@@ -9,6 +9,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   PaymentBloc(this.repository) : super(PaymentInitial()) {
     on<CreatePaymentEvent>(_onCreatePayment);
     on<ConfirmPaymentEvent>(_onConfirmPayment);
+    on<FailedPaymentEvent>(_onFailedPayment); // ✅ handle failed/cancelled
   }
 
   Future<void> _onCreatePayment(
@@ -40,6 +41,23 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       emit(PaymentConfirmed(response));
     } catch (e) {
       emit(PaymentFailure(e.toString()));
+    }
+  }
+
+  /// ✅ Handle Failed / Cancelled Payment Event
+  Future<void> _onFailedPayment(
+    FailedPaymentEvent event,
+    Emitter<PaymentState> emit,
+  ) async {
+    emit(PaymentLoading());
+    try {
+      final response = await repository.confirmPayment( // same API as success
+        request: event.paymentRequest,
+        cmpCode: event.cmpCode,
+      );
+      emit(PaymentFailure('Payment failed/cancelled but sent to backend ✅'));
+    } catch (e) {
+      emit(PaymentFailure('❌ Failed to update backend: $e'));
     }
   }
 }

@@ -4,12 +4,16 @@ import 'package:delhi_golf_federation/bloc/eventregister/bloc/eventregister_even
 import 'package:delhi_golf_federation/bloc/eventregister/bloc/eventregister_state.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_bloc.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_state.dart';
+import 'package:delhi_golf_federation/bloc/payementlogin/bloc/paymentlogin_bloc.dart';
+import 'package:delhi_golf_federation/bloc/payementlogin/bloc/paymentlogin_event.dart';
+import 'package:delhi_golf_federation/bloc/payementlogin/bloc/paymentlogin_state.dart';
 import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/data/paymentrepository.dart';
 import 'package:delhi_golf_federation/data/razorpay_success_repository.dart';
 import 'package:delhi_golf_federation/model/eventregistermodel.dart';
 import 'package:delhi_golf_federation/model/getdatamodel.dart';
 import 'package:delhi_golf_federation/model/paymentmodel.dart';
+import 'package:delhi_golf_federation/model/razorpayresponse_model.dart';
 import 'package:delhi_golf_federation/services/TextFieldWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -145,12 +149,53 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
     }
   }
 
-  void _handlePaymentError(PaymentFailureResponse response) {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("❌ Payment Failed: ${response.message}")),
-      );
-    }
+  void _handlePaymentError(PaymentFailureResponse response) async {
+    debugPrint("🚨 _handlePaymentError() called with code: ${response.code}");
+    debugPrint("🧩 Full Razorpay error: ${response.toString()}");
+
+    final razorpayDetails = {
+      "reason": response.code.toString(),
+      "description": response.message ?? 'undefined',
+    };
+
+    final failureRequest = PaymentRequest(
+      id: 0,
+      eventRefNo: widget.eventRefNo,
+      rzrPaymentId: response.message ?? '',
+      rzrTransactionId: '',
+      currency: 'INR',
+      method: 'Online',
+      cardId: '',
+      international: false,
+      paymentStatus: response.code == 2 ? 'Cancelled' : 'FAILED',
+      rzrSignature: '',
+      rzrOrderId: _paymentData?.orderId ?? '',
+      amount: widget.price ?? 0.0,
+      cmpCode: '',
+      userId: '',
+      roleId: null,
+      formType: 'EventRegister',
+      source: 'APP',
+      dataJson: jsonEncode(razorpayDetails),
+      contactNo: '',
+      bank: '',
+      wallet: '',
+      email: '',
+      dts: DateTime.now().toIso8601String(),
+      name: _nameController.text,
+    );
+
+    // ✅ Send failed payment event to bloc
+    context.read<PaymentBloc>().add(
+      FailedPaymentEvent(paymentRequest: failureRequest, cmpCode: ''),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('❌ Payment failed or cancelled'),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {

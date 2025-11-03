@@ -25,3 +25,13 @@ class ConfirmPaymentEvent extends PaymentEvent {
   @override
   List<Object?> get props => [paymentRequest, cmpCode];
 }
+
+class FailedPaymentEvent extends PaymentEvent {
+  final PaymentRequest paymentRequest;
+  final String cmpCode;
+
+  FailedPaymentEvent({required this.paymentRequest, required this.cmpCode});
+
+  @override
+  List<Object?> get props => [paymentRequest, cmpCode];
+}
