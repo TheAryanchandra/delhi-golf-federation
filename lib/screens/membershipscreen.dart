@@ -484,7 +484,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
         method: razorpayDetails.method,
         cardId: '',
         international: razorpayDetails.international ?? false,
-        paymentStatus: 'Success',
+        paymentStatus: 'SUCCESS',
         rzrSignature: response.signature,
         rzrOrderId: payment.rzrOrderId,
         amount: payment.amount,
