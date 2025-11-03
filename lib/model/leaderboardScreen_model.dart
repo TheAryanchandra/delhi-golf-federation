@@ -28,9 +28,10 @@ class LeaderboardScreenModel {
       status: json["status"],
       message: json["message"],
       refNo: json["RefNo"],
-      response: json["response"] != null
+      response: json["response"] is Map<String, dynamic>
           ? LeaderboardScreenResponse.fromJson(json["response"])
           : null,
+
       dataList: json["DataList"],
       ds: json["_ds"],
       dt: json["_dt"],
@@ -88,8 +89,9 @@ class LeaderboardScreenResponse {
       page: json["Page"],
       totalPage: json["TotalPage"],
       pageSize: json["PageSize"],
-      players:
-          dataList.map((e) => LeaderboardScreenPlayer.fromJson(e)).toList(),
+      players: dataList
+          .map((e) => LeaderboardScreenPlayer.fromJson(e))
+          .toList(),
       ds: json["ds"],
       dataRow: json["_DataRow"],
     );
@@ -150,9 +152,7 @@ class LeaderboardScreenPlayer {
       r6: json["R6"],
       holeThru: json["Hole_Thru"],
       totalGross: json["TotalGross"],
-      totalNet: json["TotalNet"] != null
-          ? (json["TotalNet"]).toDouble()
-          : null,
+      totalNet: json["TotalNet"] != null ? (json["TotalNet"]).toDouble() : null,
       cmpCode: json["Cmp_Code"],
       roleId: json["RoleId"],
       finalSubmit: json["FinalSubmit"],
