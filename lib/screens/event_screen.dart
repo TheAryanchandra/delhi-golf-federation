@@ -565,7 +565,6 @@ class _PaymentPopupState extends State<PaymentPopup> {
     final paymentRepository = PaymentRepository();
     final payment = widget.payment;
 
-    // 🔹 Create a direct confirmPayment request
     final confirmRequest = PaymentRequest(
       id: payment.id,
       eventRefNo: payment.eventRefNo,
@@ -575,14 +574,14 @@ class _PaymentPopupState extends State<PaymentPopup> {
       method: 'Online',
       cardId: '',
       international: false,
-      paymentStatus: 'Success', // directly mark as success
+      paymentStatus: 'SUCCESS',
       rzrSignature: '',
       rzrOrderId: payment.rzrOrderId,
       amount: payment.amount,
       cmpCode: payment.cmpCode,
       userId: payment.userId,
       roleId: payment.roleId,
-      formType: payment.formType,
+      formType: "EventRegistration",
       source: payment.source,
       dataJson: '',
       contactNo: payment.contactNo,
@@ -598,15 +597,16 @@ class _PaymentPopupState extends State<PaymentPopup> {
         request: confirmRequest,
         cmpCode: payment.cmpCode ?? '',
       );
-      debugPrint('✅ Payment confirmed successfully.');
-      if (mounted) Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Payment confirmed successfully!')),
-      );
+
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('✅ Event registered successfully!')),
+        );
+      }
     } catch (e) {
-      debugPrint('❌ Failed to confirm payment: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error confirming payment: $e')),
+        SnackBar(content: Text('❌ Error: $e')),
       );
     } finally {
       if (mounted) setState(() => isSubmitting = false);
@@ -617,69 +617,93 @@ class _PaymentPopupState extends State<PaymentPopup> {
   Widget build(BuildContext context) {
     final payment = widget.payment;
 
-    return AlertDialog(
-      title: const Text(
-        'EVENT REGISTRATION',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // 🧍 Name (read-only)
-          TextFormField(
-            initialValue: payment.name ?? '',
-            readOnly: true,
-            decoration: InputDecoration(
-              labelText: 'Name',
-              filled: true,
-              fillColor: Colors.grey[100],
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "EVENT REGISTER",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+                color: Color(0xFF12563C),
+                letterSpacing: 1,
               ),
             ),
-          ),
-          const SizedBox(height: 16),
+            const SizedBox(height: 25),
 
-          // 📧 Email (read-only)
-          TextFormField(
-            initialValue: payment.email ?? '',
-            readOnly: true,
-            decoration: InputDecoration(
-              labelText: 'Email',
-              filled: true,
-              fillColor: Colors.grey[100],
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // ✅ Submit Button
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: isSubmitting ? null : _handleSubmit,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstants.buttonColor,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+            // 🧍 Name Field
+            TextFormField(
+              initialValue: payment.name ?? '',
+              readOnly: true,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.person, color: Colors.grey),
+                filled: true,
+                fillColor: Colors.white,
+                hintText: "Name",
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.grey, width: 1),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.green, width: 1.5),
+                  borderRadius: BorderRadius.circular(15),
                 ),
               ),
-              child: isSubmitting
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text(
-                      'Submit',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                    ),
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+
+            // 📧 Email Field
+            TextFormField(
+              initialValue: payment.email ?? '',
+              readOnly: true,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.email_outlined, color: Colors.grey),
+                filled: true,
+                fillColor: Colors.white,
+                hintText: "Email",
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.grey, width: 1),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.green, width: 1.5),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
+            ),
+            const SizedBox(height: 25),
+
+            // ✅ Submit Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: isSubmitting ? null : _handleSubmit,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF144B29),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: isSubmitting
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                        "Submit",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                        ),
+                      ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
