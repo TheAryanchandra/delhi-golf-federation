@@ -102,7 +102,14 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
         id: 0,
         eventRefNo: widget.eventRefNo,
         rzrPaymentId: response.paymentId ?? '',
-        rzrTransactionId: razorpayDetails.acquirerData?.upiTransactionId ?? '',
+        rzrTransactionId:
+            razorpayDetails.acquirerData?.upiTransactionId ??
+            razorpayDetails.acquirerData?.bankTransactionId ??
+            razorpayDetails.acquirerData?.authCode ??
+            razorpayDetails.acquirerData?.rrn ??
+            razorpayDetails.id ??
+            '',
+
         currency: razorpayDetails.currency ?? "INR",
         method: razorpayDetails.method ?? '',
         cardId: '',
@@ -114,7 +121,7 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
         cmpCode: '',
         userId: '',
         roleId: null,
-        formType: 'EventRegister',
+        formType: 'EventRegistration',
         source: 'APP',
         dataJson: jsonEncode(razorpayDetails.toJson()),
         contactNo: razorpayDetails.contact ?? '',

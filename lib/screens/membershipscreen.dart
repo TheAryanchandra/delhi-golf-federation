@@ -474,7 +474,12 @@ class _MembershipScreenState extends State<MembershipScreen> {
             .id, // Razorpay Payment ID (e.g., pay_RZxcyiAubkGRMF)
         rzrTransactionId:
             razorpayDetails.acquirerData?.upiTransactionId ??
-            '', // ✅ UPI Transaction ID
+            razorpayDetails.acquirerData?.bankTransactionId ??
+            razorpayDetails.acquirerData?.authCode ??
+            razorpayDetails.acquirerData?.rrn ??
+            razorpayDetails.id ??
+            '',
+        // ✅ UPI Transaction ID
         currency: razorpayDetails.currency,
         method: razorpayDetails.method,
         cardId: '',

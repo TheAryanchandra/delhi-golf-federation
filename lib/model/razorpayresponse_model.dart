@@ -140,15 +140,24 @@ class RazorpayPaymentDetails {
 }
 
 class AcquirerData {
-  String? rrn;
-  String? upiTransactionId;
+  String? rrn;                 // For UPI reference number
+  String? upiTransactionId;    // For UPI transaction ID
+  String? bankTransactionId;   // For Netbanking transaction ID
+  String? authCode;            // For Card authorization code
 
-  AcquirerData({this.rrn, this.upiTransactionId});
+  AcquirerData({
+    this.rrn,
+    this.upiTransactionId,
+    this.bankTransactionId,
+    this.authCode,
+  });
 
   factory AcquirerData.fromJson(Map<String, dynamic> json) {
     return AcquirerData(
       rrn: json['rrn'],
       upiTransactionId: json['upi_transaction_id'],
+      bankTransactionId: json['bank_transaction_id'],
+      authCode: json['auth_code'],
     );
   }
 
@@ -156,9 +165,12 @@ class AcquirerData {
     return {
       'rrn': rrn,
       'upi_transaction_id': upiTransactionId,
+      'bank_transaction_id': bankTransactionId,
+      'auth_code': authCode,
     };
   }
 }
+
 
 class UpiData {
   String? vpa;
