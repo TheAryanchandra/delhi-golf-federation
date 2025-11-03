@@ -3,10 +3,14 @@ import 'package:delhi_golf_federation/bloc/event/bloc/event_event.dart';
 import 'package:delhi_golf_federation/bloc/event/bloc/event_state.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_bloc.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_event.dart';
+import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_state.dart';
 import 'package:delhi_golf_federation/components/bottomnavigation.dart';
+import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/components/custombutton.dart';
 import 'package:delhi_golf_federation/config/routes_name.dart';
+import 'package:delhi_golf_federation/data/paymentrepository.dart';
 import 'package:delhi_golf_federation/model/eventmodel.dart';
+import 'package:delhi_golf_federation/model/paymentmodel.dart';
 import 'package:delhi_golf_federation/widgets/eventwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -376,10 +380,76 @@ class _EventsScreenState extends State<EventsScreen> {
                               event.paymentMode?.toLowerCase() ?? 'un paid';
 
                           if (paymentMode == 'un paid') {
-                            // 🔹 Show payment popup or navigate to Razorpay screen
+                            // 🔹 Trigger GetUserDataBloc before showing popup
+                            context.read<UserDataBloc>().add(
+                              FetchUserDataEvent(),
+                            );
+
+                            // 🔹 Show loading dialog while fetching
                             showDialog(
                               context: context,
-                              builder: (context) => const PaymentPopup(),
+                              barrierDismissible: false,
+                              builder: (context) {
+                                return BlocConsumer<
+                                  UserDataBloc,
+                                  UserDataState
+                                >(
+                                  listener: (context, state) {
+                                    if (state is UserDataLoaded) {
+                                      // ✅ Close loader and open PaymentPopup with fetched data
+                                      Navigator.pop(context);
+
+                                      final user =
+                                          state.userData; // your UserDataModel
+                                      final payment = PaymentRequest(
+                                        id: 0,
+                                        eventRefNo: event.refNo ?? '',
+                                        amount: event.price ?? 0.0,
+                                        name: user.name,
+                                        email: user.email,
+                                        cmpCode: user.cmpCode,
+                                        userId: user.userId,
+                                        roleId: user.roleId,
+                                        formType: 'EventRegister',
+                                        source: user.source ?? 'APP',
+                                        rzrOrderId: '',
+                                      );
+
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) =>
+                                            PaymentPopup(payment: payment),
+                                      );
+                                    } else if (state is UserDataError) {
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            state.message ??
+                                                "Failed to load user data",
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  builder: (context, state) {
+                                    if (state is UserDataLoading) {
+                                      return const AlertDialog(
+                                        backgroundColor: Colors.transparent,
+                                        elevation: 0,
+                                        content: Center(
+                                          child: CircularProgressIndicator(
+                                            color: Color(0xFF0B592A),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    return const SizedBox();
+                                  },
+                                );
+                              },
                             );
                           } else if (paymentMode == 'paid') {
                             // 🔹 Directly open registration popup
@@ -477,30 +547,140 @@ class _EventsScreenState extends State<EventsScreen> {
 }
 
 /// Payment Popup Widget
-class PaymentPopup extends StatelessWidget {
-  const PaymentPopup({super.key});
+class PaymentPopup extends StatefulWidget {
+  final PaymentRequest payment;
+
+  const PaymentPopup({super.key, required this.payment});
+
+  @override
+  State<PaymentPopup> createState() => _PaymentPopupState();
+}
+
+class _PaymentPopupState extends State<PaymentPopup> {
+  bool isSubmitting = false;
+
+  Future<void> _handleSubmit() async {
+    setState(() => isSubmitting = true);
+
+    final paymentRepository = PaymentRepository();
+    final payment = widget.payment;
+
+    // 🔹 Create a direct confirmPayment request
+    final confirmRequest = PaymentRequest(
+      id: payment.id,
+      eventRefNo: payment.eventRefNo,
+      rzrPaymentId: '',
+      rzrTransactionId: '',
+      currency: 'INR',
+      method: 'Online',
+      cardId: '',
+      international: false,
+      paymentStatus: 'Success', // directly mark as success
+      rzrSignature: '',
+      rzrOrderId: payment.rzrOrderId,
+      amount: payment.amount,
+      cmpCode: payment.cmpCode,
+      userId: payment.userId,
+      roleId: payment.roleId,
+      formType: payment.formType,
+      source: payment.source,
+      dataJson: '',
+      contactNo: payment.contactNo,
+      bank: '',
+      wallet: '',
+      email: payment.email,
+      dts: DateTime.now().toIso8601String(),
+      name: payment.name,
+    );
+
+    try {
+      await paymentRepository.confirmPayment(
+        request: confirmRequest,
+        cmpCode: payment.cmpCode ?? '',
+      );
+      debugPrint('✅ Payment confirmed successfully.');
+      if (mounted) Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Payment confirmed successfully!')),
+      );
+    } catch (e) {
+      debugPrint('❌ Failed to confirm payment: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error confirming payment: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => isSubmitting = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final payment = widget.payment;
+
     return AlertDialog(
-      title: const Text('Complete Payment'),
-      content: const Text(
-        'Please complete your payment to register for this event.',
+      title: const Text(
+        'EVENT REGISTRATION',
+        style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-            // 🔹 Proceed to Razorpay payment screen or logic
-            // e.g., Navigator.pushNamed(context, RoutesName.paymentScreen);
-          },
-          child: const Text('Pay Now'),
-        ),
-      ],
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // 🧍 Name (read-only)
+          TextFormField(
+            initialValue: payment.name ?? '',
+            readOnly: true,
+            decoration: InputDecoration(
+              labelText: 'Name',
+              filled: true,
+              fillColor: Colors.grey[100],
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // 📧 Email (read-only)
+          TextFormField(
+            initialValue: payment.email ?? '',
+            readOnly: true,
+            decoration: InputDecoration(
+              labelText: 'Email',
+              filled: true,
+              fillColor: Colors.grey[100],
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // ✅ Submit Button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: isSubmitting ? null : _handleSubmit,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorConstants.buttonColor,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: isSubmitting
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text(
+                      'Submit',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
