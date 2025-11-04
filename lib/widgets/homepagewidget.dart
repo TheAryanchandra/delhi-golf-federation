@@ -180,6 +180,44 @@ class FacilityCard extends StatelessWidget {
 class UpcomingEventsSection extends StatelessWidget {
   const UpcomingEventsSection({super.key});
 
+  Widget _buildEventCard(EventModel event, BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("${event.startDate ?? ""} - ${event.endDate ?? ""}"),
+          const SizedBox(height: 4),
+          Text(
+            event.eventName ?? "",
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            width: double.infinity,
+            child: CustomButton(
+              text: "View more",
+              onPressed: () {
+                NavigationService.instance.navigateToTab(2);
+                // Navigator.of(context).pushNamed(
+                //   RoutesName.eventDetailsScreen,
+                //   arguments: {"refNo": event.refNo ?? ""},
+                // );
+              },
+              borderRadius: 8,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -224,46 +262,14 @@ class UpcomingEventsSection extends StatelessWidget {
                   );
                 }
 
-                final EventModel event = events.first;
+                final List<EventModel> upcomingEvents = events.take(3).toList();
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(event.startDate ?? ""),
-                        const SizedBox(height: 4),
-                        Text(
-                          event.eventName ?? "",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          width: double.infinity,
-                          child: CustomButton(
-                            text: "View more",
-                            onPressed: () {
-                              NavigationService.instance.navigateToTab(2);
-                              Navigator.of(context).pushNamed(
-                                RoutesName.eventDetailsScreen,
-                                arguments: {"refNo": event.refNo ?? ""},
-                              );
-                            },
-                            borderRadius: 8,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 10,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  child: Column(
+                    children: upcomingEvents
+                        .map((event) => _buildEventCard(event, context))
+                        .toList(),
                   ),
                 );
               }
@@ -275,7 +281,6 @@ class UpcomingEventsSection extends StatelessWidget {
             },
           ),
         ),
-
 
         /// Team Title
         const Padding(

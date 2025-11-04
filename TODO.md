@@ -1,4 +1,5 @@
-- [ ] Add eventScreen and paymentSuccess2Screen constants to lib/config/routes_name.dart
-- [ ] Add corresponding routes in lib/config/routes.dart: paymentSuccess2Screen → PaymentDoneScreen, eventScreen → CustomBottomNav(initialIndex: 2)
-- [ ] Modify lib/widgets/eventwidget.dart in _handlePaymentSuccess to navigate to RoutesName.paymentSuccess2Screen after payment confirmation, instead of just popping the dialog.
-- [ ] Enable navigation in lib/screens/paymentsuccess2.dart by uncommenting and fixing the onPressed to navigate to RoutesName.eventScreen.
+# TODO: Update Upcoming Events Section to Show Start and End Dates and Up to 3 Events
+
+## Tasks
+- [x] Modify the date Text widget in UpcomingEventsSection (lib/widgets/homepagewidget.dart) to display both start and end dates, e.g., "Start Date - End Date".
+- [x] Update the widget to display up to 3 upcoming events instead of just the first one.
