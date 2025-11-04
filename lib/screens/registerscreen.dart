@@ -14,7 +14,6 @@ class RegisterScreen extends StatefulWidget {
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
-  
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
@@ -83,11 +82,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
         } else if (state is RegistrationSuccess) {
           setState(() {
             _isLoading = false;
-            _isButtonDisabled = !(state.response.status ?? false);
+            _isButtonDisabled = false;
             _errorMessage = state.response.message;
           });
 
           if (state.response.status == true) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: const [
+                    Icon(Icons.check_circle, color: Colors.white),
+                    SizedBox(width: 8),
+                    Text(
+                      "Registration successful!",
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+                backgroundColor: const Color(0xFF12563C),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                margin: const EdgeInsets.all(16),
+                duration: const Duration(seconds: 2),
+              ),
+            );
             print("Registration successful");
             Navigator.pushNamedAndRemoveUntil(
               context,
@@ -381,7 +401,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   },
                                 ),
 
-                         
                                 // Date of Birth
                                 GestureDetector(
                                   onTap: () async {
@@ -579,7 +598,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         print("Date of Birth: $dob");
                                         print("Age: $age");
                                         print("Gender: $_selectedGender");
-                                        print("Industry RefNo: $_selectedIndustry");
+                                        print(
+                                          "Industry RefNo: $_selectedIndustry",
+                                        );
                                         print(
                                           "Handicap Index: ${double.parse(_handicapController.text)}",
                                         );
