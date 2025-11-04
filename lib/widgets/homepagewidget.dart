@@ -1,6 +1,12 @@
 import 'package:delhi_golf_federation/components/custombutton.dart';
 import 'package:flutter/material.dart';
 import 'package:delhi_golf_federation/services/navigation_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:delhi_golf_federation/bloc/event/bloc/event_bloc.dart';
+import 'package:delhi_golf_federation/bloc/event/bloc/event_event.dart';
+import 'package:delhi_golf_federation/bloc/event/bloc/event_state.dart';
+import 'package:delhi_golf_federation/model/eventmodel.dart';
+import 'package:delhi_golf_federation/config/routes_name.dart';
 
 /// Sponsors Section
 class SponsorsSection extends StatelessWidget {
@@ -193,45 +199,83 @@ class UpcomingEventsSection extends StatelessWidget {
         ),
         const SizedBox(height: 10),
 
-        /// Event Card (Dummy Example)
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text("22 - 24 Dec 2025"),
-                const SizedBox(height: 4),
-                const Text(
-                  "Golf Festival\n@ Quba Golf course",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                SizedBox(
-                  width: double.infinity,
-                  child: CustomButton(
-                    text: "View more",
-                    onPressed: () {
-                      NavigationService.instance.navigateToTab(2);
-                    },
-                    borderRadius: 8,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 10,
+        BlocProvider.value(
+          value: context.read<EventsBloc>(),
+          child: BlocBuilder<EventsBloc, EventsState>(
+            builder: (context, state) {
+              if (state is EventsInitial) {
+                context.read<EventsBloc>().add(FetchEvents(upcoming: true));
+              }
+
+              if (state is EventsLoading) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 40),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+
+              if (state is EventsLoaded) {
+                final events = state.events ?? [];
+
+                if (events.isEmpty) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+                    child: Text("No upcoming events available."),
+                  );
+                }
+
+                final EventModel event = events.first;
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(event.startDate ?? ""),
+                        const SizedBox(height: 4),
+                        Text(
+                          event.eventName ?? "",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          width: double.infinity,
+                          child: CustomButton(
+                            text: "View more",
+                            onPressed: () {
+                              NavigationService.instance.navigateToTab(2);
+                              Navigator.of(context).pushNamed(
+                                RoutesName.eventDetailsScreen,
+                                arguments: {"refNo": event.refNo ?? ""},
+                              );
+                            },
+                            borderRadius: 8,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
+                );
+              }
+
+              return const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+                child: Text("Failed to load events."),
+              );
+            },
           ),
         ),
 
-        const SizedBox(height: 20),
 
         /// Team Title
         const Padding(
