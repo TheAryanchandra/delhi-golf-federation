@@ -377,7 +377,27 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       listener: (context, state) async {
                         if (state is LogoutSuccess) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(state.message)),
+                            SnackBar(
+                              content: Row(
+                                children: const [
+                                  Icon(Icons.check_circle, color: Colors.white),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    "Logout successful!",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: const Color(0xFF12563C),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              margin: const EdgeInsets.all(16),
+                              duration: const Duration(seconds: 2),
+                            ),
                           );
 
                           // ✅ Navigate to login screen and clear all previous routes
