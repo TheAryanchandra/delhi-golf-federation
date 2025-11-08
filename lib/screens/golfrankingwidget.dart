@@ -916,30 +916,262 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
 }
 
 /// 🔹 Club Golfers Table
-class ClubGolfersTable extends StatelessWidget {
+
+class ClubGolfersTable extends StatefulWidget {
   const ClubGolfersTable({super.key});
 
   @override
+  State<ClubGolfersTable> createState() => _ClubGolfersTableState();
+}
+
+class _ClubGolfersTableState extends State<ClubGolfersTable> {
+  int currentPage = 1;
+
+  final List<Map<String, dynamic>> allGolfers = List.generate(15, (index) {
+    return {
+      "srNo": index + 1,
+      "profile": "assets/images/owgr.png",
+      "name": "Player ${index + 1}",
+      "position": index + 1,
+      "score": -9 + index,
+      "playerPoint": 5 - (index % 5),
+    };
+  });
+
+  void _onPageChanged(int page) {
+    setState(() {
+      currentPage = page;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final pageSize = 10;
+    final totalPages = (allGolfers.length / pageSize).ceil();
+    final golfers = allGolfers
+        .skip((currentPage - 1) * pageSize)
+        .take(pageSize)
+        .toList();
+
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF003F2F),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              const Text(
-                "Club Golfers Table Placeholder",
-                style: TextStyle(color: Colors.white),
+      child: Column(
+        children: [
+          // Table Container with horizontal scrolling
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Container(
+                width: 450, // set minimum width for table to allow horizontal scroll
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: ColorConstants.buttonColor,
+                    width: 1.5,
+                  ),
+                ),
+                clipBehavior: Clip.hardEdge,
+                child: Column(
+                  children: [
+                    // Table Header
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 8),
+                      decoration: const BoxDecoration(
+                        color: ColorConstants.buttonColor,
+                      ),
+                      child: IntrinsicHeight(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: const [
+                            Expanded(
+                              flex: 1,
+                              child: Center(
+                                child: Text(
+                                  "SR. NO",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Center(
+                                child: Text(
+                                  "PROFILE",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 3,
+                              child: Center(
+                                child: Text(
+                                  "NAME",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Center(
+                                child: Text(
+                                  "POSITION",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Center(
+                                child: Text(
+                                  "SCORE",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Center(
+                                child: Text(
+                                  "PLAYER POINT",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // Table Rows
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: golfers.length,
+                        itemBuilder: (context, index) {
+                          final golfer = golfers[index];
+                          final isEven = index % 2 == 0;
+                          return Container(
+                            color: isEven
+                                ? const Color(0xFF046B45)
+                                : const Color(0xFF12563C),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Row(
+                              children: [
+                                // SR. NO
+                                Expanded(
+                                  flex: 1,
+                                  child: Center(
+                                    child: Text(
+                                      golfer["srNo"].toString(),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                                // PROFILE
+                                Expanded(
+                                  flex: 2,
+                                  child: Center(
+                                    child: Image.asset(
+                                      golfer["profile"],
+                                      width: 40,
+                                      height: 40,
+                                    ),
+                                  ),
+                                ),
+                                // NAME
+                                Expanded(
+                                  flex: 3,
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: golfer["name"]
+                                          .toString()
+                                          .split(" ")
+                                          .map((word) => Text(
+                                                word,
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ))
+                                          .toList(),
+                                    ),
+                                  ),
+                                ),
+                                // POSITION
+                                Expanded(
+                                  flex: 2,
+                                  child: Center(
+                                    child: Text(
+                                      golfer["position"].toString(),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                                // SCORE
+                                Expanded(
+                                  flex: 2,
+                                  child: Center(
+                                    child: Text(
+                                      golfer["score"].toString(),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                                // PLAYER POINT
+                                Expanded(
+                                  flex: 2,
+                                  child: Center(
+                                    child: Text(
+                                      golfer["playerPoint"].toString(),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 10),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
