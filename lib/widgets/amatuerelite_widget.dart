@@ -35,7 +35,7 @@ class AmateurEliteTable extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Expanded(
-                    flex: 4,
+                    flex: 3,
                     child: Text(
                       "NAME",
                       textAlign: TextAlign.center,
@@ -48,7 +48,7 @@ class AmateurEliteTable extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: Text(
-                      "OWGR RANK",
+                      "IGU RANK",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
@@ -59,7 +59,7 @@ class AmateurEliteTable extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: Text(
-                      "INDIA RANK",
+                      "DELHI RANK",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,

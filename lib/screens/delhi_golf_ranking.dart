@@ -2,7 +2,6 @@ import 'package:delhi_golf_federation/screens/golfrankingwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:delhi_golf_federation/components/topnavigationbar.dart';
 
-
 class DelhiGolfRankingScreen extends StatefulWidget {
   const DelhiGolfRankingScreen({Key? key}) : super(key: key);
 
@@ -31,7 +30,7 @@ class _DelhiGolfRankingScreenState extends State<DelhiGolfRankingScreen>
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      
+
       home: Scaffold(
         backgroundColor: Colors.white,
         appBar: TopNavigationBar(
@@ -68,16 +67,13 @@ class _DelhiGolfRankingScreenState extends State<DelhiGolfRankingScreen>
                   const RankingTable(action: "ProEliteData"),
 
                   // 🟢 Amateur Elite
-                  AmateurEliteSection(
-                    tabController: _amateurSubTabController,
-                  ),
+                  AmateurEliteSection(tabController: _amateurSubTabController),
 
                   // 🟢 Junior Elite
-                 JuniorEliteSection(
-  selectedGender: _selectedGender,
-  selectedCategory: _selectedCategory,
-),
-
+                  JuniorEliteSection(
+                    selectedGender: _selectedGender,
+                    selectedCategory: _selectedCategory,
+                  ),
 
                   // 🟢 Club Golfers
                   const ClubGolfersTable(),
