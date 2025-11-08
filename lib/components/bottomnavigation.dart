@@ -110,7 +110,7 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.emoji_events), label: "Leaderboard"),
+                  icon: Icon(Icons.emoji_events), label: "Live Score"),
               BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.sports_golf), label: "Scorecard"),
@@ -191,7 +191,7 @@ class _ProfileWithNavigationState extends State<_ProfileWithNavigation> {
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.emoji_events), label: "Leaderboard"),
+                  icon: Icon(Icons.emoji_events), label: "Live Score"),
               BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.sports_golf), label: "Scorecard"),

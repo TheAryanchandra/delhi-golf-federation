@@ -352,6 +352,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   "Videos",
                   "/videos",
                 ),
+                _buildDrawerItem(
+                  context,
+                  Icons.photo_library,
+                  "Gallery",
+                  "/gallery",
+                ),
                 _buildDrawerItem(context, Icons.event, "Events", "/events"),
                 _buildDrawerItem(context, Icons.article, "News", "/news"),
                 _buildDrawerItem(
@@ -502,7 +508,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         _pushSimpleScreen(context, const MyBookingsScreen(), "My Bookings");
         break;
 
-      case "/photos":
+      case "/gallery":
         _pushSimpleScreen(context, const GalleryScreen(), "Gallery");
         break;
 
@@ -609,7 +615,7 @@ class _ScreenWithNavigationState extends State<_ScreenWithNavigation> {
             BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(
               icon: Icon(Icons.emoji_events),
-              label: "Leaderboard",
+              label: "Live Score",
             ),
             BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
             // BottomNavigationBarItem(

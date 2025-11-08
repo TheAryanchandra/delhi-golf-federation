@@ -79,7 +79,7 @@ class ProfileWithNavigationState extends State<ProfileWithNavigation> {
               BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
               BottomNavigationBarItem(
                 icon: Icon(Icons.emoji_events),
-                label: "Leaderboard",
+                label: "Live Score",
               ),
               BottomNavigationBarItem(icon: Icon(Icons.event), label: "Events"),
               BottomNavigationBarItem(
