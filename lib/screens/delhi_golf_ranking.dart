@@ -1,6 +1,10 @@
 import 'package:delhi_golf_federation/screens/golfrankingwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:delhi_golf_federation/components/topnavigationbar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:delhi_golf_federation/bloc/golfranking/bloc/golf_ranking_bloc.dart';
+import 'package:delhi_golf_federation/bloc/golfranking/bloc/golf_ranking_event.dart';
+import 'package:delhi_golf_federation/model/golf_ranking_model.dart';
 
 class DelhiGolfRankingScreen extends StatefulWidget {
   const DelhiGolfRankingScreen({Key? key}) : super(key: key);
@@ -49,9 +53,23 @@ class _DelhiGolfRankingScreenState extends State<DelhiGolfRankingScreen>
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: RankingTabBar(
                 tabController: _tabController,
-                onTabSelected: (index) => setState(() {
-                  _tabController.index = index;
-                }),
+                onTabSelected: (index) {
+                  setState(() {
+                    _tabController.index = index;
+                  });
+                  // Trigger API call for Pro Elite when selected
+                  if (index == 0) {
+                    context.read<GolfRankingBloc>().add(
+                      FetchGolfRankingEvent(
+                        GolfRankingRequest(
+                          action: "ProEliteData",
+                          pageSize: 10,
+                          page: 1,
+                        ),
+                      ),
+                    );
+                  }
+                },
               ),
             ),
 
