@@ -1,3 +1,4 @@
+import 'package:delhi_golf_federation/widgets/amatuerelite_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:delhi_golf_federation/components/color_constants.dart';
@@ -109,8 +110,9 @@ class RankingTabBar extends StatelessWidget {
 
 /// 🔹 Dynamic Table with API Integration
 class RankingTable extends StatelessWidget {
-  final String action; // example: "ProEliteData", "AmateurEliteData"
-  const RankingTable({super.key, required this.action});
+  final String action;
+  final String? id; // example: "ProEliteData", "AmateurEliteData"
+  const RankingTable({super.key, required this.action, this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -119,10 +121,8 @@ class RankingTable extends StatelessWidget {
         if (state is GolfRankingInitial) {
           // 🔸 Trigger API call for given action
           context.read<GolfRankingBloc>().add(
-                FetchGolfRankingEvent(
-                  GolfRankingRequest(action: action),
-                ),
-              );
+            FetchGolfRankingEvent(GolfRankingRequest(action: action)),
+          );
           return const Center(child: CircularProgressIndicator());
         } else if (state is GolfRankingLoading) {
           return const Center(child: CircularProgressIndicator());
@@ -144,51 +144,72 @@ class RankingTable extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                border:
-                    Border.all(color: ColorConstants.buttonColor, width: 1.5),
+                border: Border.all(
+                  color: ColorConstants.buttonColor,
+                  width: 1.5,
+                ),
               ),
               child: Column(
                 children: [
                   // Header Row
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: ColorConstants.buttonColor,
-                      borderRadius:
-                          const BorderRadius.vertical(top: Radius.circular(16)),
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(16),
+                      ),
                     ),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Expanded(
-                            flex: 3,
-                            child: Text("NAME",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold))),
+                          flex: 3,
+                          child: Text(
+                            "NAME",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                         Expanded(
-                            flex: 2,
-                            child: Text("OWGR RANK",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold))),
+                          flex: 2,
+                          child: Text(
+                            "OWGR RANK",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                         Expanded(
-                            flex: 2,
-                            child: Text("INDIA RANK",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold))),
+                          flex: 2,
+                          child: Text(
+                            "INDIA RANK",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                         Expanded(
-                            flex: 2,
-                            child: Text("TOTAL SCORE",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold))),
+                          flex: 2,
+                          child: Text(
+                            "TOTAL SCORE",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -208,32 +229,37 @@ class RankingTable extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Expanded(
-                                  flex: 4,
-                                  child: Text(player.name ?? "-",
-                                      textAlign: TextAlign.center,
-                                      style:
-                                          const TextStyle(color: Colors.white))),
+                                flex: 4,
+                                child: Text(
+                                  player.name ?? "-",
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
                               Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                      player.ranks?.toString() ?? "-",
-                                      textAlign: TextAlign.center,
-                                      style:
-                                          const TextStyle(color: Colors.white))),
+                                flex: 2,
+                                child: Text(
+                                  player.ranks?.toString() ?? "-",
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
                               Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                      player.stateRank?.toString() ?? "-",
-                                      textAlign: TextAlign.center,
-                                      style:
-                                          const TextStyle(color: Colors.white))),
+                                flex: 2,
+                                child: Text(
+                                  player.stateRank?.toString() ?? "-",
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
                               Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                      player.totalScore?.toString() ?? "-",
-                                      textAlign: TextAlign.center,
-                                      style:
-                                          const TextStyle(color: Colors.white))),
+                                flex: 2,
+                                child: Text(
+                                  player.totalScore?.toString() ?? "-",
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
                             ],
                           ),
                         );
@@ -246,10 +272,11 @@ class RankingTable extends StatelessWidget {
           );
         } else if (state is GolfRankingError) {
           return Center(
-              child: Text(
-            "Error: ${state.message}",
-            style: const TextStyle(color: Colors.red),
-          ));
+            child: Text(
+              "Error: ${state.message}",
+              style: const TextStyle(color: Colors.red),
+            ),
+          );
         }
         return const SizedBox.shrink();
       },
@@ -258,9 +285,33 @@ class RankingTable extends StatelessWidget {
 }
 
 /// 🔹 Amateur Elite Section (Gentlemen / Ladies)
-class AmateurEliteSection extends StatelessWidget {
+class AmateurEliteSection extends StatefulWidget {
   final TabController tabController;
   const AmateurEliteSection({super.key, required this.tabController});
+
+  @override
+  State<AmateurEliteSection> createState() => _AmateurEliteSectionState();
+}
+
+class _AmateurEliteSectionState extends State<AmateurEliteSection> {
+  int selectedIndex = 0; // 0 = Gentlemen, 1 = Ladies
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData(); // initial fetch
+  }
+
+  void _fetchData() {
+    final id = selectedIndex == 0 ? "Gentlemen" : "Ladies";
+    print("📡 Fetching AmateurEliteData for $id");
+
+    context.read<GolfRankingBloc>().add(
+      FetchGolfRankingEvent(
+        GolfRankingRequest(action: "AmateurEliteData", id: id),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -284,14 +335,22 @@ class AmateurEliteSection extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(height: 12),
+
+        /// 🔹 Custom AmateurElite Table
         Expanded(
-          child: TabBarView(
-            controller: tabController,
-            physics: const NeverScrollableScrollPhysics(),
-            children: const [
-              RankingTable(action: "Gentlemen"),
-              RankingTable(action: "Ladies"),
-            ],
+          child: BlocBuilder<GolfRankingBloc, GolfRankingState>(
+            builder: (context, state) {
+              if (state is GolfRankingLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is GolfRankingLoaded) {
+                final data = state.response?.response?.players ?? [];
+                return AmateurEliteTable(players: data);
+              } else if (state is GolfRankingError) {
+                return Center(child: Text("Error: ${state.message}"));
+              }
+              return const SizedBox();
+            },
           ),
         ),
       ],
@@ -299,10 +358,14 @@ class AmateurEliteSection extends StatelessWidget {
   }
 
   Widget _buildSubTabButton(String text, int index) {
-    final isSelected = tabController.index == index;
+    final isSelected = selectedIndex == index;
     return Expanded(
       child: GestureDetector(
-        onTap: () => tabController.index = index,
+        onTap: () {
+          if (selectedIndex == index) return;
+          setState(() => selectedIndex = index);
+          _fetchData();
+        },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -327,49 +390,284 @@ class AmateurEliteSection extends StatelessWidget {
 }
 
 /// 🔹 Junior Elite Section
-class JuniorEliteSection extends StatelessWidget {
+class JuniorEliteSection extends StatefulWidget {
   final String selectedGender;
   final String selectedCategory;
-  final ValueChanged<String> onGenderChanged;
-  final ValueChanged<String> onCategoryChanged;
 
   const JuniorEliteSection({
     super.key,
     required this.selectedGender,
     required this.selectedCategory,
-    required this.onGenderChanged,
-    required this.onCategoryChanged,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF003F2F),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          children: [
-            const SizedBox(height: 12),
-            _buildSelectableRow(["Boys", "Girls"], selectedGender, onGenderChanged),
-            const SizedBox(height: 12),
-            _buildSelectableRow(
-              ["Category A", "Category B", "Category C"],
-              selectedCategory,
-              onCategoryChanged,
-            ),
-            const SizedBox(height: 12),
-            Expanded(child: RankingTable(action: "$selectedGender $selectedCategory")),
-          ],
+  State<JuniorEliteSection> createState() => _JuniorEliteSectionState();
+}
+
+class _JuniorEliteSectionState extends State<JuniorEliteSection> {
+  late String _gender;
+  late String _category;
+
+  @override
+  void initState() {
+    super.initState();
+    _gender = widget.selectedGender;
+    _category = widget.selectedCategory;
+    _fetchData();
+  }
+
+  void _fetchData() {
+    context.read<GolfRankingBloc>().add(
+      FetchGolfRankingEvent(
+        GolfRankingRequest(
+          action: "JuniorEliteData",
+          id: _gender,
+          entryType: _category,
         ),
       ),
     );
   }
 
+  void _onGenderChanged(String value) {
+    setState(() {
+      _gender = value;
+      _fetchData();
+    });
+  }
+
+  void _onCategoryChanged(String value) {
+    setState(() {
+      _category = value;
+      _fetchData();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          const SizedBox(height: 12),
+          _buildSelectableRow(["Boys", "Girls"], _gender, _onGenderChanged),
+          const SizedBox(height: 12),
+          _buildSelectableRow(
+            ["Category A", "Category B", "Category C"],
+            _category,
+            _onCategoryChanged,
+          ),
+          const SizedBox(height: 12),
+
+          /// 🔹 Table UI identical to AmateurEliteTable / ProElite
+          Expanded(
+            child: BlocBuilder<GolfRankingBloc, GolfRankingState>(
+              builder: (context, state) {
+                if (state is GolfRankingLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is GolfRankingLoaded) {
+                  final players = state.response?.response?.players ?? [];
+
+                  if (players.isEmpty) {
+                    return Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: ColorConstants.buttonColor,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: const Text(
+                        "No players found.",
+                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                      ),
+                    );
+                  }
+
+                  return Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: ColorConstants.buttonColor,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          // Table Header
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: ColorConstants.buttonColor,
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(16),
+                              ),
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Expanded(
+                                  flex: 4,
+                                  child: Text(
+                                    "NAME",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    "OWGR RANK",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    "INDIA RANK",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    "TOTAL SCORE",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Table Data
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: players.length,
+                              itemBuilder: (context, index) {
+                                final player = players[index];
+                                final isEven = index % 2 == 0;
+                                return Container(
+                                  color: isEven
+                                      ? const Color.fromARGB(255, 4, 107, 69)
+                                      : const Color(0xFF12563C),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Expanded(
+                                        flex: 4,
+                                        child: Text(
+                                          player.name ?? "-",
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          player.ranks?.toString() ?? "-",
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          player.stateRank?.toString() ?? "-",
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          player.totalScore?.toString() ?? "-",
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                } else if (state is GolfRankingError) {
+                  return Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 24,
+                      ),
+                      // decoration: BoxDecoration(
+                      //   color: Colors.red.withOpacity(0.1), // subtle background
+                      //   borderRadius: BorderRadius.circular(12),
+                      // ),
+                      child: const Text(
+                        "No data found",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSelectableRow(
-      List<String> options, String selected, ValueChanged<String> onChanged) {
+    List<String> options,
+    String selected,
+    ValueChanged<String> onChanged,
+  ) {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
@@ -379,26 +677,31 @@ class JuniorEliteSection extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(
         children: options
-            .map((opt) => Expanded(
-                  child: GestureDetector(
-                    onTap: () => onChanged(opt),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      decoration: BoxDecoration(
-                        color: selected == opt
-                            ? const Color.fromARGB(255, 4, 107, 69)
-                            : const Color(0xFF12563C),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        opt,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+            .map(
+              (opt) => Expanded(
+                child: GestureDetector(
+                  onTap: () => onChanged(opt),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: selected == opt
+                          ? const Color.fromARGB(255, 4, 107, 69)
+                          : const Color(0xFF12563C),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      opt,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
-                ))
+                ),
+              ),
+            )
             .toList(),
       ),
     );
@@ -422,8 +725,10 @@ class ClubGolfersTable extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 10),
-              const Text("Club Golfers Table Placeholder",
-                  style: TextStyle(color: Colors.white)),
+              const Text(
+                "Club Golfers Table Placeholder",
+                style: TextStyle(color: Colors.white),
+              ),
               const SizedBox(height: 10),
             ],
           ),

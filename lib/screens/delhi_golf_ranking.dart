@@ -73,14 +73,11 @@ class _DelhiGolfRankingScreenState extends State<DelhiGolfRankingScreen>
                   ),
 
                   // 🟢 Junior Elite
-                  JuniorEliteSection(
-                    selectedGender: _selectedGender,
-                    selectedCategory: _selectedCategory,
-                    onGenderChanged: (value) =>
-                        setState(() => _selectedGender = value),
-                    onCategoryChanged: (value) =>
-                        setState(() => _selectedCategory = value),
-                  ),
+                 JuniorEliteSection(
+  selectedGender: _selectedGender,
+  selectedCategory: _selectedCategory,
+),
+
 
                   // 🟢 Club Golfers
                   const ClubGolfersTable(),
