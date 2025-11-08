@@ -54,14 +54,14 @@ class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
                 );
               },
         ),
-        IconButton(
-          icon: const Icon(
-            Icons.notifications_none,
-            color: Colors.black,
-            size: 26,
-          ),
-          onPressed: onNotificationTap ?? () {},
-        ),
+        // IconButton(
+        //   icon: const Icon(
+        //     Icons.notifications_none,
+        //     color: Colors.black,
+        //     size: 26,
+        //   ),
+        //   onPressed: onNotificationTap ?? () {},
+        // ),
         const SizedBox(width: 4),
       ],
     );
