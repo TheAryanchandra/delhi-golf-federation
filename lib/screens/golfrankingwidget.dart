@@ -162,7 +162,7 @@ class RankingTable extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Expanded(
-                            flex: 4,
+                            flex: 3,
                             child: Text("NAME",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -170,21 +170,21 @@ class RankingTable extends StatelessWidget {
                                     fontWeight: FontWeight.bold))),
                         Expanded(
                             flex: 2,
-                            child: Text("RANK",
+                            child: Text("OWGR RANK",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold))),
                         Expanded(
                             flex: 2,
-                            child: Text("STATE",
+                            child: Text("INDIA RANK",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold))),
                         Expanded(
                             flex: 2,
-                            child: Text("SCORE",
+                            child: Text("TOTAL SCORE",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white,
