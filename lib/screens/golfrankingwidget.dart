@@ -418,14 +418,14 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
 
   void _fetchData() {
     context.read<GolfRankingBloc>().add(
-          FetchGolfRankingEvent(
-            GolfRankingRequest(
-              action: "JuniorEliteData",
-              id: _gender,
-              entryType: _category,
-            ),
-          ),
-        );
+      FetchGolfRankingEvent(
+        GolfRankingRequest(
+          action: "JuniorEliteData",
+          id: _gender,
+          entryType: _category,
+        ),
+      ),
+    );
   }
 
   void _onGenderChanged(String value) {
@@ -458,7 +458,7 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
           ),
           const SizedBox(height: 12),
 
-          /// 🔹 Table UI
+          /// 🔹 Table UI identical to AmateurEliteTable / ProElite
           Expanded(
             child: BlocBuilder<GolfRankingBloc, GolfRankingState>(
               builder: (context, state) {
@@ -468,7 +468,22 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
                   final players = state.response?.response?.players ?? [];
 
                   if (players.isEmpty) {
-                    return _buildNoDataFound();
+                    return Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: ColorConstants.buttonColor,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: const Text(
+                        "No players found.",
+                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                      ),
+                    );
                   }
 
                   return Padding(
@@ -487,7 +502,9 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
                           // Table Header
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 8),
+                              vertical: 12,
+                              horizontal: 8,
+                            ),
                             decoration: BoxDecoration(
                               color: ColorConstants.buttonColor,
                               borderRadius: const BorderRadius.vertical(
@@ -556,8 +573,9 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
                                   color: isEven
                                       ? const Color.fromARGB(255, 4, 107, 69)
                                       : const Color(0xFF12563C),
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
@@ -569,7 +587,6 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
                                             color: Colors.white,
-                                            fontWeight: FontWeight.w500,
                                           ),
                                         ),
                                       ),
@@ -580,7 +597,6 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
                                             color: Colors.white,
-                                            fontWeight: FontWeight.w500,
                                           ),
                                         ),
                                       ),
@@ -591,7 +607,6 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
                                             color: Colors.white,
-                                            fontWeight: FontWeight.w500,
                                           ),
                                         ),
                                       ),
@@ -602,7 +617,6 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
                                             color: Colors.white,
-                                            fontWeight: FontWeight.w500,
                                           ),
                                         ),
                                       ),
@@ -617,7 +631,28 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
                     ),
                   );
                 } else if (state is GolfRankingError) {
-                  return _buildNoDataFound();
+                  return Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 24,
+                      ),
+                      // decoration: BoxDecoration(
+                      //   color: Colors.red.withOpacity(0.1), // subtle background
+                      //   borderRadius: BorderRadius.circular(12),
+                      // ),
+                      child: const Text(
+                        "No data found",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
                 }
                 return const SizedBox.shrink();
               },
@@ -651,7 +686,7 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     decoration: BoxDecoration(
                       color: selected == opt
-                          ? const Color(0xFF046B45)
+                          ? const Color.fromARGB(255, 4, 107, 69)
                           : const Color(0xFF12563C),
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -671,40 +706,7 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
       ),
     );
   }
-
-  Widget _buildNoDataFound() {
-    return Center(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 32),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.grey.shade300, width: 1.2),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(
-              Icons.info_outline,
-              size: 36,
-              color: Colors.grey,
-            ),
-            SizedBox(height: 12),
-            Text(
-              "No players found",
-              style: TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
-
 
 /// 🔹 Club Golfers Table
 class ClubGolfersTable extends StatelessWidget {
