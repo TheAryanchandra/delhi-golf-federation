@@ -1,5 +1,8 @@
-# TODO: Update Upcoming Events Section to Show Start and End Dates and Up to 3 Events
-
-## Tasks
-- [x] Modify the date Text widget in UpcomingEventsSection (lib/widgets/homepagewidget.dart) to display both start and end dates, e.g., "Start Date - End Date".
-- [x] Update the widget to display up to 3 upcoming events instead of just the first one.
+- [x] Update AmateurEliteSection in golfrankingwidget.dart: Add currentPage state, modify _fetchData to send pageSize: 10 and page: currentPage in GolfRankingRequest.
+- [x] In AmateurEliteSection BlocBuilder: Calculate totalPages = (totalRecords / 10).ceil() where totalRecords = response.response?.totalPage ?? 0.
+- [x] Pass currentPage, totalPages, and onPageChanged callback to AmateurEliteTable.
+- [x] Modify AmateurEliteTable: Accept currentPage, totalPages, onPageChanged; remove internal pagination state; display all players; call onPageChanged on UI page selection.
+- [x] Test the server-side pagination for Amateur Elite.
+- [x] Update RankingTable (Pro Elite) to be stateful, add currentPage state, modify BlocBuilder to send pageSize:10 and page:currentPage, calculate totalPages, add pagination UI.
+- [x] Update JuniorEliteSection to add currentPage state, modify _fetchData, pass to table.
+- [x] Modify Junior Elite table to accept currentPage, totalPages, onPageChanged, add pagination UI.

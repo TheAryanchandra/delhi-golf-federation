@@ -109,10 +109,37 @@ class RankingTabBar extends StatelessWidget {
 }
 
 /// 🔹 Dynamic Table with API Integration
-class RankingTable extends StatelessWidget {
+class RankingTable extends StatefulWidget {
   final String action;
   final String? id; // example: "ProEliteData", "AmateurEliteData"
   const RankingTable({super.key, required this.action, this.id});
+
+  @override
+  State<RankingTable> createState() => _RankingTableState();
+}
+
+class _RankingTableState extends State<RankingTable> {
+  int currentPage = 1;
+
+  void _onPageChanged(int page) {
+    setState(() {
+      currentPage = page;
+    });
+    _fetchData();
+  }
+
+  void _fetchData() {
+    context.read<GolfRankingBloc>().add(
+      FetchGolfRankingEvent(
+        GolfRankingRequest(
+          action: widget.action,
+          id: widget.id,
+          pageSize: 10, // hardcoded
+          page: currentPage,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,14 +147,15 @@ class RankingTable extends StatelessWidget {
       builder: (context, state) {
         if (state is GolfRankingInitial) {
           // 🔸 Trigger API call for given action
-          context.read<GolfRankingBloc>().add(
-            FetchGolfRankingEvent(GolfRankingRequest(action: action)),
-          );
+          _fetchData();
           return const Center(child: CircularProgressIndicator());
         } else if (state is GolfRankingLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is GolfRankingLoaded) {
           final players = state.response.response?.players ?? [];
+          final totalRecords =
+              state.response.response?.totalPage ?? players.length;
+          final totalPages = players.isEmpty ? 1 : (totalRecords / 10).ceil();
 
           if (players.isEmpty) {
             return const Center(
@@ -140,134 +168,200 @@ class RankingTable extends StatelessWidget {
 
           return Padding(
             padding: const EdgeInsets.all(16),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: ColorConstants.buttonColor,
-                  width: 1.5,
-                ),
-              ),
-              child: Column(
-                children: [
-                  // Header Row
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 8,
-                    ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Container(
                     decoration: BoxDecoration(
-                      color: ColorConstants.buttonColor,
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(16),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: ColorConstants.buttonColor,
+                        width: 1.5,
                       ),
                     ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    child: Column(
                       children: [
-                        Expanded(
-                          flex: 3,
-                          child: Text(
-                            "NAME",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                        // Header Row
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: ColorConstants.buttonColor,
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(16),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(
-                            "OWGR RANK",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: Text(
+                                  "NAME",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Text(
+                                  "OWGR RANK",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Text(
+                                  "INDIA RANK",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Text(
+                                  "TOTAL SCORE",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
+
                         Expanded(
-                          flex: 2,
-                          child: Text(
-                            "INDIA RANK",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(
-                            "TOTAL SCORE",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          child: ListView.builder(
+                            itemCount: players.length,
+                            itemBuilder: (context, index) {
+                              final player = players[index];
+                              final isEven = index % 2 == 0;
+                              return Container(
+                                color: isEven
+                                    ? const Color.fromARGB(255, 4, 107, 69)
+                                    : const Color(0xFF12563C),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Expanded(
+                                      flex: 4,
+                                      child: Text(
+                                        player.name ?? "-",
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        player.ranks?.toString() ?? "-",
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        player.stateRank?.toString() ?? "-",
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        player.totalScore?.toString() ?? "-",
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ],
                     ),
                   ),
+                ),
 
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: players.length,
-                      itemBuilder: (context, index) {
-                        final player = players[index];
-                        final isEven = index % 2 == 0;
-                        return Container(
-                          color: isEven
-                              ? const Color.fromARGB(255, 4, 107, 69)
-                              : const Color(0xFF12563C),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Expanded(
-                                flex: 4,
-                                child: Text(
-                                  player.name ?? "-",
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(color: Colors.white),
-                                ),
+                // Pagination UI
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios, size: 16),
+                        onPressed: currentPage > 1
+                            ? () => _onPageChanged(currentPage - 1)
+                            : null,
+                      ),
+                      ...List.generate(totalPages, (index) {
+                        final page = index + 1;
+                        final isActive = page == currentPage;
+                        return GestureDetector(
+                          onTap: () => _onPageChanged(page),
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isActive
+                                  ? const Color(0xFF0B592A)
+                                  : Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              "$page",
+                              style: TextStyle(
+                                color: isActive ? Colors.white : Colors.black87,
+                                fontWeight: FontWeight.bold,
                               ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  player.ranks?.toString() ?? "-",
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  player.stateRank?.toString() ?? "-",
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  player.totalScore?.toString() ?? "-",
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         );
-                      },
-                    ),
+                      }),
+                      IconButton(
+                        icon: const Icon(Icons.arrow_forward_ios, size: 16),
+                        onPressed: currentPage < totalPages
+                            ? () => _onPageChanged(currentPage + 1)
+                            : null,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         } else if (state is GolfRankingError) {
@@ -295,6 +389,7 @@ class AmateurEliteSection extends StatefulWidget {
 
 class _AmateurEliteSectionState extends State<AmateurEliteSection> {
   int selectedIndex = 0; // 0 = Gentlemen, 1 = Ladies
+  int currentPage = 1;
 
   @override
   void initState() {
@@ -304,13 +399,25 @@ class _AmateurEliteSectionState extends State<AmateurEliteSection> {
 
   void _fetchData() {
     final id = selectedIndex == 0 ? "Gentlemen" : "Ladies";
-    print("📡 Fetching AmateurEliteData for $id");
+    print("📡 Fetching AmateurEliteData for $id, Page: $currentPage");
 
     context.read<GolfRankingBloc>().add(
       FetchGolfRankingEvent(
-        GolfRankingRequest(action: "AmateurEliteData", id: id),
+        GolfRankingRequest(
+          action: "AmateurEliteData",
+          id: id,
+          pageSize: 10, // hardcoded
+          page: currentPage,
+        ),
       ),
     );
+  }
+
+  void _onPageChanged(int page) {
+    setState(() {
+      currentPage = page;
+    });
+    _fetchData();
   }
 
   @override
@@ -345,7 +452,17 @@ class _AmateurEliteSectionState extends State<AmateurEliteSection> {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is GolfRankingLoaded) {
                 final data = state.response?.response?.players ?? [];
-                return AmateurEliteTable(players: data);
+                final totalRecords =
+                    state.response.response?.totalPage ?? data.length;
+                final totalPages = data.isEmpty
+                    ? 1
+                    : (totalRecords / 10).ceil();
+                return AmateurEliteTable(
+                  players: data,
+                  currentPage: currentPage,
+                  totalPages: totalPages,
+                  onPageChanged: _onPageChanged,
+                );
               } else if (state is GolfRankingError) {
                 return Center(child: Text("Error: ${state.message}"));
               }
@@ -407,6 +524,7 @@ class JuniorEliteSection extends StatefulWidget {
 class _JuniorEliteSectionState extends State<JuniorEliteSection> {
   late String _gender;
   late String _category;
+  int currentPage = 1;
 
   @override
   void initState() {
@@ -423,14 +541,24 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
           action: "JuniorEliteData",
           id: _gender,
           entryType: _category,
+          pageSize: 10, // hardcoded
+          page: currentPage,
         ),
       ),
     );
   }
 
+  void _onPageChanged(int page) {
+    setState(() {
+      currentPage = page;
+    });
+    _fetchData();
+  }
+
   void _onGenderChanged(String value) {
     setState(() {
       _gender = value;
+      currentPage = 1; // reset page on filter change
       _fetchData();
     });
   }
@@ -438,6 +566,7 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
   void _onCategoryChanged(String value) {
     setState(() {
       _category = value;
+      currentPage = 1; // reset page on filter change
       _fetchData();
     });
   }
@@ -466,6 +595,11 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is GolfRankingLoaded) {
                   final players = state.response?.response?.players ?? [];
+                  final totalRecords =
+                      state.response.response?.totalPage ?? players.length;
+                  final totalPages = players.isEmpty
+                      ? 1
+                      : (totalRecords / 10).ceil();
 
                   if (players.isEmpty) {
                     return Container(
@@ -488,146 +622,219 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
 
                   return Padding(
                     padding: const EdgeInsets.all(16),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: ColorConstants.buttonColor,
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          // Table Header
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 8,
-                            ),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Container(
                             decoration: BoxDecoration(
-                              color: ColorConstants.buttonColor,
-                              borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(16),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: ColorConstants.buttonColor,
+                                width: 1.5,
                               ),
                             ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            child: Column(
                               children: [
-                                Expanded(
-                                  flex: 3,
-                                  child: Text(
-                                    "NAME",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    "IGU RANK",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    "DELHI STATE RANK",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    "TOTAL SCORE",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // Table Data
-                          Expanded(
-                            child: ListView.builder(
-                              itemCount: players.length,
-                              itemBuilder: (context, index) {
-                                final player = players[index];
-                                final isEven = index % 2 == 0;
-                                return Container(
-                                  color: isEven
-                                      ? const Color.fromARGB(255, 4, 107, 69)
-                                      : const Color(0xFF12563C),
+                                // Table Header
+                                Container(
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 12,
+                                    horizontal: 8,
                                   ),
-                                  child: Row(
+                                  decoration: BoxDecoration(
+                                    color: ColorConstants.buttonColor,
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(16),
+                                    ),
+                                  ),
+                                  child: const Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
                                       Expanded(
-                                        flex: 4,
+                                        flex: 3,
                                         child: Text(
-                                          player.name ?? "-",
+                                          "NAME",
                                           textAlign: TextAlign.center,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             color: Colors.white,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
                                       Expanded(
                                         flex: 2,
                                         child: Text(
-                                          player.ranks?.toString() ?? "-",
+                                          "IGU RANK",
                                           textAlign: TextAlign.center,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             color: Colors.white,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
                                       Expanded(
                                         flex: 2,
                                         child: Text(
-                                          player.stateRank?.toString() ?? "-",
+                                          "DELHI STATE RANK",
                                           textAlign: TextAlign.center,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             color: Colors.white,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
                                       Expanded(
                                         flex: 2,
                                         child: Text(
-                                          player.totalScore?.toString() ?? "-",
+                                          "TOTAL SCORE",
                                           textAlign: TextAlign.center,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             color: Colors.white,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
                                     ],
                                   ),
-                                );
-                              },
+                                ),
+
+                                // Table Data
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: players.length,
+                                    itemBuilder: (context, index) {
+                                      final player = players[index];
+                                      final isEven = index % 2 == 0;
+                                      return Container(
+                                        color: isEven
+                                            ? const Color.fromARGB(
+                                                255,
+                                                4,
+                                                107,
+                                                69,
+                                              )
+                                            : const Color(0xFF12563C),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 12,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Expanded(
+                                              flex: 4,
+                                              child: Text(
+                                                player.name ?? "-",
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 2,
+                                              child: Text(
+                                                player.ranks?.toString() ?? "-",
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 2,
+                                              child: Text(
+                                                player.stateRank?.toString() ??
+                                                    "-",
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 2,
+                                              child: Text(
+                                                player.totalScore?.toString() ??
+                                                    "-",
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+
+                        // Pagination UI
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_back_ios,
+                                  size: 16,
+                                ),
+                                onPressed: currentPage > 1
+                                    ? () => _onPageChanged(currentPage - 1)
+                                    : null,
+                              ),
+                              ...List.generate(totalPages, (index) {
+                                final page = index + 1;
+                                final isActive = page == currentPage;
+                                return GestureDetector(
+                                  onTap: () => _onPageChanged(page),
+                                  child: Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 4,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: isActive
+                                          ? const Color(0xFF0B592A)
+                                          : Colors.grey.shade200,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      "$page",
+                                      style: TextStyle(
+                                        color: isActive
+                                            ? Colors.white
+                                            : Colors.black87,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 16,
+                                ),
+                                onPressed: currentPage < totalPages
+                                    ? () => _onPageChanged(currentPage + 1)
+                                    : null,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 } else if (state is GolfRankingError) {
