@@ -3,10 +3,22 @@ class WorldOfGolfItem {
   final String venue;
   final String refNo;
 
+  // 🔹 Add these optional fields for News
+  final String? eventType;
+  final String? eventName;
+  final String? startDate;
+  final String? content;
+  final String? image;
+
   WorldOfGolfItem({
     required this.id,
     required this.venue,
     required this.refNo,
+    this.eventType,
+    this.eventName,
+    this.startDate,
+    this.content,
+    this.image,
   });
 
   factory WorldOfGolfItem.fromJson(Map<String, dynamic> json) {
@@ -14,6 +26,11 @@ class WorldOfGolfItem {
       id: json['Id'] ?? 0,
       venue: json['Venue'] ?? '',
       refNo: json['RefNo'] ?? '',
+      eventType: json['EventType'] ?? '',
+      eventName: json['EventName'] ?? '',
+      startDate: json['StartDate'] ?? '',
+      content: json['Content'] ?? '',
+      image: json['Image'] ?? '',
     );
   }
 }
@@ -50,19 +67,21 @@ class WorldOfGolfResponse {
 class WorldOfGolfPayload {
   final String action;
   final String entryType;
+  final String id; // 🔹 Added for News (Latest/Past)
   final int page;
   final int pageSize;
 
   WorldOfGolfPayload({
     required this.action,
     required this.entryType,
+    this.id = "", // default empty for Gallery
     this.page = 1,
     this.pageSize = 20,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      "Id": "",
+      "Id": id, // 🔹 Used for News (Latest / Past)
       "RefNo": "",
       "Region": "",
       "RowRefNo": "",

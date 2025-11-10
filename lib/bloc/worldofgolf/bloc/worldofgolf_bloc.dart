@@ -14,8 +14,10 @@ class WorldOfGolfBloc extends Bloc<WorldOfGolfEvent, WorldOfGolfState> {
         final payload = WorldOfGolfPayload(
           action: event.action,
           entryType: event.entryType,
+          id: event.id, // 🔹 Added
           page: event.page,
         );
+
         final response = await repository.fetchWorldOfGolf(payload);
         // Use exact field names from your model
         final events = response.items;
