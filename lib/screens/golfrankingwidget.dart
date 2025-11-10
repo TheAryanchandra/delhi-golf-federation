@@ -1,6 +1,13 @@
+import 'dart:async';
 import 'package:delhi_golf_federation/bloc/auth/auth_bloc.dart';
 import 'package:delhi_golf_federation/bloc/auth/auth_event.dart';
 import 'package:delhi_golf_federation/bloc/auth/auth_state.dart';
+import 'package:delhi_golf_federation/bloc/event_search/bloc/event_search_bloc.dart';
+import 'package:delhi_golf_federation/bloc/event_search/bloc/event_search_event.dart';
+import 'package:delhi_golf_federation/bloc/event_search/bloc/event_search_state.dart';
+import 'package:delhi_golf_federation/data/event_search_repository.dart';
+import 'package:delhi_golf_federation/data/auth_repository.dart';
+import 'package:delhi_golf_federation/model/industrymodel.dart';
 import 'package:delhi_golf_federation/widgets/amatuerelite_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -919,6 +926,7 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
 }
 
 /// 🔹 Club Golfers Table
+
 class ClubGolfersTable extends StatefulWidget {
   const ClubGolfersTable({super.key});
 
@@ -927,78 +935,169 @@ class ClubGolfersTable extends StatefulWidget {
 }
 
 class _ClubGolfersTableState extends State<ClubGolfersTable> {
-  int currentPage = 1;
-  String? _selectedIndustry;
   final TextEditingController _searchController = TextEditingController();
-
-  final List<Map<String, dynamic>> allGolfers = List.generate(15, (index) {
-    return {
-      "srNo": index + 1,
-      "profile": "assets/images/owgr.png",
-      "name": "Player ${index + 1}",
-      "position": index + 1,
-      "score": -9 + index,
-      "playerPoint": 5 - (index % 5),
-    };
-  });
+  String? _selectedEventName;
+  String? _selectedIndustry;
+  Timer? _debounceTimer;
 
   @override
-  void initState() {
-    super.initState();
-    // Call the Industry API
-    context.read<IndustryBloc>().add(FetchIndustriesEvent());
+  void dispose() {
+    _debounceTimer?.cancel();
+    _searchController.dispose();
+    super.dispose();
   }
 
-  void _onPageChanged(int page) {
-    setState(() {
-      currentPage = page;
-    });
+  void _onSearchChanged(String value) {
+    _debounceTimer?.cancel();
+
+    if (value.trim().length >= 3) {
+      _debounceTimer = Timer(const Duration(milliseconds: 350), () {
+        context.read<EventSearchBloc>().add(FetchEventSearch(value.trim()));
+      });
+    } else if (value.isEmpty) {
+      context.read<EventSearchBloc>().add(FetchEventSearch(""));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final pageSize = 10;
-    final totalPages = (allGolfers.length / pageSize).ceil();
-    final golfers = allGolfers
-        .skip((currentPage - 1) * pageSize)
-        .take(pageSize)
-        .toList();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<IndustryBloc>(
+          create: (context) =>
+              IndustryBloc(IndustryRepository())..add(FetchIndustriesEvent()),
+        ),
+        BlocProvider<EventSearchBloc>(
+          create: (context) => EventSearchBloc(EventSearchRepository()),
+        ),
+      ],
+      child: _buildClubGolfersContent(),
+    );
+  }
 
+  Widget _buildClubGolfersContent() {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// 🟢 Top Row: Search Box + Dropdown
+          // 🔹 Top Row: Search + Industry
           Row(
             children: [
-              // 🔍 Search Field
+              // Search Field
               Expanded(
                 flex: 2,
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Search players...',
-                    // prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 14,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                  ),
-                  onChanged: (value) {
-                    setState(() {}); // can later filter golfers list
+                child: BlocBuilder<EventSearchBloc, EventSearchState>(
+                  builder: (context, state) {
+                    final eventSearchBloc = BlocProvider.of<EventSearchBloc>(
+                      context,
+                    );
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextField(
+                          controller: _searchController,
+                          decoration: InputDecoration(
+                            hintText: 'Search Event...',
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 14,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade300,
+                                width: 1,
+                              ),
+                            ),
+                          ),
+                          onChanged: _onSearchChanged,
+                        ),
+                        const SizedBox(height: 4),
+
+                        // Suggestions dropdown
+                        if (state is EventSearchLoading)
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Center(child: CircularProgressIndicator()),
+                          )
+                        else if (state is EventSearchLoaded &&
+                            _searchController.text.length >= 3 &&
+                            state.events.isNotEmpty)
+                          Container(
+                            width: double.infinity,
+                            constraints: const BoxConstraints(maxHeight: 250),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: ListView.separated(
+                              shrinkWrap: true,
+                              itemCount: state.events.length,
+                              separatorBuilder: (_, __) => Divider(
+                                height: 1,
+                                color: Colors.grey.shade200,
+                              ),
+                              itemBuilder: (context, index) {
+                                final event = state.events[index];
+                                return ListTile(
+                                  dense: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
+                                  title: Text(
+                                    event.name ?? 'Unknown Event',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    'ID: ${event.id ?? '-'} | Ref: ${event.refNo ?? '-'}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedEventName = event.name;
+                                      _searchController.text = event.name ?? '';
+                                    });
+                                    FocusScope.of(context).unfocus();
+                                  },
+                                );
+                              },
+                            ),
+                          )
+                        else if (state is EventSearchError)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Error: ${state.message}",
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          ),
+                      ],
+                    );
                   },
                 ),
               ),
+
               const SizedBox(width: 16),
 
-              // 🏭 Industry Dropdown using Bloc
+              // Industry Dropdown
               Expanded(
                 flex: 2,
                 child: BlocBuilder<IndustryBloc, IndustryState>(
@@ -1007,6 +1106,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is IndustryLoaded) {
                       return Container(
+                        height: 60, // <-- fixed height so it is visible
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -1026,12 +1126,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                         child: DropdownButtonFormField<String>(
                           value: _selectedIndustry,
                           isExpanded: true,
-                          isDense: true,
                           decoration: const InputDecoration(
-                            // prefixIcon: Icon(
-                            //   Icons.business,
-                            //   color: Colors.grey,
-                            // ),
                             hintText: "Select industry",
                             border: InputBorder.none,
                           ),
@@ -1039,22 +1134,16 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                               .map(
                                 (industry) => DropdownMenuItem<String>(
                                   value: industry.refNo,
-                                  child: Flexible(
-                                    child: Text(
-                                      industry.name,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                  child: Text(
+                                    industry.name,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               )
                               .toList(),
                           onChanged: (value) {
                             setState(() => _selectedIndustry = value);
-                            // you can trigger a filter or new API call here
                           },
-                          validator: (value) => value == null
-                              ? "Please select your industry"
-                              : null,
                         ),
                       );
                     } else if (state is IndustryError) {
@@ -1073,51 +1162,28 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
 
           const SizedBox(height: 16),
 
-          /// 🟩 Table Section
+          // Table Section
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Container(
-                width: 450,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: ColorConstants.buttonColor,
-                    width: 1.5,
-                  ),
-                ),
-                clipBehavior: Clip.hardEdge,
+              child: SizedBox(
+                width: 500,
                 child: Column(
                   children: [
-                    // Header
+                    // Table Header
                     Container(
                       padding: const EdgeInsets.symmetric(
                         vertical: 12,
                         horizontal: 8,
                       ),
-                      decoration: const BoxDecoration(
-                        color: ColorConstants.buttonColor,
-                      ),
-                      child: Row(
-                        children: const [
+                      decoration: const BoxDecoration(color: Colors.green),
+                      child: const Row(
+                        children: [
                           Expanded(
                             flex: 1,
                             child: Center(
                               child: Text(
                                 "SR. NO",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Center(
-                              child: Text(
-                                "PROFILE",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -1141,31 +1207,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                             flex: 2,
                             child: Center(
                               child: Text(
-                                "POSITION",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Center(
-                              child: Text(
                                 "SCORE",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Center(
-                              child: Text(
-                                "PLAYER POINT",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -1177,12 +1219,11 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                       ),
                     ),
 
-                    // Table Rows
+                    // Table Rows (Static Demo)
                     Expanded(
                       child: ListView.builder(
-                        itemCount: golfers.length,
+                        itemCount: 10,
                         itemBuilder: (context, index) {
-                          final golfer = golfers[index];
                           final isEven = index % 2 == 0;
                           return Container(
                             color: isEven
@@ -1195,20 +1236,10 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                                   flex: 1,
                                   child: Center(
                                     child: Text(
-                                      golfer["srNo"].toString(),
+                                      (index + 1).toString(),
                                       style: const TextStyle(
                                         color: Colors.white,
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Center(
-                                    child: Image.asset(
-                                      golfer["profile"],
-                                      width: 40,
-                                      height: 40,
                                     ),
                                   ),
                                 ),
@@ -1216,7 +1247,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                                   flex: 3,
                                   child: Center(
                                     child: Text(
-                                      golfer["name"],
+                                      _selectedEventName ?? "Swing for Hope",
                                       style: const TextStyle(
                                         color: Colors.white,
                                       ),
@@ -1227,29 +1258,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                                   flex: 2,
                                   child: Center(
                                     child: Text(
-                                      golfer["position"].toString(),
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Center(
-                                    child: Text(
-                                      golfer["score"].toString(),
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Center(
-                                    child: Text(
-                                      golfer["playerPoint"].toString(),
+                                      "-${index + 1}",
                                       style: const TextStyle(
                                         color: Colors.white,
                                       ),

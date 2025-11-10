@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:delhi_golf_federation/bloc/event/bloc/event_bloc.dart';
+import 'package:delhi_golf_federation/bloc/event_search/bloc/event_search_bloc.dart';
 import 'package:delhi_golf_federation/bloc/eventdetails/bloc/eventdetails_bloc.dart';
 import 'package:delhi_golf_federation/bloc/eventregister/bloc/eventregister_bloc.dart';
 import 'package:delhi_golf_federation/bloc/eventreport/bloc/eventreport_bloc.dart';
@@ -17,6 +18,7 @@ import 'package:delhi_golf_federation/bloc/worldofgolf/bloc/worldofgolf_bloc.dar
 import 'package:delhi_golf_federation/config/network/dio_client.dart';
 import 'package:delhi_golf_federation/config/network/web_constant.dart';
 import 'package:delhi_golf_federation/data/auth_repository.dart';
+import 'package:delhi_golf_federation/data/event_search_repository.dart';
 import 'package:delhi_golf_federation/data/eventdetails_repository.dart';
 import 'package:delhi_golf_federation/data/eventregister_repository.dart';
 import 'package:delhi_golf_federation/data/eventreport_repository.dart';
@@ -129,6 +131,7 @@ class GolfApp extends StatelessWidget {
         BlocProvider(create: (_) =>  PaymentAfterSuccessBloc(PaymentAfterSuccess())),
         BlocProvider(create: (_) =>  GolfRankingBloc(GolfRankingRepository())),
         BlocProvider(create: (_) =>  WorldOfGolfBloc(WorldOfGolfRepository())),
+        BlocProvider(create: (_) =>  EventSearchBloc(EventSearchRepository())),
       ],
       child: SafeArea(
         bottom: true,
