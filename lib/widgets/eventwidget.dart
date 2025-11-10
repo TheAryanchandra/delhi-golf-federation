@@ -7,6 +7,7 @@ import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_state.dart';
 import 'package:delhi_golf_federation/bloc/payementlogin/bloc/paymentlogin_bloc.dart';
 import 'package:delhi_golf_federation/bloc/payementlogin/bloc/paymentlogin_event.dart';
 import 'package:delhi_golf_federation/bloc/payementlogin/bloc/paymentlogin_state.dart';
+import 'package:delhi_golf_federation/components/bottomnavigation.dart';
 import 'package:delhi_golf_federation/components/color_constants.dart';
 import 'package:delhi_golf_federation/config/routes_name.dart';
 import 'package:delhi_golf_federation/data/paymentrepository.dart';
@@ -372,6 +373,48 @@ class _EventRegisterPopupState extends State<EventRegisterPopup> {
                     BlocBuilder<EventRegistrationBloc, EventRegistrationState>(
                       builder: (context, state) {
                         final isLoading = state is EventRegistrationLoading;
+
+                        // ✅ CASE 1: If user already paid, show “View Leaderboard”
+                        if (state is EventRegistrationSuccess &&
+                            (state.response.response == "Payment Done" ||
+                                (state.response.message?.contains(
+                                      "already completed",
+                                    ) ??
+                                    false))) {
+                          return ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.pop(context); // Close popup
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const CustomBottomNav(initialIndex: 1),
+                                ),
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.emoji_events,
+                              color: Colors.white,
+                            ),
+                            label: const Text(
+                              "View Leaderboard",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: ColorConstants.buttonColor,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                          );
+                        }
+
+                        // ✅ CASE 2: Default “Submit” button
                         return ElevatedButton(
                           onPressed: isLoading
                               ? null

@@ -71,17 +71,23 @@ class EventRegistrationResponse {
   });
 
   factory EventRegistrationResponse.fromJson(Map<String, dynamic> json) {
+    final dynamic responseData = json['response']; // can be Map or String
+
     return EventRegistrationResponse(
-      id: json['Id'],
-      bigId: json['BigId'],
-      status: json['status'],
-      message: json['message'],
+      id: json['Id'] ?? 0,
+      bigId: json['BigId'] ?? 0,
+      status: json['status'] ?? false,
+      message: json['message'] ?? '',
       refNo: json['RefNo'],
-      response: json['response'] != null
-          ? EventResponseData.fromJson(json['response'])
-          : null,
+      response: (responseData is Map<String, dynamic>)
+          ? EventResponseData.fromJson(responseData)
+          : null, // safely ignore if it's a string
     );
   }
+
+  /// Helper to check if payment is already done
+  bool get isAlreadyPaid =>
+      message?.toLowerCase().contains("already completed the payment") ?? false;
 }
 
 /// ✅ Nested "response" field

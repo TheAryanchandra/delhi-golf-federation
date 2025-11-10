@@ -29,4 +29,5 @@ class RoutesName {
   static const String paymentSuccess2Screen = '/payment-success-2';
   static const String eventScreen = '/event-screen';
   static const String newsDetailsScreen = '/news-details';
+  static const String leaderboardScreen = '/leaderboard';
 }

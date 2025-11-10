@@ -44,13 +44,25 @@ class EventRegistrationRepository {
       print('🔸 Data: ${response.data}');
 
       if (response.statusCode == 200) {
-        return EventRegistrationResponse.fromJson(response.data);
+        final data = response.data;
+
+        // ✅ Handle both string and map response types safely
+        if (data is String) {
+          // Example: "Payment Done"
+          print('⚠️ Response is a string: $data');
+          throw Exception(data);
+        } else if (data is Map<String, dynamic>) {
+          print('🧩 Response is a Map, parsing normally...');
+          return EventRegistrationResponse.fromJson(data);
+        } else {
+          throw Exception('Unexpected response format: ${data.runtimeType}');
+        }
       } else {
         throw Exception('Failed with status code: ${response.statusCode}');
       }
     } catch (e) {
       print('❌ Event registration failed: $e');
-      rethrow;
+      throw Exception(e.toString());
     }
   }
 }

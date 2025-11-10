@@ -19,6 +19,7 @@ import '../screens/delhi_golf_ranking.dart'; // Add this import
 import '../screens/paymentsuccessscreen.dart';
 import '../screens/paymentsuccess2.dart';
 import '../screens/newsviewmore.dart'; // Add this import for NewsDetailsScreen
+import '../screens/leaderboard_screen.dart'; // Add this import for LeaderboardScreen
 // import '../screens/splash_screen.dart';
 // import '../screens/register_screen.dart';
 // import '../screens/profile_screen.dart';
@@ -52,6 +53,8 @@ final Map<String, WidgetBuilder> appRoutes = {
   RoutesName.paymentSuccessScreen: (context) => const PaymentSuccessScreen(),
   RoutesName.paymentSuccess2Screen: (context) => const PaymentDoneScreen(),
   RoutesName.eventScreen: (context) => const CustomBottomNav(initialIndex: 2),
+  RoutesName.leaderboardScreen: (context) =>
+      const CustomBottomNav(initialIndex: 1),
 
   /// Add when ready
   // RoutesName.splashScreen: (context) => const SplashScreen(),
