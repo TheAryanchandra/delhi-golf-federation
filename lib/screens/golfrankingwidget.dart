@@ -1,3 +1,6 @@
+import 'package:delhi_golf_federation/bloc/auth/auth_bloc.dart';
+import 'package:delhi_golf_federation/bloc/auth/auth_event.dart';
+import 'package:delhi_golf_federation/bloc/auth/auth_state.dart';
 import 'package:delhi_golf_federation/widgets/amatuerelite_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -916,7 +919,6 @@ class _JuniorEliteSectionState extends State<JuniorEliteSection> {
 }
 
 /// 🔹 Club Golfers Table
-
 class ClubGolfersTable extends StatefulWidget {
   const ClubGolfersTable({super.key});
 
@@ -926,6 +928,8 @@ class ClubGolfersTable extends StatefulWidget {
 
 class _ClubGolfersTableState extends State<ClubGolfersTable> {
   int currentPage = 1;
+  String? _selectedIndustry;
+  final TextEditingController _searchController = TextEditingController();
 
   final List<Map<String, dynamic>> allGolfers = List.generate(15, (index) {
     return {
@@ -937,6 +941,13 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
       "playerPoint": 5 - (index % 5),
     };
   });
+
+  @override
+  void initState() {
+    super.initState();
+    // Call the Industry API
+    context.read<IndustryBloc>().add(FetchIndustriesEvent());
+  }
 
   void _onPageChanged(int page) {
     setState(() {
@@ -956,13 +967,118 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Table Container with horizontal scrolling
+          /// 🟢 Top Row: Search Box + Dropdown
+          Row(
+            children: [
+              // 🔍 Search Field
+              Expanded(
+                flex: 2,
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search players...',
+                    // prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 14,
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    setState(() {}); // can later filter golfers list
+                  },
+                ),
+              ),
+              const SizedBox(width: 16),
+
+              // 🏭 Industry Dropdown using Bloc
+              Expanded(
+                flex: 2,
+                child: BlocBuilder<IndustryBloc, IndustryState>(
+                  builder: (context, state) {
+                    if (state is IndustryLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is IndustryLoaded) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.grey.shade300,
+                            width: 1,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 5,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: DropdownButtonFormField<String>(
+                          value: _selectedIndustry,
+                          isExpanded: true,
+                          isDense: true,
+                          decoration: const InputDecoration(
+                            // prefixIcon: Icon(
+                            //   Icons.business,
+                            //   color: Colors.grey,
+                            // ),
+                            hintText: "Select industry",
+                            border: InputBorder.none,
+                          ),
+                          items: state.industries
+                              .map(
+                                (industry) => DropdownMenuItem<String>(
+                                  value: industry.refNo,
+                                  child: Flexible(
+                                    child: Text(
+                                      industry.name,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() => _selectedIndustry = value);
+                            // you can trigger a filter or new API call here
+                          },
+                          validator: (value) => value == null
+                              ? "Please select your industry"
+                              : null,
+                        ),
+                      );
+                    } else if (state is IndustryError) {
+                      return Text(
+                        "Failed to load industries: ${state.message}",
+                        style: const TextStyle(color: Colors.red),
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          /// 🟩 Table Section
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Container(
-                width: 450, // set minimum width for table to allow horizontal scroll
+                width: 450,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
@@ -974,97 +1090,90 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                 clipBehavior: Clip.hardEdge,
                 child: Column(
                   children: [
-                    // Table Header
+                    // Header
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 8),
+                        vertical: 12,
+                        horizontal: 8,
+                      ),
                       decoration: const BoxDecoration(
                         color: ColorConstants.buttonColor,
                       ),
-                      child: IntrinsicHeight(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
-                            Expanded(
-                              flex: 1,
-                              child: Center(
-                                child: Text(
-                                  "SR. NO",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                      child: Row(
+                        children: const [
+                          Expanded(
+                            flex: 1,
+                            child: Center(
+                              child: Text(
+                                "SR. NO",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            Expanded(
-                              flex: 2,
-                              child: Center(
-                                child: Text(
-                                  "PROFILE",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Center(
+                              child: Text(
+                                "PROFILE",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            Expanded(
-                              flex: 3,
-                              child: Center(
-                                child: Text(
-                                  "NAME",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: Center(
+                              child: Text(
+                                "NAME",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            Expanded(
-                              flex: 2,
-                              child: Center(
-                                child: Text(
-                                  "POSITION",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Center(
+                              child: Text(
+                                "POSITION",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            Expanded(
-                              flex: 2,
-                              child: Center(
-                                child: Text(
-                                  "SCORE",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Center(
+                              child: Text(
+                                "SCORE",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            Expanded(
-                              flex: 2,
-                              child: Center(
-                                child: Text(
-                                  "PLAYER POINT",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Center(
+                              child: Text(
+                                "PLAYER POINT",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
 
@@ -1082,19 +1191,17 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             child: Row(
                               children: [
-                                // SR. NO
                                 Expanded(
                                   flex: 1,
                                   child: Center(
                                     child: Text(
                                       golfer["srNo"].toString(),
-                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
-                                          color: Colors.white),
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
-                                // PROFILE
                                 Expanded(
                                   flex: 2,
                                   child: Center(
@@ -1105,58 +1212,47 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                                     ),
                                   ),
                                 ),
-                                // NAME
                                 Expanded(
                                   flex: 3,
                                   child: Center(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: golfer["name"]
-                                          .toString()
-                                          .split(" ")
-                                          .map((word) => Text(
-                                                word,
-                                                textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                    color: Colors.white),
-                                              ))
-                                          .toList(),
+                                    child: Text(
+                                      golfer["name"],
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
-                                // POSITION
                                 Expanded(
                                   flex: 2,
                                   child: Center(
                                     child: Text(
                                       golfer["position"].toString(),
-                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
-                                          color: Colors.white),
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
-                                // SCORE
                                 Expanded(
                                   flex: 2,
                                   child: Center(
                                     child: Text(
                                       golfer["score"].toString(),
-                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
-                                          color: Colors.white),
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
-                                // PLAYER POINT
                                 Expanded(
                                   flex: 2,
                                   child: Center(
                                     child: Text(
                                       golfer["playerPoint"].toString(),
-                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
-                                          color: Colors.white),
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
