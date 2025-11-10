@@ -7,7 +7,6 @@ import 'package:delhi_golf_federation/bloc/event_search/bloc/event_search_event.
 import 'package:delhi_golf_federation/bloc/event_search/bloc/event_search_state.dart';
 import 'package:delhi_golf_federation/data/event_search_repository.dart';
 import 'package:delhi_golf_federation/data/auth_repository.dart';
-import 'package:delhi_golf_federation/model/industrymodel.dart';
 import 'package:delhi_golf_federation/widgets/amatuerelite_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -939,23 +938,41 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
   String? _selectedEventName;
   String? _selectedIndustry;
   Timer? _debounceTimer;
+  late final IndustryBloc _industryBloc;
+  late final EventSearchBloc _eventSearchBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _industryBloc = IndustryBloc(IndustryRepository())
+      ..add(FetchIndustriesEvent());
+    _eventSearchBloc = EventSearchBloc(EventSearchRepository());
+  }
 
   @override
   void dispose() {
     _debounceTimer?.cancel();
     _searchController.dispose();
+    _industryBloc.close();
+    _eventSearchBloc.close();
     super.dispose();
   }
 
-  void _onSearchChanged(String value) {
+  void _onSearchChanged(BuildContext blocContext, String value) {
+    print("🔹 Search input changed: '$value'");
+
     _debounceTimer?.cancel();
 
     if (value.trim().length >= 3) {
       _debounceTimer = Timer(const Duration(milliseconds: 350), () {
-        context.read<EventSearchBloc>().add(FetchEventSearch(value.trim()));
+        print("🔹 Triggering FetchEventSearch with query: '${value.trim()}'");
+        blocContext
+            .read<EventSearchBloc>()
+            .add(FetchEventSearch(value.trim()));
       });
     } else if (value.isEmpty) {
-      context.read<EventSearchBloc>().add(FetchEventSearch(""));
+      print("🔹 Search input empty, clearing search results");
+      blocContext.read<EventSearchBloc>().add(FetchEventSearch(""));
     }
   }
 
@@ -963,19 +980,16 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<IndustryBloc>(
-          create: (context) =>
-              IndustryBloc(IndustryRepository())..add(FetchIndustriesEvent()),
-        ),
-        BlocProvider<EventSearchBloc>(
-          create: (context) => EventSearchBloc(EventSearchRepository()),
-        ),
+        BlocProvider<IndustryBloc>.value(value: _industryBloc),
+        BlocProvider<EventSearchBloc>.value(value: _eventSearchBloc),
       ],
-      child: _buildClubGolfersContent(),
+      child: Builder(
+        builder: (context) => _buildClubGolfersContent(context),
+      ),
     );
   }
 
-  Widget _buildClubGolfersContent() {
+  Widget _buildClubGolfersContent(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -989,107 +1003,130 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                 flex: 2,
                 child: BlocBuilder<EventSearchBloc, EventSearchState>(
                   builder: (context, state) {
-                    final eventSearchBloc = BlocProvider.of<EventSearchBloc>(
-                      context,
+                    print(
+                      "🔹 BlocBuilder EventSearchBloc: State updated -> $state",
+                    );
+                    print(
+                      "🔹 _searchController.text: '${_searchController.text}'",
                     );
 
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextField(
-                          controller: _searchController,
-                          decoration: InputDecoration(
-                            hintText: 'Search Event...',
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 14,
-                            ),
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                color: Colors.grey.shade300,
-                                width: 1,
+                    return SizedBox(
+                      height:
+                          60, // height of TextField (dropdown will float over it)
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          // 🔹 TextField
+                          TextField(
+                            controller: _searchController,
+                            decoration: InputDecoration(
+                              hintText: 'Search Event...',
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 14,
                               ),
-                            ),
-                          ),
-                          onChanged: _onSearchChanged,
-                        ),
-                        const SizedBox(height: 4),
-
-                        // Suggestions dropdown
-                        if (state is EventSearchLoading)
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Center(child: CircularProgressIndicator()),
-                          )
-                        else if (state is EventSearchLoaded &&
-                            _searchController.text.length >= 3 &&
-                            state.events.isNotEmpty)
-                          Container(
-                            width: double.infinity,
-                            constraints: const BoxConstraints(maxHeight: 250),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.3),
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 3),
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade300,
+                                  width: 1,
                                 ),
-                              ],
-                            ),
-                            child: ListView.separated(
-                              shrinkWrap: true,
-                              itemCount: state.events.length,
-                              separatorBuilder: (_, __) => Divider(
-                                height: 1,
-                                color: Colors.grey.shade200,
                               ),
-                              itemBuilder: (context, index) {
-                                final event = state.events[index];
-                                return ListTile(
-                                  dense: true,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
-                                  ),
-                                  title: Text(
-                                    event.name ?? 'Unknown Event',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    'ID: ${event.id ?? '-'} | Ref: ${event.refNo ?? '-'}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey.shade600,
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    setState(() {
-                                      _selectedEventName = event.name;
-                                      _searchController.text = event.name ?? '';
-                                    });
-                                    FocusScope.of(context).unfocus();
-                                  },
-                                );
-                              },
                             ),
-                          )
-                        else if (state is EventSearchError)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Error: ${state.message}",
-                              style: const TextStyle(color: Colors.red),
-                            ),
+                            onChanged: (value) {
+                              print("🔹 Search input changed: '$value'");
+                              _onSearchChanged(context, value);
+                            },
                           ),
-                      ],
+
+                          // 🔹 Dropdown suggestions
+                          if (state is EventSearchLoaded &&
+                              _searchController.text.trim().length >= 3 &&
+                              state.events.isNotEmpty)
+                            Positioned(
+                              top: 60, // just below the TextField
+                              left: 0,
+                              right: 0,
+                              child: Material(
+                                elevation: 4,
+                                borderRadius: BorderRadius.circular(8),
+                                child: SizedBox(
+                                  height: 250, // fixed height for dropdown
+                                  child: ListView.separated(
+                                    padding: EdgeInsets.zero,
+                                    itemCount: state.events.length,
+                                    separatorBuilder: (_, __) => Divider(
+                                      height: 1,
+                                      color: Colors.grey.shade200,
+                                    ),
+                                    itemBuilder: (context, index) {
+                                      final event = state.events[index];
+                                      print(
+                                        "🔹 Displaying event: ${event.name} | ID: ${event.id}",
+                                      );
+                                      return ListTile(
+                                        dense: true,
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 8,
+                                            ),
+                                        title: Text(
+                                          event.name ?? 'Unknown Event',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        // subtitle: Text(
+                                        //   'ID: ${event.id ?? '-'} | Ref: ${event.refNo ?? '-'}',
+                                        //   style: TextStyle(
+                                        //     fontSize: 12,
+                                        //     color: Colors.grey.shade600,
+                                        //   ),
+                                        // ),
+                                        onTap: () {
+                                          setState(() {
+                                            _selectedEventName = event.name;
+                                            _searchController.text =
+                                                event.name ?? '';
+                                          });
+                                          print(
+                                            "🔹 Selected event: ${event.name}",
+                                          );
+                                          FocusScope.of(context).unfocus();
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                          // 🔹 Loading indicator
+                          if (state is EventSearchLoading)
+                            const Positioned(
+                              top: 60,
+                              left: 0,
+                              right: 0,
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+
+                          // 🔹 Error message
+                          if (state is EventSearchError)
+                            Positioned(
+                              top: 60,
+                              left: 0,
+                              right: 0,
+                              child: Text(
+                                "Error: ${state.message}",
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                            ),
+                        ],
+                      ),
                     );
                   },
                 ),
@@ -1102,11 +1139,15 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                 flex: 2,
                 child: BlocBuilder<IndustryBloc, IndustryState>(
                   builder: (context, state) {
+                    print(
+                      "🔹 BlocBuilder IndustryBloc: State updated -> $state",
+                    );
+
                     if (state is IndustryLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is IndustryLoaded) {
                       return Container(
-                        height: 60, // <-- fixed height so it is visible
+                        height: 60,
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -1142,7 +1183,10 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                               )
                               .toList(),
                           onChanged: (value) {
-                            setState(() => _selectedIndustry = value);
+                            setState(() {
+                              _selectedIndustry = value;
+                            });
+                            print("🔹 Selected industry: $value");
                           },
                         ),
                       );
@@ -1171,106 +1215,106 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                 child: Column(
                   children: [
                     // Table Header
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 8,
-                      ),
-                      decoration: const BoxDecoration(color: Colors.green),
-                      child: const Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Center(
-                              child: Text(
-                                "SR. NO",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Center(
-                              child: Text(
-                                "NAME",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Center(
-                              child: Text(
-                                "SCORE",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // Container(
+                    //   padding: const EdgeInsets.symmetric(
+                    //     vertical: 12,
+                    //     horizontal: 8,
+                    //   ),
+                    //   decoration: const BoxDecoration(color: Colors.green),
+                    //   child: const Row(
+                    //     children: [
+                    //       Expanded(
+                    //         flex: 1,
+                    //         child: Center(
+                    //           child: Text(
+                    //             "SR. NO",
+                    //             style: TextStyle(
+                    //               color: Colors.white,
+                    //               fontWeight: FontWeight.bold,
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       Expanded(
+                    //         flex: 3,
+                    //         child: Center(
+                    //           child: Text(
+                    //             "NAME",
+                    //             style: TextStyle(
+                    //               color: Colors.white,
+                    //               fontWeight: FontWeight.bold,
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       Expanded(
+                    //         flex: 2,
+                    //         child: Center(
+                    //           child: Text(
+                    //             "SCORE",
+                    //             style: TextStyle(
+                    //               color: Colors.white,
+                    //               fontWeight: FontWeight.bold,
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
 
                     // Table Rows (Static Demo)
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: 10,
-                        itemBuilder: (context, index) {
-                          final isEven = index % 2 == 0;
-                          return Container(
-                            color: isEven
-                                ? const Color(0xFF046B45)
-                                : const Color(0xFF12563C),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Center(
-                                    child: Text(
-                                      (index + 1).toString(),
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 3,
-                                  child: Center(
-                                    child: Text(
-                                      _selectedEventName ?? "Swing for Hope",
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Center(
-                                    child: Text(
-                                      "-${index + 1}",
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                    // Expanded(
+                    //   child: ListView.builder(
+                    //     itemCount: 10,
+                    //     itemBuilder: (context, index) {
+                    //       final isEven = index % 2 == 0;
+                    //       return Container(
+                    //         color: isEven
+                    //             ? const Color(0xFF046B45)
+                    //             : const Color(0xFF12563C),
+                    //         padding: const EdgeInsets.symmetric(vertical: 12),
+                    //         child: Row(
+                    //           children: [
+                    //             Expanded(
+                    //               flex: 1,
+                    //               child: Center(
+                    //                 child: Text(
+                    //                   (index + 1).toString(),
+                    //                   style: const TextStyle(
+                    //                     color: Colors.white,
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //             Expanded(
+                    //               flex: 3,
+                    //               child: Center(
+                    //                 child: Text(
+                    //                   _selectedEventName ?? "Swing for Hope",
+                    //                   style: const TextStyle(
+                    //                     color: Colors.white,
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //             Expanded(
+                    //               flex: 2,
+                    //               child: Center(
+                    //                 child: Text(
+                    //                   "-${index + 1}",
+                    //                   style: const TextStyle(
+                    //                     color: Colors.white,
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       );
+                    //     },
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
