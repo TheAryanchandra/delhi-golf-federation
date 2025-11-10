@@ -13,6 +13,7 @@ import 'package:delhi_golf_federation/bloc/razorpay_success/bloc/razorpay_succes
 import 'package:delhi_golf_federation/bloc/scorecard/bloc/scorecard_bloc.dart';
 import 'package:delhi_golf_federation/bloc/updateimage/bloc/updateimage_bloc.dart';
 import 'package:delhi_golf_federation/bloc/viewscore/bloc/viewscore_bloc.dart';
+import 'package:delhi_golf_federation/bloc/worldofgolf/bloc/worldofgolf_bloc.dart';
 import 'package:delhi_golf_federation/config/network/dio_client.dart';
 import 'package:delhi_golf_federation/config/network/web_constant.dart';
 import 'package:delhi_golf_federation/data/auth_repository.dart';
@@ -29,6 +30,7 @@ import 'package:delhi_golf_federation/data/razorpay_success_repository.dart';
 import 'package:delhi_golf_federation/data/scorecard_repository.dart';
 import 'package:delhi_golf_federation/data/updateimage_repository.dart';
 import 'package:delhi_golf_federation/data/viewscore_repository.dart';
+import 'package:delhi_golf_federation/data/worldofgolf_repository.dart';
 import 'package:delhi_golf_federation/database/shared_preferences.dart';
 import 'package:delhi_golf_federation/screens/myprofile.dart';
 import 'package:flutter/foundation.dart';
@@ -126,6 +128,7 @@ class GolfApp extends StatelessWidget {
         BlocProvider(create: (_) =>  PaymentBloc(PaymentRepository())),
         BlocProvider(create: (_) =>  PaymentAfterSuccessBloc(PaymentAfterSuccess())),
         BlocProvider(create: (_) =>  GolfRankingBloc(GolfRankingRepository())),
+        BlocProvider(create: (_) =>  WorldOfGolfBloc(WorldOfGolfRepository())),
       ],
       child: SafeArea(
         bottom: true,

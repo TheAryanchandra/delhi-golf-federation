@@ -1,27 +1,37 @@
+import 'package:delhi_golf_federation/bloc/worldofgolf/bloc/worldofgolf_bloc.dart';
+import 'package:delhi_golf_federation/bloc/worldofgolf/bloc/worldofgolf_event.dart';
+import 'package:delhi_golf_federation/bloc/worldofgolf/bloc/worldofgolf_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:delhi_golf_federation/components/topnavigationbar.dart';
 
-class GalleryScreen extends StatelessWidget {
+class GalleryScreen extends StatefulWidget {
   const GalleryScreen({super.key});
+
+  @override
+  State<GalleryScreen> createState() => _GalleryScreenState();
+}
+
+class _GalleryScreenState extends State<GalleryScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch gallery images from API when screen loads
+    context.read<WorldOfGolfBloc>().add(
+      FetchWorldOfGolfEvent(action: "GallaryReport", entryType: "Gallery"),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final List<String> galleryImages = [
-      "assets/images/classic golf country.png",
-      "assets/images/Silver partner.png",
-      "assets/images/welcome.png", // add more images as needed
-      "assets/images/classic golf country.png",
-      "assets/images/Silver partner.png",
-    ];
-
     return Scaffold(
       backgroundColor: const Color(0xFFEFF2F1),
-      // appBar: const TopNavigationBar(showBackButton: true),
       body: Column(
         children: [
-          // Header
+          // Header Section
           ClipRRect(
             borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(20),
@@ -56,29 +66,65 @@ class GalleryScreen extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          const Text(
-            "Gallery",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-
-          const SizedBox(height: 12),
-
+          // BLoC Builder to handle API states
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 1.2,
-                ),
-                itemCount: galleryImages.length,
-                itemBuilder: (context, index) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(galleryImages[index], fit: BoxFit.cover),
-                  );
+              child: BlocBuilder<WorldOfGolfBloc, WorldOfGolfState>(
+                builder: (context, state) {
+                  if (state is WorldOfGolfLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is WorldOfGolfLoaded) {
+                    if (state.items.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          "No images found",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      );
+                    }
+
+                    return GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 1.2,
+                          ),
+                      itemCount: state.items.length,
+                      itemBuilder: (context, index) {
+                        final image = state.items[index];
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            "https://delhigolf.org${image.venue}",
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey[300],
+                                child: const Icon(
+                                  Icons.broken_image_outlined,
+                                  size: 40,
+                                  color: Colors.grey,
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  } else if (state is WorldOfGolfError) {
+                    return Center(
+                      child: Text(
+                        state.message,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    );
+                  }
+
+                  // Initial / Default
+                  return const SizedBox();
                 },
               ),
             ),
