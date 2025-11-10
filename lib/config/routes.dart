@@ -18,6 +18,7 @@ import '../screens/IGUranking.dart'; // Add this import
 import '../screens/delhi_golf_ranking.dart'; // Add this import
 import '../screens/paymentsuccessscreen.dart';
 import '../screens/paymentsuccess2.dart';
+import '../screens/newsviewmore.dart'; // Add this import for NewsDetailsScreen
 // import '../screens/splash_screen.dart';
 // import '../screens/register_screen.dart';
 // import '../screens/profile_screen.dart';
@@ -79,6 +80,10 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (_) => EventDetailsScreen(refNo: refNo),
       );
+    case RoutesName.newsDetailsScreen:
+      final args = settings.arguments as Map<String, Object?>?;
+      final refNo = args?['refNo'] as String? ?? '';
+      return MaterialPageRoute(builder: (_) => NewsDetailsScreen(refNo: refNo));
 
     default:
       return MaterialPageRoute(builder: (_) => const CustomBottomNav());

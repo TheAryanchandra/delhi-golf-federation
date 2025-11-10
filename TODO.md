@@ -1,5 +1,9 @@
-- [x] Add currentPage and itemsPerPage variables to _GalleryScreenState in gallery.dart
-- [x] Modify initState to fetch page 1
-- [x] Add _changePage method to handle page changes
-- [x] Update BlocBuilder to use state.currentPage and state.totalPage for pagination
-- [x] Add pagination UI below the GridView in gallery.dart
+# TODO: Implement Named Routes for News Details Navigation
+
+## Tasks
+- [x] Add new route name `newsDetailsScreen` in `lib/config/routes_name.dart`
+- [x] Update `lib/config/routes.dart` to handle the new route in `onGenerateRoute`, extracting `refNo` and passing to `NewsDetailsScreen`
+- [x] Modify `lib/screens/news.dart` to use `Navigator.pushNamed` with new route and pass `{'refNo': item.refNo}`
+- [x] Update `lib/screens/newsviewmore.dart` (`NewsDetailsScreen`) to accept `refNo` as required parameter
+- [x] Test the navigation to ensure it works correctly
+- [ ] (Optional) Implement fetching description using refNo if API endpoint exists

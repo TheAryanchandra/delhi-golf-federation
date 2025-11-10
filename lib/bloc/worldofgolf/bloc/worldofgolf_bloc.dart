@@ -15,6 +15,7 @@ class WorldOfGolfBloc extends Bloc<WorldOfGolfEvent, WorldOfGolfState> {
           action: event.action,
           entryType: event.entryType,
           id: event.id, // 🔹 Added
+          refNo: event.refNo, // 🔹 Added
           page: event.page,
         );
 

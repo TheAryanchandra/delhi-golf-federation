@@ -68,6 +68,7 @@ class WorldOfGolfPayload {
   final String action;
   final String entryType;
   final String id; // 🔹 Added for News (Latest/Past)
+  final String? refNo; // 🔹 Added for News single data
   final int page;
   final int pageSize;
 
@@ -75,6 +76,7 @@ class WorldOfGolfPayload {
     required this.action,
     required this.entryType,
     this.id = "", // default empty for Gallery
+    this.refNo, // 🔹 Added
     this.page = 1,
     this.pageSize = 20,
   });
@@ -82,7 +84,7 @@ class WorldOfGolfPayload {
   Map<String, dynamic> toJson() {
     return {
       "Id": id, // 🔹 Used for News (Latest / Past)
-      "RefNo": "",
+      "RefNo": refNo ?? "",
       "Region": "",
       "RowRefNo": "",
       "Cmp_Code": "",
@@ -101,7 +103,7 @@ class WorldOfGolfPayload {
       "PageSize": pageSize,
       "_dt": null,
       "ds": null,
-      "_DataRow": null
+      "_DataRow": null,
     };
   }
 }

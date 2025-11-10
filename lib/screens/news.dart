@@ -5,6 +5,8 @@ import 'package:delhi_golf_federation/bloc/worldofgolf/bloc/worldofgolf_event.da
 import 'package:delhi_golf_federation/bloc/worldofgolf/bloc/worldofgolf_state.dart';
 import 'package:delhi_golf_federation/components/custombutton.dart';
 import 'package:delhi_golf_federation/components/topnavigationbar.dart';
+import 'package:delhi_golf_federation/config/routes_name.dart';
+import 'package:delhi_golf_federation/screens/newsviewmore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -227,7 +229,23 @@ class _NewsScreenState extends State<NewsScreen> {
                                             alignment: Alignment.centerRight,
                                             child: CustomButton(
                                               text: "View more",
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  RoutesName.newsDetailsScreen,
+                                                  arguments: {
+                                                    'id': item.id ?? '',
+                                                    'refNo': item.refNo ?? '',
+                                                    'title':
+                                                        item.eventName ??
+                                                        "Untitled News",
+                                                    'date':
+                                                        item.startDate ?? "",
+                                                    'imageUrl': imageUrl,
+                                                    // description can be added later if available
+                                                  },
+                                                );
+                                              },
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                     horizontal: 14,
