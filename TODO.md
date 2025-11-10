@@ -1,8 +1,5 @@
-- [x] Update AmateurEliteSection in golfrankingwidget.dart: Add currentPage state, modify _fetchData to send pageSize: 10 and page: currentPage in GolfRankingRequest.
-- [x] In AmateurEliteSection BlocBuilder: Calculate totalPages = (totalRecords / 10).ceil() where totalRecords = response.response?.totalPage ?? 0.
-- [x] Pass currentPage, totalPages, and onPageChanged callback to AmateurEliteTable.
-- [x] Modify AmateurEliteTable: Accept currentPage, totalPages, onPageChanged; remove internal pagination state; display all players; call onPageChanged on UI page selection.
-- [x] Test the server-side pagination for Amateur Elite.
-- [x] Update RankingTable (Pro Elite) to be stateful, add currentPage state, modify BlocBuilder to send pageSize:10 and page:currentPage, calculate totalPages, add pagination UI.
-- [x] Update JuniorEliteSection to add currentPage state, modify _fetchData, pass to table.
-- [x] Modify Junior Elite table to accept currentPage, totalPages, onPageChanged, add pagination UI.
+- [x] Add currentPage and itemsPerPage variables to _GalleryScreenState in gallery.dart
+- [x] Modify initState to fetch page 1
+- [x] Add _changePage method to handle page changes
+- [x] Update BlocBuilder to use state.currentPage and state.totalPage for pagination
+- [x] Add pagination UI below the GridView in gallery.dart

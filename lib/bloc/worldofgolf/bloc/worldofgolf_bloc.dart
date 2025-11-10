@@ -4,7 +4,6 @@ import 'package:delhi_golf_federation/data/worldofgolf_repository.dart';
 import 'package:delhi_golf_federation/model/worldofgolf_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class WorldOfGolfBloc extends Bloc<WorldOfGolfEvent, WorldOfGolfState> {
   final WorldOfGolfRepository repository;
 
@@ -18,11 +17,20 @@ class WorldOfGolfBloc extends Bloc<WorldOfGolfEvent, WorldOfGolfState> {
           page: event.page,
         );
         final response = await repository.fetchWorldOfGolf(payload);
-        emit(WorldOfGolfLoaded(
-          items: response.items,
-          currentPage: response.page,
-          totalPage: response.totalPage,
-        ));
+        // Use exact field names from your model
+        final events = response.items;
+        final totalRecords = response.totalPage;
+        final itemsPerPage = 20;
+        final totalPages = events.isEmpty
+            ? 1
+            : (totalRecords / itemsPerPage).ceil();
+        emit(
+          WorldOfGolfLoaded(
+            items: response.items,
+            currentPage: response.page,
+            totalPage: totalPages,
+          ),
+        );
       } catch (e) {
         emit(WorldOfGolfError(e.toString()));
       }

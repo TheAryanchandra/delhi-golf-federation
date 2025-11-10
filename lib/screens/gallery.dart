@@ -14,12 +14,32 @@ class GalleryScreen extends StatefulWidget {
 }
 
 class _GalleryScreenState extends State<GalleryScreen> {
+  int currentPage = 1;
+  final int itemsPerPage = 20;
+
   @override
   void initState() {
     super.initState();
     // Fetch gallery images from API when screen loads
     context.read<WorldOfGolfBloc>().add(
-      FetchWorldOfGolfEvent(action: "GallaryReport", entryType: "Gallery"),
+      FetchWorldOfGolfEvent(
+        action: "GallaryReport",
+        entryType: "Gallery",
+        page: currentPage,
+      ),
+    );
+  }
+
+  void _changePage(int page) {
+    setState(() {
+      currentPage = page;
+    });
+    context.read<WorldOfGolfBloc>().add(
+      FetchWorldOfGolfEvent(
+        action: "GallaryReport",
+        entryType: "Gallery",
+        page: page,
+      ),
     );
   }
 
@@ -84,35 +104,98 @@ class _GalleryScreenState extends State<GalleryScreen> {
                       );
                     }
 
-                    return GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 1.2,
-                          ),
-                      itemCount: state.items.length,
-                      itemBuilder: (context, index) {
-                        final image = state.items[index];
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            "https://delhigolf.org${image.venue}",
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Colors.grey[300],
-                                child: const Icon(
-                                  Icons.broken_image_outlined,
-                                  size: 40,
-                                  color: Colors.grey,
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 12,
+                                  mainAxisSpacing: 12,
+                                  childAspectRatio: 1.2,
+                                ),
+                            itemCount: state.items.length,
+                            itemBuilder: (context, index) {
+                              final image = state.items[index];
+                              return ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.network(
+                                  "https://delhigolf.org${image.venue}",
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      color: Colors.grey[300],
+                                      child: const Icon(
+                                        Icons.broken_image_outlined,
+                                        size: 40,
+                                        color: Colors.grey,
+                                      ),
+                                    );
+                                  },
                                 ),
                               );
                             },
                           ),
-                        );
-                      },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_back_ios,
+                                  size: 16,
+                                ),
+                                onPressed: currentPage > 1
+                                    ? () => _changePage(currentPage - 1)
+                                    : null,
+                              ),
+                              ...List.generate(state.totalPage, (index) {
+                                final page = index + 1;
+                                final isActive = page == currentPage;
+                                return GestureDetector(
+                                  onTap: () => _changePage(page),
+                                  child: Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 4,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: isActive
+                                          ? const Color(0xFF0B592A)
+                                          : Colors.grey.shade200,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      "$page",
+                                      style: TextStyle(
+                                        color: isActive
+                                            ? Colors.white
+                                            : Colors.black87,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 16,
+                                ),
+                                onPressed: currentPage < state.totalPage
+                                    ? () => _changePage(currentPage + 1)
+                                    : null,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     );
                   } else if (state is WorldOfGolfError) {
                     return Center(
