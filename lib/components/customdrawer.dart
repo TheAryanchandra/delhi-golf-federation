@@ -262,7 +262,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 _buildDrawerItem(
                   context,
                   Icons.emoji_events,
-                  "Leader board",
+                  "Live Score",
                   "/leaderboard",
                 ),
                 // Theme(
