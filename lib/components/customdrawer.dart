@@ -265,6 +265,30 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   "Live Score",
                   "/leaderboard",
                 ),
+
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  leading: const Icon(
+                    Icons.golf_course,
+                    color: Colors.white,
+                    size: 22,
+                  ),
+                  title: const Text(
+                    "Delhi Golf Ranking",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(
+                      context,
+                      RoutesName.delhiGolfRankingScreen,
+                    );
+                  },
+                ),
                 // Theme(
                 //   data: Theme.of(
                 //     context,
