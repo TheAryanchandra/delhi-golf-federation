@@ -61,10 +61,12 @@ class GolfClubGolfersRankingResponse {
 
   factory GolfClubGolfersRankingResponse.fromJson(Map<String, dynamic> json) {
     return GolfClubGolfersRankingResponse(
-      id: json['Id'] is int ? json['Id'] : int.tryParse(json['Id']?.toString() ?? ''),
+      id: json['Id'] is int
+          ? json['Id']
+          : int.tryParse(json['Id']?.toString() ?? ''),
       status: json['status'] ?? false,
       message: json['message'] ?? '',
-      response: json['response'] != null
+      response: json['response'] is Map<String, dynamic>
           ? GolfClubGolfersRankingResponseData.fromJson(json['response'])
           : null,
     );
@@ -76,13 +78,11 @@ class GolfClubGolfersRankingResponseData {
   String? refNo;
   List<GolfClubGolfer>? players;
 
-  GolfClubGolfersRankingResponseData({
-    this.id,
-    this.refNo,
-    this.players,
-  });
+  GolfClubGolfersRankingResponseData({this.id, this.refNo, this.players});
 
-  factory GolfClubGolfersRankingResponseData.fromJson(Map<String, dynamic> json) {
+  factory GolfClubGolfersRankingResponseData.fromJson(
+    Map<String, dynamic> json,
+  ) {
     final dataList = json['_dt'];
     List<GolfClubGolfer> playersList = [];
 

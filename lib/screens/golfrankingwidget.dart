@@ -1292,7 +1292,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                     ),
                   ),
                   Expanded(
-                    flex: 3,
+                    flex: 2,
                     child: Center(
                       child: Text(
                         "NAME",
@@ -1301,7 +1301,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                     ),
                   ),
                   Expanded(
-                    flex: 2,
+                    flex: 1,
                     child: Center(
                       child: Text(
                         "POSITION",
@@ -1310,7 +1310,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                     ),
                   ),
                   Expanded(
-                    flex: 2,
+                    flex: 1,
                     child: Center(
                       child: Text(
                         "SCORE",
@@ -1319,7 +1319,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                     ),
                   ),
                   Expanded(
-                    flex: 2,
+                    flex: 1,
                     child: Center(
                       child: Text(
                         "POINT",
@@ -1339,10 +1339,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                 color: isEven
                     ? const Color(0xFF0C6845)
                     : const Color(0xFF12563C),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 14,
-                  horizontal: 8,
-                ),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                 child: Row(
                   children: [
                     Expanded(
@@ -1355,7 +1352,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                       ),
                     ),
                     Expanded(
-                      flex: 3,
+                      flex: 2,
                       child: Center(
                         child: Text(
                           golfer.name ?? '-',
@@ -1364,7 +1361,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                       ),
                     ),
                     Expanded(
-                      flex: 2,
+                      flex: 1,
                       child: Center(
                         child: Text(
                           "${golfer.position ?? '-'}",
@@ -1373,7 +1370,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                       ),
                     ),
                     Expanded(
-                      flex: 2,
+                      flex: 1,
                       child: Center(
                         child: Text(
                           "${golfer.score ?? '-'}",
@@ -1382,7 +1379,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                       ),
                     ),
                     Expanded(
-                      flex: 2,
+                      flex: 1,
                       child: Center(
                         child: Text(
                           "${golfer.point ?? '-'}",

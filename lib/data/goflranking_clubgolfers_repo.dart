@@ -21,7 +21,9 @@ class GolfClubGolfersRankingRepository {
 
       // 🔹 Log what we're sending
       print("🟦 [Golf Ranking API] URL: $url");
-      print("🟩 [Golf Ranking API] Request Headers: {Authorization: Bearer $token, Content-Type: application/json}");
+      print(
+        "🟩 [Golf Ranking API] Request Headers: {Authorization: Bearer $token, Content-Type: application/json}",
+      );
       print("🟨 [Golf Ranking API] Request Body:");
       print(request.toJson());
 
@@ -45,9 +47,7 @@ class GolfClubGolfersRankingRepository {
       if (response.statusCode == 200) {
         return GolfClubGolfersRankingResponse.fromJson(response.data);
       } else {
-        throw Exception(
-          "Failed to fetch ranking data: ${response.statusMessage}",
-        );
+        throw Exception(response.data.toString());
       }
     } catch (e, stackTrace) {
       // 🔴 Log full error and stack trace for better debugging
