@@ -968,6 +968,12 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
     _rankingBloc = GolfClubGolfersRankingBloc(
       repository: GolfClubGolfersRankingRepository(),
     );
+    // Call API without id and refNo initially
+    _rankingBloc.add(
+      FetchGolfClubGolfersRankingEvent(
+        request: GolfClubGolfersRankingRequest(),
+      ),
+    );
   }
 
   @override
