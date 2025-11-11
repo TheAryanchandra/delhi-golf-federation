@@ -6,6 +6,7 @@ import 'package:delhi_golf_federation/bloc/eventregister/bloc/eventregister_bloc
 import 'package:delhi_golf_federation/bloc/eventreport/bloc/eventreport_bloc.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_bloc.dart';
 import 'package:delhi_golf_federation/bloc/getdata/bloc/getdata_event.dart';
+import 'package:delhi_golf_federation/bloc/golf_club_rankers/golf_club_rank_bloc.dart';
 import 'package:delhi_golf_federation/bloc/golfranking/bloc/golf_ranking_bloc.dart';
 import 'package:delhi_golf_federation/bloc/insertscore/bloc/insertscore_bloc.dart';
 import 'package:delhi_golf_federation/bloc/leaderboard/bloc/leaderboardScreen_bloc.dart';
@@ -24,6 +25,7 @@ import 'package:delhi_golf_federation/data/eventregister_repository.dart';
 import 'package:delhi_golf_federation/data/eventreport_repository.dart';
 import 'package:delhi_golf_federation/data/events_repository.dart';
 import 'package:delhi_golf_federation/data/getdatarepository.dart';
+import 'package:delhi_golf_federation/data/goflranking_clubgolfers_repo.dart';
 import 'package:delhi_golf_federation/data/golf_ranking_repository.dart';
 import 'package:delhi_golf_federation/data/insertscore_repository.dart';
 import 'package:delhi_golf_federation/data/leaderboardScreen_repository.dart';
@@ -127,11 +129,18 @@ class GolfApp extends StatelessWidget {
           child: MyProfile(),
         ),
         BlocProvider(create: (_) => EventDetailsBloc(EventDetailsRepository())),
-        BlocProvider(create: (_) =>  PaymentBloc(PaymentRepository())),
-        BlocProvider(create: (_) =>  PaymentAfterSuccessBloc(PaymentAfterSuccess())),
-        BlocProvider(create: (_) =>  GolfRankingBloc(GolfRankingRepository())),
-        BlocProvider(create: (_) =>  WorldOfGolfBloc(WorldOfGolfRepository())),
-        BlocProvider(create: (_) =>  EventSearchBloc(EventSearchRepository())),
+        BlocProvider(create: (_) => PaymentBloc(PaymentRepository())),
+        BlocProvider(
+          create: (_) => PaymentAfterSuccessBloc(PaymentAfterSuccess()),
+        ),
+        BlocProvider(create: (_) => GolfRankingBloc(GolfRankingRepository())),
+        BlocProvider(create: (_) => WorldOfGolfBloc(WorldOfGolfRepository())),
+        BlocProvider(create: (_) => EventSearchBloc(EventSearchRepository())),
+        BlocProvider(
+          create: (_) => GolfClubGolfersRankingBloc(
+            repository: GolfClubGolfersRankingRepository(),
+          ),
+        ),
       ],
       child: SafeArea(
         bottom: true,

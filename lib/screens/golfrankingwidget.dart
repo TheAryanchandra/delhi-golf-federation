@@ -5,8 +5,13 @@ import 'package:delhi_golf_federation/bloc/auth/auth_state.dart';
 import 'package:delhi_golf_federation/bloc/event_search/bloc/event_search_bloc.dart';
 import 'package:delhi_golf_federation/bloc/event_search/bloc/event_search_event.dart';
 import 'package:delhi_golf_federation/bloc/event_search/bloc/event_search_state.dart';
+import 'package:delhi_golf_federation/bloc/golf_club_rankers/golf_club_rank_bloc.dart';
+import 'package:delhi_golf_federation/bloc/golf_club_rankers/golf_club_rank_event.dart';
+import 'package:delhi_golf_federation/bloc/golf_club_rankers/golf_club_rank_state.dart';
 import 'package:delhi_golf_federation/data/event_search_repository.dart';
 import 'package:delhi_golf_federation/data/auth_repository.dart';
+import 'package:delhi_golf_federation/data/goflranking_clubgolfers_repo.dart';
+import 'package:delhi_golf_federation/model/golfranking_clubgolfers_model.dart';
 import 'package:delhi_golf_federation/widgets/amatuerelite_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -255,66 +260,73 @@ class _RankingTableState extends State<RankingTable> {
                         ),
 
                         Expanded(
-                          child: ListView.builder(
-                            itemCount: players.length,
-                            itemBuilder: (context, index) {
-                              final player = players[index];
-                              final isEven = index % 2 == 0;
-                              return Container(
-                                color: isEven
-                                    ? const Color.fromARGB(255, 4, 107, 69)
-                                    : const Color(0xFF12563C),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Expanded(
-                                      flex: 4,
-                                      child: Text(
-                                        player.name ?? "-",
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          color: Colors.white,
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.vertical(
+                              bottom: Radius.circular(
+                                16,
+                              ), // ✅ round the bottom edges
+                            ),
+                            child: ListView.builder(
+                              itemCount: players.length,
+                              itemBuilder: (context, index) {
+                                final player = players[index];
+                                final isEven = index % 2 == 0;
+                                return Container(
+                                  color: isEven
+                                      ? const Color.fromARGB(255, 4, 107, 69)
+                                      : const Color(0xFF12563C),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Expanded(
+                                        flex: 4,
+                                        child: Text(
+                                          player.name ?? "-",
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        player.ranks?.toString() ?? "-",
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          color: Colors.white,
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          player.ranks?.toString() ?? "-",
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        player.stateRank?.toString() ?? "-",
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          color: Colors.white,
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          player.stateRank?.toString() ?? "-",
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        player.totalScore?.toString() ?? "-",
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          color: Colors.white,
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          player.totalScore?.toString() ?? "-",
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ],
@@ -936,10 +948,13 @@ class ClubGolfersTable extends StatefulWidget {
 class _ClubGolfersTableState extends State<ClubGolfersTable> {
   final TextEditingController _searchController = TextEditingController();
   String? _selectedEventName;
-  String? _selectedIndustry;
+  String? _selectedIndustryRefNo;
+  String? _selectedEventRefNo;
   Timer? _debounceTimer;
+
   late final IndustryBloc _industryBloc;
   late final EventSearchBloc _eventSearchBloc;
+  late final GolfClubGolfersRankingBloc _rankingBloc;
 
   OverlayEntry? _overlayEntry;
   final LayerLink _layerLink = LayerLink();
@@ -950,6 +965,9 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
     _industryBloc = IndustryBloc(IndustryRepository())
       ..add(FetchIndustriesEvent());
     _eventSearchBloc = EventSearchBloc(EventSearchRepository());
+    _rankingBloc = GolfClubGolfersRankingBloc(
+      repository: GolfClubGolfersRankingRepository(),
+    );
   }
 
   @override
@@ -959,16 +977,14 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
     _searchController.dispose();
     _industryBloc.close();
     _eventSearchBloc.close();
+    _rankingBloc.close();
     super.dispose();
   }
 
   void _onSearchChanged(BuildContext blocContext, String value) {
-    print("🔹 Search input changed: '$value'");
     _debounceTimer?.cancel();
-
     if (value.trim().length >= 3) {
       _debounceTimer = Timer(const Duration(milliseconds: 350), () {
-        print("🔹 Triggering FetchEventSearch with query: '${value.trim()}'");
         blocContext.read<EventSearchBloc>().add(FetchEventSearch(value.trim()));
       });
     } else {
@@ -976,12 +992,13 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
     }
   }
 
-  void _showOverlay(BuildContext context, List<dynamic> events,
-      {bool notFound = false}) {
+  void _showOverlay(
+    BuildContext context,
+    List<dynamic> events, {
+    bool notFound = false,
+  }) {
     _removeOverlay();
-
     final overlay = Overlay.of(context);
-
     _overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         width: MediaQuery.of(context).size.width * 0.4,
@@ -994,14 +1011,15 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
             borderRadius: BorderRadius.circular(8),
             color: Colors.white,
             child: notFound
-                ? Container(
-                    padding: const EdgeInsets.all(16),
-                    alignment: Alignment.center,
-                    child: const Text(
-                      "Details not found",
-                      style: TextStyle(
-                        color: Colors.redAccent,
-                        fontWeight: FontWeight.bold,
+                ? const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Center(
+                      child: Text(
+                        "Details not found",
+                        style: TextStyle(
+                          color: Colors.redAccent,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   )
@@ -1015,26 +1033,18 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                       itemBuilder: (context, index) {
                         final event = events[index];
                         return ListTile(
-                          dense: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                          title: Text(
-                            event.name ?? 'Unknown Event',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                          title: Text(event.name ?? 'Unknown Event'),
                           onTap: () {
                             setState(() {
                               _selectedEventName = event.name;
+                              _selectedEventRefNo = event.refNo;
                               _searchController.text = event.name ?? '';
                             });
-                            print("🔹 Selected event: ${event.name}");
+                            print("✅ Selected Event RefNo: ${event.refNo}");
                             FocusScope.of(context).unfocus();
                             _removeOverlay();
+
+                            _triggerRankingFetch();
                           },
                         );
                       },
@@ -1044,7 +1054,6 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
         ),
       ),
     );
-
     overlay.insert(_overlayEntry!);
   }
 
@@ -1053,12 +1062,30 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
     _overlayEntry = null;
   }
 
+  void _triggerRankingFetch() {
+    if (_selectedIndustryRefNo != null && _selectedEventRefNo != null) {
+      print("🚀 Fetching Golf Ranking with:");
+      print("   Id (Industry RefNo): $_selectedIndustryRefNo");
+      print("   RefNo (Event RefNo): $_selectedEventRefNo");
+
+      final request = GolfClubGolfersRankingRequest(
+        id: _selectedIndustryRefNo!,
+        refNo: _selectedEventRefNo!,
+      );
+
+      _rankingBloc.add(FetchGolfClubGolfersRankingEvent(request: request));
+    } else {
+      print("⚠️ Please select both Industry and Event before fetching.");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<IndustryBloc>.value(value: _industryBloc),
-        BlocProvider<EventSearchBloc>.value(value: _eventSearchBloc),
+        BlocProvider.value(value: _industryBloc),
+        BlocProvider.value(value: _eventSearchBloc),
+        BlocProvider.value(value: _rankingBloc),
       ],
       child: Builder(builder: (context) => _buildClubGolfersContent(context)),
     );
@@ -1082,12 +1109,10 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                       _removeOverlay();
                       return;
                     }
-
                     if (state is EventSearchLoaded) {
                       if (state.events.isNotEmpty) {
                         _showOverlay(context, state.events);
                       } else {
-                        print("! FetchEventSearch: No events found");
                         _showOverlay(context, [], notFound: true);
                       }
                     } else if (state is EventSearchError) {
@@ -1140,43 +1165,35 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                             color: Colors.grey.shade300,
                             width: 1,
                           ),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 5,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
                         ),
                         child: DropdownButtonFormField<String>(
-                          value: _selectedIndustry,
+                          value: _selectedIndustryRefNo,
                           isExpanded: true,
                           decoration: const InputDecoration(
                             hintText: "Select industry",
                             border: InputBorder.none,
                           ),
-                          items: state.industries
-                              .map(
-                                (industry) => DropdownMenuItem<String>(
-                                  value: industry.refNo,
-                                  child: Text(
-                                    industry.name,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              )
-                              .toList(),
+                          items: state.industries.map((industry) {
+                            return DropdownMenuItem<String>(
+                              value: industry.refNo,
+                              child: Text(
+                                industry.name,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            );
+                          }).toList(),
                           onChanged: (value) {
                             setState(() {
-                              _selectedIndustry = value;
+                              _selectedIndustryRefNo = value;
                             });
-                            print("🔹 Selected industry: $value");
+                            print("✅ Selected Industry RefNo: $value");
+                            _triggerRankingFetch();
                           },
                         ),
                       );
                     } else if (state is IndustryError) {
                       return Text(
-                        "Failed to load industries: ${state.message}",
+                        "Failed: ${state.message}",
                         style: const TextStyle(color: Colors.red),
                       );
                     } else {
@@ -1190,127 +1207,189 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
 
           const SizedBox(height: 16),
 
-          // Table Section
+          // 🟩 Table Section (Ranking Data)
           Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: 500,
-                child: Column(
-                  children: [
-                    // 🔹 Table Header
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 8,
-                      ),
-                      decoration: const BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          topRight: Radius.circular(8),
+            child:
+                BlocBuilder<
+                  GolfClubGolfersRankingBloc,
+                  GolfClubGolfersRankingState
+                >(
+                  builder: (context, state) {
+                    if (state is GolfClubGolfersRankingLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is GolfClubGolfersRankingLoaded) {
+                      final golfers = state.response.response?.players ?? [];
+                      if (golfers.isEmpty) {
+                        return const Center(child: Text("No data found"));
+                      }
+                      return _buildRankingTable(golfers);
+                    } else if (state is GolfClubGolfersRankingError) {
+                      return Center(
+                        child: Text(
+                          "Error: ${state.message}",
+                          style: const TextStyle(color: Colors.red),
                         ),
-                      ),
-                      child: const Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Center(
-                              child: Text(
-                                "SR. NO",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Center(
-                              child: Text(
-                                "NAME",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Center(
-                              child: Text(
-                                "SCORE",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                      );
+                    } else {
+                      return const Center(
+                        child: Text(
+                          "Select Event and Industry to view rankings.",
+                        ),
+                      );
+                    }
+                  },
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRankingTable(List<GolfClubGolfer> golfers) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Container(
+        width: 800,
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 6),
+          ],
+        ),
+        child: Column(
+          children: [
+            // Header
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF0B814A), Color(0xFF046B45)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                ),
+              ),
+              child: const Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Center(
+                      child: Text(
+                        "SR. NO",
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
-
-                    // 🔹 Table Rows (Static Demo)
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Center(
+                      child: Text(
+                        "NAME",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Center(
+                      child: Text(
+                        "POSITION",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Center(
+                      child: Text(
+                        "SCORE",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Center(
+                      child: Text(
+                        "POINT",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Rows
+            ...golfers.asMap().entries.map((entry) {
+              final index = entry.key;
+              final golfer = entry.value;
+              final isEven = index % 2 == 0;
+              return Container(
+                color: isEven
+                    ? const Color(0xFF0C6845)
+                    : const Color(0xFF12563C),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 14,
+                  horizontal: 8,
+                ),
+                child: Row(
+                  children: [
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: 10,
-                        itemBuilder: (context, index) {
-                          final isEven = index % 2 == 0;
-                          return Container(
-                            color: isEven
-                                ? const Color(0xFF046B45)
-                                : const Color(0xFF12563C),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Center(
-                                    child: Text(
-                                      (index + 1).toString(),
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 3,
-                                  child: Center(
-                                    child: Text(
-                                      _selectedEventName ?? "Swing for Hope",
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Center(
-                                    child: Text(
-                                      "-${index + 1}",
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+                      flex: 1,
+                      child: Center(
+                        child: Text(
+                          "${index + 1}",
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Center(
+                        child: Text(
+                          golfer.name ?? '-',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Center(
+                        child: Text(
+                          "${golfer.position ?? '-'}",
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Center(
+                        child: Text(
+                          "${golfer.score ?? '-'}",
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Center(
+                        child: Text(
+                          "${golfer.point ?? '-'}",
+                          style: const TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   ],
                 ),
-              ),
-            ),
-          ),
-        ],
+              );
+            }),
+          ],
+        ),
       ),
     );
   }
