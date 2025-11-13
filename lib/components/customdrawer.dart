@@ -263,7 +263,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   context,
                   Icons.emoji_events,
                   "Live Score",
-                  "/leaderboard",
+                  "/leaderboard", 
                 ),
 
                 ListTile(

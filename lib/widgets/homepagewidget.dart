@@ -296,7 +296,6 @@ class UpcomingEventsSection extends StatelessWidget {
         ),
         const SizedBox(height: 10),
 
-        /// Team Carousel
         SizedBox(
           height: 160,
           child: ListView.separated(
@@ -316,19 +315,26 @@ class UpcomingEventsSection extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircleAvatar(
-                      radius: 28,
-                      backgroundColor: Colors.grey,
-                      backgroundImage: member["image"] != null
-                          ? AssetImage(member["image"]!)
-                          : null,
-                      child: member["image"] == null
-                          ? const Icon(
-                              Icons.person,
-                              size: 30,
-                              color: Colors.white,
-                            )
-                          : null,
+                    ClipOval(
+                      child: Container(
+                        width: 56,
+                        height: 56,
+                        decoration: member["image"] != null
+                            ? BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(member["image"]!),
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : BoxDecoration(color: Colors.grey),
+                        child: member["image"] == null
+                            ? const Icon(
+                                Icons.person,
+                                size: 30,
+                                color: Colors.white,
+                              )
+                            : null,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -350,11 +356,12 @@ class UpcomingEventsSection extends StatelessWidget {
 
 /// Dummy Team Data
 final List<Map<String, String>> dummyTeam = [
-  {"name": "Romit Bose"},
-  {"name": "Ananya Singh"},
-  {"name": "Vikram Sharma"},
-  {"name": "Sonal Mehra"},
-  {"name": "Arjun Khanna"},
+  {"name": "Romit Bose", "image": "assets/images/Romit-Bose.jpeg"},
+  {"name": "Pooja", "image": "assets/images/Pooja.jpeg"},
+  {"name": "Avnissh Bakshi", "image": "assets/images/Avnissh-Bakshi.jpeg"},
+  {"name": "Amar Sinha", "image": "assets/images/AMAR-SINHA.png"},
+  {"name": "Dr. A. R. Joshi", "image": "assets/images/Dr-A-R-joshi.jpeg"},
+  {"name": "Ravinder Zutsh", "image": "assets/images/Ravinder-Zutsh.jpeg"},
 ];
 
 /// Custom Button (your style)
