@@ -62,14 +62,14 @@ class _GalleryScreenState extends State<GalleryScreen> {
               children: [
                 Image.asset(
                   "assets/images/welcome.png",
-                  height: screenHeight * 0.125,
+                  height: screenHeight * 0.15,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
                 Container(
-                  height: screenHeight * 0.125,
+                  height: screenHeight * 0.15,
                   width: double.infinity,
-                  color: Colors.black.withOpacity(0.4),
+                  color: Colors.black.withOpacity(0.35),
                 ),
                 const Text(
                   "Gallery",

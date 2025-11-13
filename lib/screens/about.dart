@@ -15,36 +15,36 @@ class AboutScreen extends StatelessWidget {
           children: [
             /// ✅ Banner Header
             ClipRRect(
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Image.asset(
-                    "assets/images/welcome.png",
-                    height: 160,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                  Container(
-                    height: 160,
-                    width: double.infinity,
-                    color: Colors.black.withOpacity(0.45),
-                  ),
-                  const Text(
-                    "About Us",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                ],
-              ),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
             ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/welcome.png",
+                  height: screenHeight * 0.15,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+                Container(
+                  height: screenHeight * 0.15,
+                  width: double.infinity,
+                  color: Colors.black.withOpacity(0.35),
+                ),
+                const Text(
+                  "About Us",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ],
+            ),
+          ),
 
             const SizedBox(height: 20),
 

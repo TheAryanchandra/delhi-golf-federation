@@ -71,12 +71,13 @@ class _EventReportScreenState extends State<EventReportScreen> {
               children: [
                 Image.asset(
                   "assets/images/welcome.png",
-                  height: screenHeight * 0.18,
+                  height: screenHeight * 0.15,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
                 Container(
-                  height: screenHeight * 0.18,
+                  height: screenHeight * 0.15,
+                  width: double.infinity,
                   color: Colors.black.withOpacity(0.35),
                 ),
                 const Text(

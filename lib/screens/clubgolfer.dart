@@ -64,12 +64,13 @@ class _ClubGolferScreenState extends State<ClubGolferScreen>
               children: [
                 Image.asset(
                   "assets/images/welcome.png",
-                  height: screenHeight * 0.18,
+                  height: screenHeight * 0.15,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
                 Container(
-                  height: screenHeight * 0.18,
+                  height: screenHeight * 0.15,
+                  width: double.infinity,
                   color: Colors.black.withOpacity(0.35),
                 ),
                 const Text(
@@ -77,8 +78,8 @@ class _ClubGolferScreenState extends State<ClubGolferScreen>
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 26,
-                    letterSpacing: 1.2,
                     fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
                   ),
                 ),
               ],

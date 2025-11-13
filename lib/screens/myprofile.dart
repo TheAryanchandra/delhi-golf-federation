@@ -51,45 +51,36 @@ class _MyProfileState extends State<MyProfile> {
                 children: [
                   // ✅ Header
                   ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
-                    ),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Image.asset(
-                          "assets/images/welcome.png",
-                          height: screenHeight * 0.20,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
-                        Container(
-                          height: screenHeight * 0.20,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                ColorConstants.buttonColor.withOpacity(0.9),
-                                Colors.black.withOpacity(0.4),
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            ),
-                          ),
-                        ),
-                        const Text(
-                          "Profile",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                      ],
-                    ),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/welcome.png",
+                  height: screenHeight * 0.15,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+                Container(
+                  height: screenHeight * 0.15,
+                  width: double.infinity,
+                  color: Colors.black.withOpacity(0.35),
+                ),
+                const Text(
+                  "Profile",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
                   ),
+                ),
+              ],
+            ),
+          ),
 
                   // ✅ Profile Info
                   Padding(
