@@ -10,15 +10,14 @@ class AuthRepository {
   static const String _apiKey = '065A0566-4ACA-4C5B-9789-9B4992AC40F3';
 
   Future<UserDataModel> fetchUserData() async {
-    print('Fetching user data...');
-    print('API Key: $_apiKey');
+
 
     // Retrieve stored email
     final email = await SharedPreferencesHelper.getUserEmail();
     if (email == null || email.isEmpty) {
       throw Exception("Email not found in SharedPreferences");
     }
-    print('Retrieved Email from SharedPreferences: $email');
+
 
     try {
       // Send both api-key and email in headers
@@ -37,8 +36,7 @@ class AuthRepository {
         ),
       );
 
-      print("Response status: ${response.statusCode}");
-      print("Response data: ${response.data}");
+
 
       if (response.statusCode == 200 && response.data['status'] == true) {
         return UserDataModel.fromJson(response.data);

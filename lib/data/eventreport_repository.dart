@@ -16,10 +16,7 @@ class EventReportRepository {
       final action = isCurrent ? "GetUpcomingEvents" : "getpastevents";
       final uri = Uri.parse("$eventReportEndpoint?Action=$action");
 
-      print("🔹 [EventReportRepository] Fetching events...");
-      print("➡️ Endpoint: $uri");
-      print("🪪 Token (first 10 chars): ${token?.substring(0, token!.length > 10 ? 10 : token.length)}...");
-      print("📦 Request Payload: ${jsonEncode(request.toJson())}");
+
 
       final response = await http.post(
         uri,
@@ -30,20 +27,18 @@ class EventReportRepository {
         body: jsonEncode(request.toJson()),
       );
 
-      print("📡 Status Code: ${response.statusCode}");
-      print("🧾 Raw Response Body:\n${response.body}");
+
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print("✅ Parsed Response: ${data.runtimeType}");
+
         return EventReportResponse.fromJson(data);
       } else {
-        print("❌ Failed to load events (code: ${response.statusCode})");
+
         throw Exception("Failed to load events (code: ${response.statusCode})");
       }
     } catch (e, stack) {
-      print("🚨 Error in fetchEvents(): $e");
-      print("📍 Stack Trace: $stack");
+
       throw Exception("Error fetching event report: $e");
     }
   }

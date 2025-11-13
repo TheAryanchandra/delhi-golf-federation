@@ -108,7 +108,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 duration: const Duration(seconds: 2),
               ),
             );
-            print("Registration successful");
+
             Navigator.pushNamedAndRemoveUntil(
               context,
               RoutesName.loginScreen,
@@ -591,29 +591,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           return;
                                         }
 
-                                        print("Name: ${_nameController.text}");
-                                        print(
-                                          "Phone Number: ${_phoneController.text}",
-                                        );
-                                        print("Date of Birth: $dob");
-                                        print("Age: $age");
-                                        print("Gender: $_selectedGender");
-                                        print(
-                                          "Industry RefNo: $_selectedIndustry",
-                                        );
-                                        print(
-                                          "Handicap Index: ${double.parse(_handicapController.text)}",
-                                        );
-                                        print(
-                                          "GHIN No: ${_ghinController.text}",
-                                        );
-                                        print("Source: APP");
-                                        print(
-                                          "Home Club: ${_homeClubController.text}",
-                                        );
-                                        print(
-                                          "Email: ${_emailController.text}",
-                                        );
+                                       
 
                                         // Perform registration logic here
                                         final request =

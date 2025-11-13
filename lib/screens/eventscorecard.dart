@@ -119,8 +119,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
       finalSubmit: currentHoleIndex == holes.length - 1,
     );
 
-    debugPrint("Sending LeaderboardRequest: ${request.toJson()}");
-    print("handicapStatus: ${widget.handicapStatus}");
+
 
     context.read<LeaderboardBloc>().add(SubmitLeaderboard(request: request));
   }
@@ -281,7 +280,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
               }
 
               if (state is LeaderboardSuccess) {
-                debugPrint("Received response: ${state.response}");
+            
 
                 if (state.response.status != true) {
                   _showStatusMessage(
@@ -328,7 +327,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                   });
                 }
               } else if (state is LeaderboardError) {
-                debugPrint("Error: ${state.message}");
+
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Error: ${state.message}')),
@@ -787,9 +786,7 @@ class _EventScorecardScreenState extends State<EventScorecardScreen> {
                                   currentHole,
                                 );
 
-                                debugPrint(
-                                  "Submitting hole ${currentHole.hole} with adjusted score: $adjustedScore",
-                                );
+
 
                                 _submitCurrentHole(
                                   currentHole,

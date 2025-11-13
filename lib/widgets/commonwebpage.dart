@@ -32,13 +32,13 @@ class _CommonWebPageScreenState extends State<CommonWebPageScreen> {
             setState(() => progress = p / 100);
           },
           onPageStarted: (String url) {
-            debugPrint("Started loading: $url");
+
           },
           onPageFinished: (String url) {
-            debugPrint("Finished loading: $url");
+  
           },
           onWebResourceError: (WebResourceError error) {
-            debugPrint("❌ WebView Error: ${error.description}");
+
           },
           onNavigationRequest: (NavigationRequest request) {
             // ✅ Allow both HTTP and HTTPS for sites like PGTI

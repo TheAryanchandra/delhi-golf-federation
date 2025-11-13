@@ -420,7 +420,7 @@ class _AmateurEliteSectionState extends State<AmateurEliteSection> {
 
   void _fetchData() {
     final id = selectedIndex == 0 ? "Gentlemen" : "Ladies";
-    print("📡 Fetching AmateurEliteData for $id, Page: $currentPage");
+
 
     context.read<GolfRankingBloc>().add(
       FetchGolfRankingEvent(
@@ -1046,7 +1046,6 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                               _selectedEventRefNo = event.refNo;
                               _searchController.text = event.name ?? '';
                             });
-                            print("✅ Selected Event RefNo: ${event.refNo}");
                             FocusScope.of(context).unfocus();
                             _removeOverlay();
 
@@ -1070,9 +1069,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
 
   void _triggerRankingFetch() {
     if (_selectedIndustryRefNo != null && _selectedEventRefNo != null) {
-      print("🚀 Fetching Golf Ranking with:");
-      print("   Id (Industry RefNo): $_selectedIndustryRefNo");
-      print("   RefNo (Event RefNo): $_selectedEventRefNo");
+
 
       final request = GolfClubGolfersRankingRequest(
         id: _selectedIndustryRefNo!,
@@ -1081,7 +1078,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
 
       _rankingBloc.add(FetchGolfClubGolfersRankingEvent(request: request));
     } else {
-      print("⚠️ Please select both Industry and Event before fetching.");
+
     }
   }
 

@@ -21,10 +21,7 @@ class LeaderboardRepository {
     }
 
     try {
-      print("Submitting leaderboard request...");
-      print("Token: $token");
-      print("Request: ${jsonEncode(request.toJson())}");
-      print("URL: $_baseUrl");
+
 
       final response = await _dio.post(
         _baseUrl,
@@ -37,8 +34,7 @@ class LeaderboardRepository {
         ),
       );
 
-      print("Response status: ${response.statusCode}");
-      print("Response data: ${response.data}");
+
 
       if (response.statusCode == 200) {
         return LeaderboardResponse.fromJson(response.data);
@@ -46,10 +42,9 @@ class LeaderboardRepository {
         throw Exception('Failed with status code ${response.statusCode}');
       }
     } on DioException catch (e) {
-      print("DioException: ${e.response?.data}");
       throw Exception(e.response?.data['message'] ?? 'API Error');
     } catch (e) {
-      print("Unexpected error: $e");
+
       throw Exception('Unexpected Error: $e');
     }
   }

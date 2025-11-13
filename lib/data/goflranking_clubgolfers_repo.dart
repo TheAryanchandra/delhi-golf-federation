@@ -20,12 +20,7 @@ class GolfClubGolfersRankingRepository {
       }
 
       // 🔹 Log what we're sending
-      print("🟦 [Golf Ranking API] URL: $url");
-      print(
-        "🟩 [Golf Ranking API] Request Headers: {Authorization: Bearer $token, Content-Type: application/json}",
-      );
-      print("🟨 [Golf Ranking API] Request Body:");
-      print(request.toJson());
+
 
       // 🔹 Send POST request
       final response = await _dio.post(
@@ -40,9 +35,7 @@ class GolfClubGolfersRankingRepository {
       );
 
       // 🔹 Log response details
-      print("🟦 [Golf Ranking API] Response Status: ${response.statusCode}");
-      print("🟩 [Golf Ranking API] Response Data:");
-      print(response.data);
+
 
       if (response.statusCode == 200) {
         return GolfClubGolfersRankingResponse.fromJson(response.data);
@@ -51,8 +44,7 @@ class GolfClubGolfersRankingRepository {
       }
     } catch (e, stackTrace) {
       // 🔴 Log full error and stack trace for better debugging
-      print("❌ [Golf Ranking API] Error: $e");
-      print("❌ [Golf Ranking API] StackTrace: $stackTrace");
+
 
       throw Exception("Error fetching golf club golfers ranking: $e");
     }

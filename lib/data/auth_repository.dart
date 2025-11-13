@@ -52,15 +52,10 @@ class LoginRepository {
         "Passowrd_User": password,
       };
 
-      print("🔹 Login API Request:");
-      print("URL: $uri");
-      print("Headers: $headers");
 
       final response = await http.post(uri, headers: headers);
 
-      print("🔹 Login API Response:");
-      print("Status Code: ${response.statusCode}");
-      print("Body: ${response.body}");
+
 
       if (response.statusCode == 200 || response.statusCode == 402) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
@@ -78,8 +73,7 @@ class LoginRepository {
           await SharedPreferencesHelper.setUserToken(token);
           await SharedPreferencesHelper.setLoggedIn(true);
           await SharedPreferencesHelper.setUserEmail(email);
-          print("✅ Token saved in SharedPreferences: $token");
-          print("✅ Email saved in SharedPreferences: $email");
+
         }
         return LoginResponse.fromJson(
           jsonResponse,
@@ -119,15 +113,11 @@ class LogoutRepository {
       // "api-key": apiKey, // ✅ same as login
     };
 
-    print("🔑 Token for logout: $token");
-    print("Logout URL: $uri");
-    print("Logout Headers: $headers");
+
 
     final response = await http.get(uri, headers: headers);
 
-    print("🔹 Logout API Response:");
-    print("Status Code: ${response.statusCode}");
-    print("Body: ${response.body}");
+
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -153,8 +143,7 @@ class IndustryRepository {
         headers: {"Content-Type": headersJson, "api-key": apiKey},
       );
 
-      print("🟢 API Response Status Code: ${response.statusCode}");
-      print("🟢 API Response Body: ${response.body}");
+
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = jsonDecode(response.body);

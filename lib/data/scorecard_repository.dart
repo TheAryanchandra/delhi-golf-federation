@@ -11,10 +11,7 @@ class EventScoreRepository {
 
   Future<EventScoreResponse> getEventScores(EventScoreRequest request) async {
     try {
-      print("Fetching event scores...");
-      print(request.toJson());
-      print(baseUrl);
-      print(request.toJson());
+
       final token = await SharedPreferencesHelper.getUserToken();
       final uri = Uri.parse("$baseUrl?Action=getScore");
 
@@ -26,8 +23,7 @@ class EventScoreRepository {
         },
         body: jsonEncode(request.toJson()),
       );
-      print(response.body);
-      print(response.statusCode);
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         return EventScoreResponse.fromJson(data);

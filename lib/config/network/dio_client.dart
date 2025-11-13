@@ -27,7 +27,7 @@ class DioClient {
 
   // ───────────────── INIT ───────────────────────
   Future<void> init({required String baseUrl}) async {
-    print('🔧 [DioClient] Initializing with baseUrl: $baseUrl');
+
     dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,
@@ -41,20 +41,16 @@ class DioClient {
       QueuedInterceptorsWrapper(
         // ─────── attach current token to every request ───────
         onRequest: (options, handler) async {
-          print(
-            '🚀 [DioClient] onRequest interceptor triggered for: ${options.path}',
-          );
+
           final token = await SharedPreferencesHelper.getUserToken();
 
           // Attach Authorization header only if we have a valid token
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
-            print(
-              '🔑 [DioClient] Token attached: ${token.substring(0, token.length > 20 ? 20 : token.length)}...',
-            );
+
           } else {
             options.headers.remove('Authorization');
-            print('⚠️ [DioClient] No token available');
+
           }
 
           // Always keep connection alive
@@ -63,68 +59,45 @@ class DioClient {
           // Ensure API key is present unless explicitly overridden
           options.headers.putIfAbsent('api-key', () => apiKey);
 
-          print('📋 [DioClient] Request headers: ${options.headers}');
           return handler.next(options);
         },
 
         // ─────── pass normal responses straight through ───────
         onResponse: (response, handler) {
-          print(
-            '✅ [DioClient] onResponse: ${response.statusCode} for ${response.requestOptions.path}',
-          );
+
           return handler.next(response);
         },
 
         // ─────── handle errors ───────
         onError: (error, handler) async {
-          print('❌ [DioClient] onError interceptor triggered');
-          print('❌ [DioClient] Error type: ${error.type}');
-          print('❌ [DioClient] Status code: ${error.response?.statusCode}');
-          print('❌ [DioClient] Path: ${error.requestOptions.path}');
-          print('❌ [DioClient] Error message: ${error.message}');
+
 
           final status = error.response?.statusCode;
           final isAuthError = status == 401 || status == 403;
           final alreadyRetried = error.requestOptions.extra['retried'] == true;
 
-          print(
-            '🔍 [DioClient] isAuthError: $isAuthError, alreadyRetried: $alreadyRetried',
-          );
+
 
           // ---------- AUTH FLOW ----------
           if (isAuthError && !alreadyRetried) {
-            print(
-              '⚠️ [DioClient] Auth error ($status) on ${error.requestOptions.path}, scheduling token refresh.',
-            );
+
             // 1️⃣ park this request
             final completer = Completer<Response>();
             _queue.add(_QueuedRequest(error.requestOptions, completer));
-            print(
-              '📥 [DioClient] Request queued. Queue length: ${_queue.length}',
-            );
+
 
             // 2️⃣ be sure only ONE refresh runs
             await _refreshLock.synchronized(() async {
-              print(
-                '🔒 [DioClient] Entered synchronized block, queue length: ${_queue.length}',
-              );
+
               // if this is the first waiter → actually refresh
               if (_queue.length == 1) {
-                print(
-                  '🔁 [DioClient] ${_queue.length} request in queue – triggering refresh.',
-                );
+
                 try {
-                  print(
-                    '🔄 [DioClient] Calling RefreshTokenRepository.refreshToken()...',
-                  );
+
                   final newTokenModel = await _auth.refreshToken();
-                  print(
-                    '📦 [DioClient] Refresh result: status=${newTokenModel.status}, message=${newTokenModel.message}, token=${newTokenModel.response}',
-                  );
+
                   if (newTokenModel.message == "Time out re-login") {
-                    print(
-                      '⚠️ [DioClient] Session expired, logging out user',
-                    );
+
                     await handleAuthFailure();
                     // Reject all queued requests since session is expired
                     while (_queue.isNotEmpty) {
@@ -140,68 +113,50 @@ class DioClient {
                   if (newTokenModel.status &&
                       newTokenModel.response.isNotEmpty) {
                     // Token persistence is handled inside RefreshTokenRepository
-                    print(
-                      '🔄 [DioClient] Token refresh completed successfully in dio_client',
-                    );
+
                   } else {
-                    print(
-                      '⚠️ [DioClient] Token refresh returned false status or empty token',
-                    );
+
                   }
                 } catch (refreshError) {
-                  print(
-                    '❌ [DioClient] Token refresh failed with error: $refreshError',
-                  );
+
                 } finally {
                   // 3️⃣ replay every queued request (success or failure)
-                  print(
-                    '🔁 [DioClient] Starting to replay ${_queue.length} queued requests',
-                  );
+
                   while (_queue.isNotEmpty) {
                     final queued = _queue.removeFirst();
-                    print(
-                      '🔁 [DioClient] Retrying ${queued.options.path} with fresh token.',
-                    );
+
                     try {
                       final newResp = await _retryWithFreshToken(
                         queued.options,
                       );
-                      print(
-                        '✅ [DioClient] Retry success for ${queued.options.path}',
-                      );
+
                       queued.completer.complete(newResp);
                     } catch (err) {
-                      print(
-                        '❌ [DioClient] Retry failed for ${queued.options.path}: $err',
-                      );
+
                       queued.completer.completeError(err);
                     }
                   }
-                  print('✅ [DioClient] All queued requests replayed');
+
                 }
               } else {
-                print(
-                  '⏭️ [DioClient] Not first in queue, skipping refresh (another request is handling it)',
-                );
+
               }
             });
 
             // 4️⃣ when this specific request's retry completes, resolve it
-            print('⏳ [DioClient] Waiting for completer to resolve...');
+
             final result = await completer.future;
-            print('✅ [DioClient] Completer resolved, returning response');
+
             return handler.resolve(result);
           }
 
           // ---------- OTHER ERRORS ----------
-          print(
-            '⚠️ [DioClient] Not an auth error or already retried, handling as regular error',
-          );
+
           switch (error.type) {
             case DioExceptionType.connectionTimeout:
             case DioExceptionType.sendTimeout:
             case DioExceptionType.receiveTimeout:
-              print('⏱️ [DioClient] Timeout error');
+
               return handler.reject(
                 DioException(
                   requestOptions: error.requestOptions,
@@ -211,7 +166,7 @@ class DioClient {
               );
 
             case DioExceptionType.unknown:
-              print('🌐 [DioClient] Unknown/Network error');
+
               return handler.reject(
                 DioException(
                   requestOptions: error.requestOptions,
@@ -221,7 +176,7 @@ class DioClient {
               );
 
             case DioExceptionType.badResponse:
-              print('📛 [DioClient] Bad response error');
+
               String message;
               switch (status) {
                 case 408:
@@ -254,7 +209,7 @@ class DioClient {
               );
 
             default:
-              print('❓ [DioClient] Other error type');
+
               return handler.reject(
                 DioException(
                   requestOptions: error.requestOptions,
@@ -266,7 +221,7 @@ class DioClient {
         },
       ),
     );
-    print('✅ [DioClient] Initialization complete with interceptors added');
+
 
     // Start periodic token refresh
     _startPeriodicRefresh();
@@ -275,11 +230,11 @@ class DioClient {
   // ────────────────�� PERIODIC REFRESH ─────────────────────
   void _startPeriodicRefresh() {
   if (_refreshTimer?.isActive ?? false) {
-    print('⏭️ [DioClient] Periodic refresh already running, skipping new timer');
+
     return;
   }
 
-  print('⏰ [DioClient] Starting periodic token refresh (every 5 minutes)');
+
   _performTokenRefresh();
   _refreshTimer = Timer.periodic(const Duration(minutes: 5), (timer) {
     _performTokenRefresh();
@@ -292,9 +247,7 @@ class DioClient {
     final token = await SharedPreferencesHelper.getUserToken();
 
     if (!isLoggedIn || token == null || token.isEmpty) {
-      print(
-        '⏭️ [DioClient] Skipping refresh - user not logged in or no token',
-      );
+
       return;
     }
 
@@ -303,39 +256,31 @@ class DioClient {
 
     while (retryCount < maxRetries) {
       try {
-        print('🔄 [DioClient] Performing periodic token refresh... (attempt ${retryCount + 1})');
+
         final newTokenModel = await _auth.refreshToken();
 
-        print(
-          '📦 [DioClient] Periodic refresh result: status=${newTokenModel.status}, message=${newTokenModel.message}, token=${newTokenModel.response}',
-        );
+
 
         if (newTokenModel.message == "Time out re-login") {
-          print(
-            '⚠️ [DioClient] Session expired during periodic refresh, logging out user',
-          );
+
           await handleAuthFailure();
           return; // Don't retry
         }
 
         if (newTokenModel.status && newTokenModel.response.isNotEmpty) {
-          print(
-            '🔄 [DioClient] Token refresh completed successfully in dio_client',
-          );
+
         } else {
-          print(
-            '⚠️ [DioClient] Periodic refresh returned false status or empty token',
-          );
+
         }
         return; // success, exit
       } catch (e) {
         retryCount++;
         if (retryCount < maxRetries) {
           final delay = Duration(seconds: 2 * retryCount); // exponential backoff
-          print('⏳ [DioClient] Token refresh failed, retrying in ${delay.inSeconds} seconds... (attempt $retryCount)');
+
           await Future.delayed(delay);
         } else {
-          print('❌ [DioClient] Periodic token refresh failed after $maxRetries attempts: $e');
+
         }
       }
     }
@@ -344,33 +289,29 @@ class DioClient {
   // Stop the periodic refresh timer
   void dispose() {
     _refreshTimer?.cancel();
-    print('🛑 [DioClient] Periodic refresh timer cancelled');
+
   }
 
   // ───────────────── HELPERS ────────────────────
   Future<Response<dynamic>> _retryWithFreshToken(
     RequestOptions original,
   ) async {
-    print('🧪 [DioClient] _retryWithFreshToken called for: ${original.path}');
+
     final newToken = await SharedPreferencesHelper.getUserToken();
     if (newToken != null && newToken.isNotEmpty) {
-      print(
-        '🔑 [DioClient] Retrieved new token for retry: ${newToken.substring(0, newToken.length > 20 ? 20 : newToken.length)}...',
-      );
+
     } else {
-      print('⚠️ [DioClient] No new token available for retry');
+
     }
 
     // Start from original headers and update auth + api-key
     final headers = Map<String, dynamic>.from(original.headers);
     if (newToken != null && newToken.isNotEmpty) {
       headers['Authorization'] = 'Bearer $newToken';
-      print('✅ [DioClient] Authorization header updated with new token');
+
     } else {
       headers.remove('Authorization');
-      print(
-        '⚠️ [DioClient] No new token available, removing Authorization header',
-      );
+
     }
     headers.putIfAbsent('api-key', () => apiKey);
 
@@ -382,10 +323,7 @@ class DioClient {
       headers: headers,
       extra: {...original.extra, 'retried': true},
     );
-    print(
-      '🧪 [DioClient] Retrying ${cloned.path} with updated Authorization header.',
-    );
-    print('📋 [DioClient] Retry headers: ${cloned.headers}');
+
     return dio.fetch(cloned);
   }
 
@@ -427,7 +365,7 @@ class DioClient {
       );
       return response;
     } catch (e) {
-      print('❌ [DioClient] POST error: $e');
+
       rethrow;
     }
   }
@@ -435,16 +373,13 @@ class DioClient {
   // ───────────────── TEST HELPER ────────────────────
   /// Temporarily corrupts the token to test refresh flow
   Future<void> testTokenRefresh() async {
-    print('🧪 [DioClient] TEST: Corrupting token to trigger 401...');
     await SharedPreferencesHelper.setUserToken('invalid_token_for_testing');
-    print(
-      '🧪 [DioClient] TEST: Token corrupted. Next API call should trigger refresh.',
-    );
+
   }
 
   // Add new method for global logout
   Future<void> handleAuthFailure() async {
-  print('🔐 [DioClient] Handling auth failure - logging out user');
+
   dispose(); // 🛑 Stop periodic refresh timer
   await SharedPreferencesHelper.clearUserData();
   authFailureController.add(true);

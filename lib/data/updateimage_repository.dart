@@ -22,16 +22,7 @@ class UpdateProfileRepository {
     });
 
     // 🔹 Debug prints
-    print("===== API REQUEST =====");
-    print("URL: $baseUrl");
-    print("Headers: Authorization: Bearer $token");
-    print("FormData Fields:");
-    formData.fields.forEach((f) => print("  ${f.key}: ${f.value}"));
-    print("FormData Files:");
-    for (var f in formData.files) {
-      print("  ${f.key}: ${f.value.filename}");
-    }
-    print("=======================");
+
 
     // 🔹 Send API Request
     final response = await _dio.post(
@@ -46,10 +37,6 @@ class UpdateProfileRepository {
     );
 
     // 🔹 Print Response
-    print("===== API RESPONSE =====");
-    print("Status Code: ${response.statusCode}");
-    print("Response Data: ${response.data}");
-    print("========================");
 
     return response;
   }

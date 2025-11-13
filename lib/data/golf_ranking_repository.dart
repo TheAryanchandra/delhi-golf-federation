@@ -16,10 +16,7 @@ class GolfRankingRepository {
       GolfRankingRequest request) async {
     try {
       // 🔹 Print request before sending
-      print("🟢 [GolfRankingRepository] Sending Request:");
-      print("➡️ URL: https://admin.delhigolf.org/api/master/golf-ranking-list");
-      print("➡️ Headers: ${_dio.options.headers}");
-      print("➡️ Request Body: ${request.toJson()}");
+
 
       final response = await _dio.post(
         "master/golf-ranking-list",
@@ -27,21 +24,18 @@ class GolfRankingRepository {
       );
 
       // 🔹 Print raw response details
-      print("\n🟣 [GolfRankingRepository] Received Response:");
-      print("⬅️ Status Code: ${response.statusCode}");
-      print("⬅️ Data: ${response.data}");
+
 
       if (response.statusCode == 200) {
-        print("✅ Response parsed successfully\n");
+
         return GolfRankingResponse.fromJson(response.data);
       } else {
-        print("❌ Error: Unexpected status code ${response.statusCode}\n");
+
         return null;
       }
     } catch (e) {
       // 🔹 Print exception
-      print("\n🔴 [GolfRankingRepository] Exception while fetching golf rankings:");
-      print(e);
+
       return null;
     }
   }

@@ -345,7 +345,7 @@ class _SlotDetailsPageState extends State<SlotDetailsPage> {
           child: CustomButton(
             text: "CONFIRM",
             onPressed: () {
-              debugPrint("Selected Holes: $selectedHoles");
+
               NavigationService.instance.navigateToPayment();
             },
             backgroundColor: const Color(0xFF12563C),

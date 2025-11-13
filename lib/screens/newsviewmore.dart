@@ -25,8 +25,7 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
   void initState() {
     super.initState();
 
-    print("📰 Opening NewsDetailsScreen...");
-    print("📎 RefNo received: ${widget.refNo}");
+
 
     _bloc = WorldOfGolfBloc(WorldOfGolfRepository());
 
@@ -38,7 +37,7 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
       refNo: widget.refNo, // ✅ send refNo to repository
     ));
 
-    print("🚀 FetchWorldOfGolfEvent dispatched for RefNo: ${widget.refNo}");
+
   }
 
   @override
@@ -87,7 +86,6 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
                   (item) => item.refNo == widget.refNo,
                 );
               } catch (e) {
-                print("⚠️ No matching news item found for RefNo: ${widget.refNo}");
                 newsItem = null;
               }
 
@@ -95,7 +93,6 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
                 return const Center(child: Text("No data found"));
               }
 
-              print("✅ News item found: ${newsItem!.eventName}");
 
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(16),

@@ -18,15 +18,7 @@ class EventRegistrationRepository {
 
       final payload = request.toJson();
 
-      print('🔹 Sending Event Registration Request...');
-      print('🔹 URL: https://admin.delhigolf.org/api/account/event-registration');
-      print('🔹 Headers:');
-      print({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      print('🔹 Payload:');
-      print(payload);
+
 
       final response = await _dio.post(
         'account/event-registration',
@@ -39,9 +31,7 @@ class EventRegistrationRepository {
         ),
       );
 
-      print('✅ Response Received:');
-      print('🔸 Status Code: ${response.statusCode}');
-      print('🔸 Data: ${response.data}');
+  
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -49,10 +39,10 @@ class EventRegistrationRepository {
         // ✅ Handle both string and map response types safely
         if (data is String) {
           // Example: "Payment Done"
-          print('⚠️ Response is a string: $data');
+
           throw Exception(data);
         } else if (data is Map<String, dynamic>) {
-          print('🧩 Response is a Map, parsing normally...');
+
           return EventRegistrationResponse.fromJson(data);
         } else {
           throw Exception('Unexpected response format: ${data.runtimeType}');
@@ -61,7 +51,7 @@ class EventRegistrationRepository {
         throw Exception('Failed with status code: ${response.statusCode}');
       }
     } catch (e) {
-      print('❌ Event registration failed: $e');
+
       throw Exception(e.toString());
     }
   }

@@ -34,8 +34,7 @@ class EventsRepository {
     try {
       final token = await SharedPreferencesHelper.getUserToken();
 
-      print("🌐 URL: $url");
-      print("📤 Body: ${jsonEncode(requestData)}");
+
 
       final response = await DioClient().dio.post(
         url.toString(),
@@ -51,19 +50,18 @@ class EventsRepository {
         ),
       );
 
-      print("✅ Status: ${response.statusCode}");
-      debugPrint("🟢 Response: ${jsonEncode(response.data)}");
+
 
       if (response.statusCode == 200) {
         final data = response.data;
         final eventsResponse = EventsResponse.fromJson(data);
-        print("RefNo: ${eventsResponse.response?.dt?.first?.refNo}");
+
         return eventsResponse;
       } else {
         throw Exception('Failed to load events: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint('⚠️ No data available: $e');
+
       return EventsResponse(
         status: false,
         message: 'No data available',

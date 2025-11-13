@@ -32,8 +32,7 @@ class EventSearchRepository {
         "_DataRow": null
       };
 
-      print("🔹 Sending POST request to: $_baseUrl");
-      print("🔹 Payload being sent: $payload");
+
 
       final response = await _dio.post(
         _baseUrl,
@@ -44,17 +43,16 @@ class EventSearchRepository {
         }),
       );
 
-      print("✅ Response Status Code: ${response.statusCode}");
-      print("✅ Response Data: ${response.data}");
+
 
       if (response.statusCode == 200 && response.data != null) {
         return EventSearchResponse.fromJson(response.data);
       } else {
-        print("⚠️ Unexpected response structure");
+
         return null;
       }
     } catch (e) {
-      print("❌ Error fetching event names: $e");
+
       return null;
     }
   }

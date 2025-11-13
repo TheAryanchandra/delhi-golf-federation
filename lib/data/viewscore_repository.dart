@@ -33,9 +33,7 @@ class ViewScoreRepository {
     };
 
     // Print final request info
-    print("🔹 Final URL: $finalUrl");
-    print("🔹 Headers: ${{"Authorization": "Bearer $token"}}");
-    print("🔹 Request Body: $requestBody");
+
 
     try {
       final response = await _dio.post(
@@ -44,12 +42,11 @@ class ViewScoreRepository {
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );
 
-      print("✅ Response Status: ${response.statusCode}");
-      print("✅ Response Data: ${response.data}");
+
 
       return ViewScoreResponse.fromJson(response.data);
     } catch (e) {
-      print("❌ Error: $e");
+
       throw Exception("Failed to fetch view score: $e");
     }
   }
