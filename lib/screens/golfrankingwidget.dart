@@ -421,7 +421,6 @@ class _AmateurEliteSectionState extends State<AmateurEliteSection> {
   void _fetchData() {
     final id = selectedIndex == 0 ? "Gentlemen" : "Ladies";
 
-
     context.read<GolfRankingBloc>().add(
       FetchGolfRankingEvent(
         GolfRankingRequest(
@@ -1069,17 +1068,13 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
 
   void _triggerRankingFetch() {
     if (_selectedIndustryRefNo != null && _selectedEventRefNo != null) {
-
-
       final request = GolfClubGolfersRankingRequest(
         id: _selectedIndustryRefNo!,
         refNo: _selectedEventRefNo!,
       );
 
       _rankingBloc.add(FetchGolfClubGolfersRankingEvent(request: request));
-    } else {
-
-    }
+    } else {}
   }
 
   @override
@@ -1267,16 +1262,13 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
             Container(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
               decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF0B814A), Color(0xFF046B45)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: Color(0xFF12563C),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
                 ),
               ),
+
               child: const Row(
                 children: [
                   Expanded(
@@ -1334,8 +1326,9 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
               final isEven = index % 2 == 0;
               return Container(
                 color: isEven
-                    ? const Color(0xFF0C6845)
+                    ? const Color.fromARGB(255, 4, 107, 69)
                     : const Color(0xFF12563C),
+
                 padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
                 child: Row(
                   children: [
