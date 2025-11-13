@@ -1256,7 +1256,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
       scrollDirection: Axis.horizontal,
       child: Container(
         width: 800,
-        margin: const EdgeInsets.symmetric(vertical: 8),
+        margin: const EdgeInsets.symmetric(vertical: 4),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -1268,7 +1268,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
           children: [
             // Header
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Color(0xFF0B814A), Color(0xFF046B45)],
@@ -1339,7 +1339,7 @@ class _ClubGolfersTableState extends State<ClubGolfersTable> {
                 color: isEven
                     ? const Color(0xFF0C6845)
                     : const Color(0xFF12563C),
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
                 child: Row(
                   children: [
                     Expanded(
