@@ -102,13 +102,13 @@ class _TopBannerState extends State<_TopBanner> {
                                 : "",
                             height: 140,
                             width: double.infinity,
-                            fit: BoxFit.contain,
+                            fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
                               return Image.asset(
                                 "assets/images/welcome.png",
                                 height: 140,
                                 width: double.infinity,
-                                fit: BoxFit.contain,
+                                fit: BoxFit.cover,
                               );
                             },
                           ),
