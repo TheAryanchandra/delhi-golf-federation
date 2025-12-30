@@ -98,7 +98,7 @@ class _TopBannerState extends State<_TopBanner> {
                           // Background Image
                           Image.network(
                             banner.bannerImage.isNotEmpty
-                                ? "https://admin.delhigolf.org${banner.bannerImage}"
+                                ? "https://delhigolf.org${banner.bannerImage}"
                                 : "",
                             height: 140,
                             width: double.infinity,
