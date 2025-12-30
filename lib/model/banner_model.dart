@@ -1,7 +1,7 @@
 class BannerResponse {
   final List<BannerItem> banners;
 
-  BannerResponse({required this.banners});
+  BannerResponse({this.banners = const []});
 
   factory BannerResponse.fromJson(Map<String, dynamic> json) {
     return BannerResponse(
@@ -24,18 +24,18 @@ class BannerItem {
   final String entryDate;
 
   BannerItem({
-    required this.id,
-    required this.refNo,
-    required this.bannerTitle,
-    required this.bannerTitle2,
-    required this.bannerTitle3,
-    required this.bannerImage,
-    required this.entryDate,
+    this.id = 0,
+    this.refNo = "",
+    this.bannerTitle = "",
+    this.bannerTitle2 = "",
+    this.bannerTitle3 = "",
+    this.bannerImage = "",
+    this.entryDate = "",
   });
 
   factory BannerItem.fromJson(Map<String, dynamic> json) {
     return BannerItem(
-      id: json["Id"],
+      id: json["Id"] ?? 0,
       refNo: json["RefNo"] ?? "",
       bannerTitle: json["BannerTitle"] ?? "",
       bannerTitle2: json["BannerTitle2"] ?? "",
@@ -45,6 +45,7 @@ class BannerItem {
     );
   }
 }
+
 
 
 class BannerPayload {
