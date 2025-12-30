@@ -97,10 +97,20 @@ class _TopBannerState extends State<_TopBanner> {
                         children: [
                           // Background Image
                           Image.network(
-                            "https://admin.delhigolf.org${banner.bannerImage}",
+                            banner.bannerImage.isNotEmpty
+                                ? "https://admin.delhigolf.org${banner.bannerImage}"
+                                : "",
                             height: 140,
                             width: double.infinity,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
+                                "assets/images/welcome.png",
+                                height: 140,
+                                width: double.infinity,
+                                fit: BoxFit.contain,
+                              );
+                            },
                           ),
 
                           // Dark overlay
@@ -147,7 +157,7 @@ class _TopBannerState extends State<_TopBanner> {
                                       fontSize: 14,
                                     ),
                                   ),
-                                ]
+                                ],
                               ],
                             ),
                           ),
@@ -189,15 +199,11 @@ class _TopBannerState extends State<_TopBanner> {
   }
 }
 
-
 class _DotsIndicator extends StatelessWidget {
   final int count;
   final int currentIndex;
 
-  const _DotsIndicator({
-    required this.count,
-    required this.currentIndex,
-  });
+  const _DotsIndicator({required this.count, required this.currentIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -221,4 +227,3 @@ class _DotsIndicator extends StatelessWidget {
     );
   }
 }
-
