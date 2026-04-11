@@ -46,12 +46,15 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'config/routes.dart';
 import 'config/routes_name.dart';
+import 'config/network/ssl_override.dart';
 
 // Import your blocs & repositories
 
 import 'bloc/auth/auth_bloc.dart';
 
 Future<void> main() async {
+  // Enable SSL bypass for debug APK
+  SSLOverride.enableDebugSSLBypass();
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize DioClient
@@ -138,7 +141,7 @@ class GolfApp extends StatelessWidget {
         BlocProvider(create: (_) => GolfRankingBloc(GolfRankingRepository())),
         BlocProvider(create: (_) => WorldOfGolfBloc(WorldOfGolfRepository())),
         BlocProvider(create: (_) => EventSearchBloc(EventSearchRepository())),
-         BlocProvider(create: (_) => BannerBloc(BannerRepository())),
+        BlocProvider(create: (_) => BannerBloc(BannerRepository())),
         BlocProvider(
           create: (_) => GolfClubGolfersRankingBloc(
             repository: GolfClubGolfersRankingRepository(),
