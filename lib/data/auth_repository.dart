@@ -18,10 +18,10 @@ class RegistrationRepository {
     RegistrationRequestModel requestModel,
   ) async {
     final response = await http.post(
-      Uri.parse(registrationEndpoint), // use constant from webconstant
+      Uri.parse(registrationEndpoint), 
       headers: {
-        "Content-Type": headersJson, // also use constant for content type
-        "api-key": apiKey, // or "x-api-key" depending on backend
+        "Content-Type": headersJson, 
+        "api-key": apiKey, 
       },
       body: jsonEncode(requestModel.toJson()),
     );
