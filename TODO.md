@@ -1,1 +1,0 @@
-- [ ] Update eventwidget.dart to navigate to CustomBottomNav(initialIndex: 1) on "View Leaderboard" click
