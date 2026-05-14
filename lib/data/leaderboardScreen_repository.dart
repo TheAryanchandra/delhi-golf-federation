@@ -1,16 +1,9 @@
-import 'dart:convert';
-import 'package:dio/dio.dart';
-import 'package:delhi_golf_federation/database/shared_preferences.dart';
+import 'package:delhi_golf_federation/config/network/dio_client.dart';
+import 'package:delhi_golf_federation/config/network/web_constant.dart';
 import 'package:delhi_golf_federation/model/leaderboardscreen_model.dart';
 
 class LeaderboardScreenRepository {
-  final Dio _dio = Dio();
-  final String baseUrl =
-      "https://admin.delhigolf.org/api/account/leaderboard-details?Action=GetUpcomingEvents";
-
   Future<LeaderboardScreenModel> fetchLeaderboardScreen({required int page}) async {
-    final token = await SharedPreferencesHelper.getUserToken();
-
     final payload = {
       "Id": "",
       "RefNo": "",
@@ -30,22 +23,12 @@ class LeaderboardScreenRepository {
     };
 
     try {
-      final response = await _dio.post(
-        baseUrl,
-        data: jsonEncode(payload),
-        options: Options(
-          headers: {
-            "Authorization": "Bearer $token",
-            "Content-Type": "application/json",
-          },
-        ),
+      final response = await DioClient().post(
+        "$leaderboardDetailsEndpoint?Action=GetUpcomingEvents",
+        data: payload,
       );
 
-      if (response.statusCode == 200) {
-        return LeaderboardScreenModel.fromJson(response.data);
-      } else {
-        throw Exception("Failed to load leaderboard: ${response.statusCode}");
-      }
+      return LeaderboardScreenModel.fromJson(response.data);
     } catch (e) {
       throw Exception("Error fetching leaderboard: $e");
     }

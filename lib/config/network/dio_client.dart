@@ -311,9 +311,7 @@ class DioClient {
       );
       return response;
     } on DioException catch (e) {
-      throw Exception(
-        'Dio error: ${e.response?.statusCode ?? 'unknown'} - ${e.message}',
-      );
+      throw handleError(e);
     } catch (e) {
       throw Exception('Unexpected error: $e');
     }
@@ -334,9 +332,52 @@ class DioClient {
         options: options,
       );
       return response;
+    } on DioException catch (e) {
+      throw handleError(e);
     } catch (e) {
-      rethrow;
+      throw Exception('Unexpected error: $e');
     }
+  }
+
+  // ───────────────── ERROR HANDLER ────────────────────
+  Exception handleError(DioException error) {
+    final status = error.response?.statusCode;
+    String message;
+
+    switch (error.type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+        message = 'Request timed out. Please check your connection.';
+        break;
+      case DioExceptionType.connectionError:
+        message = 'No internet connection.';
+        break;
+      case DioExceptionType.badResponse:
+        switch (status) {
+          case 400:
+            message = 'Bad Request: The server could not understand the request.';
+            break;
+          case 401:
+            message = 'Unauthorized: Please login again.';
+            break;
+          case 403:
+            message = 'Forbidden: Access is denied.';
+            break;
+          case 404:
+            message = 'Not Found: The requested resource was not found.';
+            break;
+          case 500:
+            message = 'Internal Server Error: Something went wrong on the server.';
+            break;
+          default:
+            message = error.response?.data?['message'] ?? 'Error: $status';
+        }
+        break;
+      default:
+        message = 'Something went wrong. Please try again.';
+    }
+    return Exception(message);
   }
 
   // ───────────────── TEST HELPER ────────────────────

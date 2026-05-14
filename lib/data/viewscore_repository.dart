@@ -1,17 +1,11 @@
-import 'package:delhi_golf_federation/database/shared_preferences.dart';
-import 'package:dio/dio.dart';
+import 'package:delhi_golf_federation/config/network/dio_client.dart';
+import 'package:delhi_golf_federation/config/network/web_constant.dart';
 import 'package:delhi_golf_federation/model/viewscore_model.dart';
 
 class ViewScoreRepository {
-  final Dio _dio = Dio();
-  static const String _baseUrl =
-      "https://admin.delhigolf.org/api/account/view-score";
-
   Future<ViewScoreResponse> fetchViewScore(String date, String eventRefNo) async {
-    final String? token = await SharedPreferencesHelper.getUserToken();
-
     // Build full query URL
-    final String finalUrl = "$_baseUrl?Date=$date&Action=score";
+    final String finalUrl = "$viewScoreEndpoint?Date=$date&Action=score";
 
     // Request body
     final Map<String, dynamic> requestBody = {
@@ -32,21 +26,14 @@ class ViewScoreRepository {
       "_DataRow": null,
     };
 
-    // Print final request info
-
-
     try {
-      final response = await _dio.post(
+      final response = await DioClient().post(
         finalUrl,
         data: requestBody,
-        options: Options(headers: {"Authorization": "Bearer $token"}),
       );
-
-
 
       return ViewScoreResponse.fromJson(response.data);
     } catch (e) {
-
       throw Exception("Failed to fetch view score: $e");
     }
   }

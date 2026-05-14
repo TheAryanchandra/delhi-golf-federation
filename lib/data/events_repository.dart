@@ -1,17 +1,10 @@
-import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:delhi_golf_federation/config/network/web_constant.dart';
-import 'package:dio/dio.dart';
 import 'package:delhi_golf_federation/config/network/dio_client.dart';
-
-import 'package:delhi_golf_federation/database/shared_preferences.dart';
 import 'package:delhi_golf_federation/model/eventmodel.dart';
 
 class EventsRepository {
   Future<EventsResponse> fetchEvents({String? action, int page = 1}) async {
-    final url = Uri.parse(
-      '$eventsEndpoint${action != null ? '?Action=$action' : ''}',
-    );
+    final String url = '$eventsEndpoint${action != null ? '?Action=$action' : ''}';
 
     final Map<String, dynamic> requestData = {
       "Id": null,
@@ -32,36 +25,13 @@ class EventsRepository {
     };
 
     try {
-      final token = await SharedPreferencesHelper.getUserToken();
-
-
-
-      final response = await DioClient().dio.post(
-        url.toString(),
+      final response = await DioClient().post(
+        url,
         data: requestData,
-        options: Options(
-          headers: {
-            "Accept": headersJson,
-            "Content-Type": headersJson,
-            "api-key": apiKey,
-            if (token != null && token.isNotEmpty)
-              "Authorization": "Bearer $token",
-          },
-        ),
       );
 
-
-
-      if (response.statusCode == 200) {
-        final data = response.data;
-        final eventsResponse = EventsResponse.fromJson(data);
-
-        return eventsResponse;
-      } else {
-        throw Exception('Failed to load events: ${response.statusCode}');
-      }
+      return EventsResponse.fromJson(response.data);
     } catch (e) {
-
       return EventsResponse(
         status: false,
         message: 'No data available',

@@ -1,11 +1,9 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 
-/// SSL Certificate Override for Debug Mode
-/// This allows the app to bypass SSL certificate verification during development
-/// NEVER use in production!
+
 class SSLOverride {
-  /// Configure HttpClient to accept all certificates in debug mode
+
   static void enableDebugSSLBypass() {
     if (kDebugMode) {
       HttpOverrides.global = _DebugHttpOverrides();
@@ -14,7 +12,7 @@ class SSLOverride {
   }
 }
 
-/// Custom HttpOverrides that bypasses certificate verification
+
 class _DebugHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
