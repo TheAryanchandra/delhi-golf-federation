@@ -3,7 +3,6 @@ import 'package:delhi_golf_federation/config/network/web_constant.dart';
 import 'package:delhi_golf_federation/model/eventreportmodel.dart';
 
 class EventReportRepository {
-  /// Fetch Current or Past Scorecards based on action
   Future<EventReportResponse> fetchEvents({
     required EventReportRequest request,
     required bool isCurrent,

@@ -4,10 +4,8 @@ import 'package:delhi_golf_federation/model/viewscore_model.dart';
 
 class ViewScoreRepository {
   Future<ViewScoreResponse> fetchViewScore(String date, String eventRefNo) async {
-    // Build full query URL
     final String finalUrl = "$viewScoreEndpoint?Date=$date&Action=score";
 
-    // Request body
     final Map<String, dynamic> requestBody = {
       "Id": "",
       "RefNo": eventRefNo,

@@ -7,13 +7,12 @@ import 'package:dio/dio.dart';
 
 class UpdateProfileRepository {
   Future<Response> updateProfile(UpdateProfileModel model, File? imageFile) async {
-    // 🔹 Prepare FormData (exactly like Postman)
     FormData formData = FormData.fromMap({
-      'jsonForm': jsonEncode(model.toJson()), // ✅ Stringified JSON
+      'jsonForm': jsonEncode(model.toJson()),
       if (imageFile != null)
         'img': await MultipartFile.fromFile(
           imageFile.path,
-          filename: imageFile.path.split('/').last, // ✅ attach filename
+          filename: imageFile.path.split('/').last,
         ),
     });
 

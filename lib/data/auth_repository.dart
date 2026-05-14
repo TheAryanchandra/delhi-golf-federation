@@ -9,9 +9,7 @@ import 'package:delhi_golf_federation/model/registermodel.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 
-// register repository
 class RegistrationRepository {
-  // replace this with your actual key
   final String apiKey = "065A0566-4ACA-4C5B-9789-9B4992AC40F3";
 
   Future<RegistrationResponseModel> registerUser(
@@ -34,7 +32,6 @@ class RegistrationRepository {
   }
 }
 
-// login repository
 
 class LoginRepository {
   Future<LoginResponse> login({
@@ -45,7 +42,6 @@ class LoginRepository {
       final uri = Uri.parse(loginEndpoint);
 
       final headers = {
-        // "Accept": "*/*",
         "Content-Type": "application/json",
         "api-key": "065A0566-4ACA-4C5B-9789-9B4992AC40F3",
         "a_Id_UserId": email,
@@ -83,7 +79,6 @@ class LoginRepository {
         throw Exception("Failed to login: ${response.statusCode}");
       }
     } catch (e) {
-      // Ensure auth status is reset on failure
       await SharedPreferencesHelper.setLoggedIn(false);
       await SharedPreferencesHelper.setUserToken('');
       throw Exception("Login failed: $e");
@@ -96,7 +91,6 @@ class LogoutRepository {
     final token = await SharedPreferencesHelper.getUserToken();
 
     if (token == null || token.isEmpty) {
-      // Already expired or never saved
       return LogoutModel(
         id: 0,
         bigId: 0,
@@ -105,12 +99,11 @@ class LogoutRepository {
       );
     }
 
-    final uri = Uri.parse(logoutEndpoint); // ✅ use constant
+    final uri = Uri.parse(logoutEndpoint);
 
     final headers = {
       "Accept": headersJson,
       "Authorization": "Bearer $token",
-      // "api-key": apiKey, // ✅ same as login
     };
 
 
@@ -123,7 +116,6 @@ class LogoutRepository {
       final data = json.decode(response.body);
       final logoutModel = LogoutModel.fromJson(data);
 
-      // Clear user data on successful logout (statusCode 200)
       await SharedPreferencesHelper.clearUserData();
 
       return logoutModel;
@@ -133,7 +125,6 @@ class LogoutRepository {
   }
 }
 
-// industry repository
 
 class IndustryRepository {
   Future<IndustryResponse> fetchIndustries() async {
@@ -159,7 +150,6 @@ class IndustryRepository {
   }
 }
 
-// refresh token
 
 class RefreshTokenRepository {
   final Dio _dio = Dio(
@@ -185,9 +175,6 @@ class RefreshTokenRepository {
         ),
       );
 
-      print("🟢 Refresh Token API Status Code: ${response.statusCode}");
-      print("🟢 Refresh Token API Response: ${response.data}");
-
       final Map<String, dynamic> jsonResponse = response.data;
       final data = RefreshTokenModel.fromJson(jsonResponse);
 
@@ -195,19 +182,13 @@ class RefreshTokenRepository {
           data.status &&
           data.response.isNotEmpty) {
         await SharedPreferencesHelper.setUserToken(data.response);
-        print('🔄 Token refreshed successfully: ${data.response}');
-        print('Updated token stored in shared preferences');
       }
 
       return data;
     } on DioException catch (e) {
-      print(
-        "🔴 Refresh Token API Error: ${e.response?.statusCode} - ${e.message}",
-      );
       if (e.response != null && e.response!.data != null) {
         final Map<String, dynamic> jsonResponse = e.response!.data;
         final data = RefreshTokenModel.fromJson(jsonResponse);
-        print("🟢 Parsed error response: ${data.message}");
         return data;
       }
       throw Exception('Token refresh failed: ${e.message}');

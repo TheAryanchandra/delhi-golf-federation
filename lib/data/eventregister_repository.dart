@@ -11,7 +11,6 @@ class EventRegistrationRepository {
 
     final data = response.data;
 
-    // ✅ Handle both string and map response types safely
     if (data is String) {
       throw Exception(data);
     } else if (data is Map<String, dynamic>) {
