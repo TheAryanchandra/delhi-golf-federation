@@ -6,6 +6,7 @@ import 'package:delhi_golf_federation/model/registermodel.dart';
 import 'package:delhi_golf_federation/services/TextFieldWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../components/bottomnavigation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,6 +31,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? _selectedGender;
   int? _calculatedAge;
   String? _selectedIndustry;
+  bool _noHandicap = false;
+  bool _noGhin = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -487,40 +490,82 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 // Handicap
                                 GlobalTextField(
                                   controller: _handicapController,
-                                  hint: "Enter your handicap index",
-                                  keyboardType: TextInputType.number,
+                                  hint: _noHandicap
+                                      ? "Handicap Index: Not Applicable (N/A)"
+                                      : "Enter your handicap index (e.g. 12.4)",
+                                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
                                   prefixIcon: Icons.score,
+                                  enabled: !_noHandicap,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.allow(
                                       RegExp(r"^[0-9]*\.?[0-9]*$"),
                                     ),
                                   ],
                                   validator: (value) {
+                                    if (_noHandicap) return null;
                                     if (value == null || value.trim().isEmpty) {
-                                      return "Handicap is required";
+                                      return "Please enter handicap index or check option below";
                                     }
                                     final numericRegex = RegExp(
                                       r"^[0-9]+(\.[0-9]+)?$",
                                     );
                                     if (!numericRegex.hasMatch(value.trim())) {
-                                      return "Enter a valid number";
+                                      return "Enter a valid numeric handicap index";
                                     }
                                     return null;
+                                  },
+                                ),
+                                _buildNotApplicableOption(
+                                  isChecked: _noHandicap,
+                                  label: "I don't have a Handicap Index",
+                                  activeLabel: "Handicap Index: Not Applicable (N/A)",
+                                  helperText: _noHandicap
+                                      ? "Marked as N/A. You can update this later in profile."
+                                      : "Check this if you don't have an official handicap.",
+                                  onChanged: (val) {
+                                    setState(() {
+                                      _noHandicap = val ?? false;
+                                      if (_noHandicap) {
+                                        _handicapController.clear();
+                                      }
+                                    });
                                   },
                                 ),
 
                                 // GHIN
                                 GlobalTextField(
                                   controller: _ghinController,
-                                  hint: "Enter your GHIN number",
+                                  hint: _noGhin
+                                      ? "GHIN Number: Not Applicable (N/A)"
+                                      : "Enter your GHIN number",
                                   prefixIcon: Icons.confirmation_number,
+                                  enabled: !_noGhin,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.digitsOnly,
                                   ],
-                                  validator: (value) =>
-                                      value == null || value.trim().isEmpty
-                                      ? "GHIN number is required"
-                                      : null,
+                                  validator: (value) {
+                                    if (_noGhin) return null;
+                                    if (value == null || value.trim().isEmpty) {
+                                      return "Please enter GHIN number or check option below";
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                _buildNotApplicableOption(
+                                  isChecked: _noGhin,
+                                  label: "I don't have a GHIN Number",
+                                  activeLabel: "GHIN Number: Not Applicable (N/A)",
+                                  helperText: _noGhin
+                                      ? "Marked as N/A. You can add your GHIN anytime later."
+                                      : "Check this if you do not possess a GHIN number.",
+                                  onChanged: (val) {
+                                    setState(() {
+                                      _noGhin = val ?? false;
+                                      if (_noGhin) {
+                                        _ghinController.clear();
+                                      }
+                                    });
+                                  },
                                 ),
 
                                 // Password
@@ -608,12 +653,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                               age: age,
                                               homeClub:
                                                   _homeClubController.text,
-                                              usgaHandicapIndex:
-                                                  double.tryParse(
-                                                    _handicapController.text,
-                                                  ) ??
-                                                  0.0,
-                                              ghinNo: _ghinController.text,
+                                              usgaHandicapIndex: _noHandicap
+                                                  ? 0.0
+                                                  : (double.tryParse(
+                                                      _handicapController.text,
+                                                    ) ??
+                                                    0.0),
+                                              ghinNo: _noGhin
+                                                  ? "N/A"
+                                                  : _ghinController.text.trim(),
                                               cmpCode: null,
                                               roleId: null,
                                               refNo: null,
@@ -707,6 +755,93 @@ class _RegisterScreenState extends State<RegisterScreen> {
         prefixIcon: Icon(icon),
         border: const OutlineInputBorder(),
         hintText: hint,
+      ),
+    );
+  }
+
+  Widget _buildNotApplicableOption({
+    required bool isChecked,
+    required String label,
+    required String activeLabel,
+    required String helperText,
+    required ValueChanged<bool?> onChanged,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(top: 2, bottom: 8),
+      decoration: BoxDecoration(
+        color: isChecked ? const Color(0xFFEAF5EE) : const Color(0xFFF8F9FA),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: isChecked
+              ? const Color(0xFF0B592A).withOpacity(0.4)
+              : Colors.grey.shade300,
+          width: 1,
+        ),
+      ),
+      child: InkWell(
+        onTap: () => onChanged(!isChecked),
+        borderRadius: BorderRadius.circular(10),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          child: Row(
+            children: [
+              SizedBox(
+                height: 22,
+                width: 22,
+                child: Checkbox(
+                  value: isChecked,
+                  activeColor: const Color(0xFF0B592A),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  onChanged: onChanged,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isChecked ? activeLabel : label,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight:
+                            isChecked ? FontWeight.w600 : FontWeight.w500,
+                        color: isChecked
+                            ? const Color(0xFF0B592A)
+                            : Colors.black87,
+                      ),
+                    ),
+                    if (helperText.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Text(
+                          helperText,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: isChecked
+                                ? const Color(0xFF0B592A).withOpacity(0.8)
+                                : Colors.grey.shade600,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              Icon(
+                isChecked
+                    ? Icons.check_circle_rounded
+                    : Icons.info_outline_rounded,
+                size: 18,
+                color: isChecked
+                    ? const Color(0xFF0B592A)
+                    : Colors.grey.shade400,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

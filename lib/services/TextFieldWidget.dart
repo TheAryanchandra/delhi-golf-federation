@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Blocks emoji characters (but allows normal characters).
 /// Blocks all emojis (including new Unicode ones).
@@ -101,9 +102,12 @@ class GlobalTextField extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: enabled ? Colors.white : Colors.grey.shade100,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300, width: 1),
+        border: Border.all(
+          color: enabled ? Colors.grey.shade300 : Colors.grey.shade200,
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black12,
@@ -124,22 +128,30 @@ class GlobalTextField extends StatelessWidget {
         inputFormatters: appliedInputFormatters,
         enabled: enabled,
         onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-        style: const TextStyle(
+        style: GoogleFonts.urbanist(
           fontWeight: FontWeight.w600,
           fontSize: 14,
         ),
         decoration: InputDecoration(
           hintText: hint,
           labelText: hint,
+          hintStyle: GoogleFonts.urbanist(
+            fontSize: 14,
+            color: Colors.grey.shade600,
+          ),
+          labelStyle: GoogleFonts.urbanist(
+            fontSize: 14,
+            color: Colors.grey.shade600,
+          ),
           prefixText: prefixText,
-          prefixStyle: prefixStyle,
+          prefixStyle: prefixStyle ?? GoogleFonts.urbanist(),
           suffixIcon: suffixIcon,
           prefixIcon: prefixIcon != null
               ? Icon(prefixIcon, color: Colors.grey)
               : null,
           border: InputBorder.none,
           counterText: "",
-          floatingLabelStyle: const TextStyle(
+          floatingLabelStyle: GoogleFonts.urbanist(
             fontWeight: FontWeight.bold,
             fontSize: 14,
           ),
