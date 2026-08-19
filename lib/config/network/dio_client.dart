@@ -39,14 +39,14 @@ class DioClient {
       ),
     );
 
-    // 🔓 Override SSL verification in debug mode
-    if (kDebugMode) {
-      (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
-          (client) {
-            client.badCertificateCallback = (cert, host, port) => true;
-            return client;
-          };
-    }
+
+if (kDebugMode && !kIsWeb) {
+  (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
+      (client) {
+    client.badCertificateCallback = (cert, host, port) => true;
+    return client;
+  };
+}
 
     dio.interceptors.add(
       QueuedInterceptorsWrapper(
